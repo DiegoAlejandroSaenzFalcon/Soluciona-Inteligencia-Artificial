@@ -1,8 +1,13 @@
 # Dependencias
 node_modules/
+**/node_modules/
 
 # Datos de clientes (pedidos, conversaciones, GPS, teléfonos) — PRIVADO / PII
 data/
+
+# Archivos de datos DIAN generados (PDF convertido, grande)
+dian-middleware/resolucion_*.json
+dian-middleware/*.json
 
 # Sesiones de WhatsApp (auth_state) — PRIVADO
 auth_info/
