@@ -1,0 +1,80 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 9081
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    batchwait: 1s
+    batchsize: 102400
+    timeout: 10s
+
+scrape_configs:
+  - job_name: soluciona-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: soluciona
+          environment: development
+          __path__: /var/log/soluciona/*.log
+
+  - job_name: kernel-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: kernel
+          component: kernel
+          __path__: /var/log/kernel/**/*.log
+
+  - job_name: transports-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: transports
+          component: transports
+          __path__: /var/log/transports/**/*.log
+
+  - job_name: modules-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: modules
+          component: modules
+          __path__: /var/log/modules/**/*.log
+
+  - job_name: docker-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: docker
+          __path__: /var/lib/docker/containers/*/*-json.log
+
+pipeline_stages:
+  - json:
+      expressions:
+        level: level
+        message: message
+        traceId: traceId
+        tenantId: tenantId
+        userId: userId
+        module: context.module
+        action: context.action
+        verticalId: context.verticalId
+  - labels:
+      level:
+      traceId:
+      tenantId:
+      module:
+      action:
+  - timestamp:
+      source: timestamp
+      format: RFC3339
+  - output:
+      source: message

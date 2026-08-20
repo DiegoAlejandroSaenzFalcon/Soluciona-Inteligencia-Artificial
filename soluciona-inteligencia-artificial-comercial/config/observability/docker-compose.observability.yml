@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  loki:
+    image: grafana/loki:2.9.4
+    container_name: soluciona-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - soluciona-observability
+
+  promtail:
+    image: grafana/promtail:2.9.4
+    container_name: soluciona-promtail
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/config.yml:ro
+      - ../logs:/var/log/soluciona:ro
+      - ../kernel:/var/log/kernel:ro
+      - ../transports:/var/log/transports:ro
+      - ../modules:/var/log/modules:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      loki:
+        condition: service_healthy
+    networks:
+      - soluciona-observability
+
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: soluciona-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-loki-datasource
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=soluciona123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+      - ./grafana-dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - ./dashboards:/etc/grafana/provisioning/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      loki:
+        condition: service_healthy
+    networks:
+      - soluciona-observability
+
+volumes:
+  loki-data:
+  grafana-data:
+
+networks:
+  soluciona-observability:
+    driver: bridge

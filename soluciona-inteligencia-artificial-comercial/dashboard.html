@@ -1,0 +1,1332 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#075e54">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/icon-192.png">
+  <title>{{negocio}}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{width:100%;overflow-x:hidden}
+    body{font-family:Segoe UI,Arial,sans-serif;background:#f0f2f5;color:#333;display:flex;flex-direction:column;min-height:100vh}
+    /* ===== HEADER ===== */
+    header{background:#075e54;color:#fff;padding:1rem 2rem;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+    header h1{font-size:1.4rem;font-weight:700;width:100%;line-height:1.3}
+    .panel-link{display:inline-block;background:#25d366;color:#fff;padding:0.55rem 1rem;border-radius:8px;font-weight:700;font-size:0.9rem;text-decoration:none;transition:background 0.2s,transform 0.1s}
+    .panel-link:hover{background:#1fb859;transform:translateY(-1px)}
+    nav{display:flex;flex-wrap:wrap;justify-content:center;gap:0.5rem;width:100%}
+    nav button{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.6rem 1.2rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.95rem;transition:background 0.2s,transform 0.1s;flex:1 1 auto;min-width:130px;max-width:220px}
+    nav button.active, nav button:hover{background:#25d366;border-color:#25d366;color:#fff;transform:translateY(-1px)}
+    /* ===== CONTENEDOR CENTRADO ===== */
+    .container{width:100%;max-width:1200px;margin:0 auto;padding:1.5rem 1rem;flex:1}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+    .tab-content h2{color:#075e54;margin:0 0 0.75rem;text-align:center}
+    .tab-content .sub{color:#666;margin:0 auto 1.5rem;text-align:center;max-width:700px;line-height:1.5}
+    /* ===== TARJETAS TOTALES ===== */
+    .tot{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;justify-content:center}
+    .tot div{background:#fff;padding:1.2rem;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1);border-left:5px solid #25d366;text-align:center}
+    .tot b{display:block;font-size:1rem;color:#075e54;margin-bottom:0.25rem}
+    .tot .valor{font-size:1.4rem;font-weight:700;color:#333}
+    .tot a{display:inline-block;margin-top:0.5rem;color:#075e54;font-weight:700;text-decoration:none;border:1px solid #075e54;padding:0.4rem 0.9rem;border-radius:6px;font-size:0.9rem;transition:background 0.2s,color 0.2s}
+    .tot a:hover{background:#075e54;color:#fff}
+    /* ===== TABLA ===== */
+    .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+    table{border-collapse:collapse;width:100%;min-width:820px;background:#fff}
+    td,th{border:1px solid #e1e8ed;padding:10px 12px;text-align:left;white-space:nowrap}
+    th{background:#25D366;color:#fff;position:sticky;top:0}
+    tr:nth-child(even){background:#f8faf9}
+    /* ===== GRID ASISTENTES ===== */
+    .agents-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;justify-content:center}
+    .agent-card{background:#fff;border-radius:12px;padding:1.4rem;box-shadow:0 1px 4px rgba(0,0,0,0.1);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;display:flex;flex-direction:column;justify-content:space-between;text-align:left}
+    .agent-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,0.15)}
+    .agent-header{display:flex;align-items:center;gap:0.9rem;margin-bottom:0.75rem}
+    .agent-emoji{font-size:2.2rem;flex-shrink:0}
+    .agent-title h3{margin:0;font-size:1.1rem;color:#075e54;line-height:1.3}
+    .agent-title span{display:inline-block;font-size:0.72rem;background:#e1f5fe;color:#0288d1;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.5px;margin-top:0.25rem}
+    .agent-desc{font-size:0.88rem;color:#666;margin-bottom:1rem;flex:1;line-height:1.5}
+    .agent-btn{background:#075e54;color:#fff;border:none;padding:0.65rem;border-radius:8px;cursor:pointer;font-weight:600;width:100%;font-size:0.95rem;transition:background 0.2s}
+    .agent-btn:hover{background:#128c7e}
+    /* ===== CONVERSACIONES ===== */
+    .conv-layout{display:grid;grid-template-columns:300px 1fr;gap:1.2rem;align-items:start}
+    .conv-list{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);overflow:hidden;max-height:65vh;overflow-y:auto}
+    .conv-item{padding:0.9rem 1rem;border-bottom:1px solid #eee;cursor:pointer;transition:background 0.15s}
+    .conv-item:hover{background:#f1f7f4}
+    .conv-item .nom{font-weight:700;color:#075e54}
+    .conv-item .det{font-size:0.75rem;color:#888;margin-top:0.15rem}
+    .conv-box{background:#fff;border:1px solid #ddd;border-radius:12px;padding:1rem;height:65vh;overflow-y:auto}
+    .conv-box h2{text-align:left}
+    /* ===== MODAL ===== */
+    .modal{display:none;position:fixed;inset:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;z-index:1000;padding:1rem}
+    .modal.active{display:flex}
+    .modal-content{background:#fff;width:100%;max-width:600px;border-radius:12px;padding:1.2rem;display:flex;flex-direction:column;max-height:90vh;box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;padding-bottom:0.8rem;margin-bottom:0.8rem;gap:0.5rem}
+    .modal-header h3{font-size:1.05rem;color:#075e54;line-height:1.3;word-break:break-word}
+    .modal-header button{background:#eee;border:none;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;flex-shrink:0;transition:background 0.2s}
+    .modal-header button:hover{background:#ddd}
+    .chat-box{flex:1;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:1rem;background:#f9f9f9;margin-bottom:0.8rem;height:auto;min-height:220px}
+    .chat-msg{margin-bottom:0.8rem;padding:0.6rem 1rem;border-radius:12px;max-width:85%;white-space:pre-wrap;word-wrap:break-word;line-height:1.4}
+    .chat-msg.user{background:#dcf8c6;margin-left:auto}
+    .chat-msg.agent{background:#fff;border:1px solid #ddd;margin-right:auto}
+    .chat-input-area{display:flex;gap:0.5rem}
+    .chat-input-area input{flex:1;padding:0.7rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;min-width:0}
+    .chat-input-area button{background:#25d366;color:#fff;border:none;padding:0.7rem 1.3rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.95rem;white-space:nowrap}
+    /* ===== MENU UPLOAD ===== */
+    .menu-upload{margin-bottom:0.8rem}
+    .menu-upload input[type=file]{width:100%;padding:0.5rem;border:1px dashed #075e54;border-radius:8px;font-size:0.85rem;margin-bottom:0.5rem;background:#f7fbfa}
+    .propuesta-item{background:#fff;border:1px solid #e1e8ed;border-radius:8px;padding:0.6rem 0.8rem;margin-bottom:0.4rem;font-size:0.85rem;word-wrap:break-word}
+    .propuesta-item b{color:#075e54}
+    .btn-aplicar{background:#075e54;color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:8px;cursor:pointer;font-weight:600;margin-top:0.5rem;font-size:0.95rem}
+    .btn-aplicar:hover{background:#128c7e}
+    /* ===== CONFIGURACIÓN ===== */
+    .cfg-section{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.1);padding:1.1rem 1.2rem;margin-bottom:1.2rem}
+    .cfg-section h3{color:#075e54;font-size:1rem;margin-bottom:0.1rem;display:flex;align-items:center;gap:0.5rem}
+    .cfg-section .cfg-desc{color:#888;font-size:0.78rem;margin-bottom:0.9rem}
+    .cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.9rem}
+    .cfg-item{background:#f8faf9;border:1px solid #e1e8ed;border-radius:8px;padding:0.7rem 0.9rem}
+    .cfg-item b{display:block;font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:0.25rem;word-break:break-word}
+    .cfg-item .val{font-size:0.95rem;font-weight:600;color:#333;word-break:break-word;line-height:1.35}
+    .cfg-item .val.ok{color:#1f9d55}
+    .cfg-item .val.warn{color:#c77700}
+    .cfg-item .val.err{color:#c00}
+    .cfg-item .val.sub{color:#666;font-weight:500}
+    .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;color:#fff}
+    .badge.ok{background:#1f9d55}
+    .badge.warn{background:#ff9800}
+    .badge.err{background:#f44336}
+    .badge.info{background:#0288d1}
+    .badge.off{background:#9e9e9e}
+    /* ===== CONFIG: chips categorías / color / productos / formularios ===== */
+    .chips{display:flex;flex-wrap:wrap;gap:0.4rem}
+    .chip{background:#e8f5e9;color:#1f9d55;border:1px solid #c8e6c9;border-radius:14px;padding:0.25rem 0.7rem;font-size:0.8rem;font-weight:600}
+    .color-picker-row{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap}
+    .color-picker-row input[type=color]{width:42px;height:36px;border:1px solid #ccc;border-radius:8px;padding:2px;background:#fff;cursor:pointer}
+    .swatches{display:flex;gap:0.35rem;flex-wrap:wrap}
+    .swatch{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);cursor:pointer;transition:transform 0.15s}
+    .swatch:hover{transform:scale(1.15)}
+    .swatch.sel{border:3px solid #075e54}
+    .btn-guardar{background:#25d366;color:#fff;border:none;padding:0.5rem 1.1rem;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;transition:background 0.2s}
+    .btn-guardar:hover{background:#1fb857}
+    .btn-guardar:disabled{background:#bdbdbd;cursor:default}
+    .guardar-msg{font-size:0.78rem;margin-top:0.3rem}
+    .guardar-msg.ok{color:#1f9d55}
+    .guardar-msg.err{color:#c00}
+    .cfg-input{width:100%;padding:0.5rem 0.6rem;border:1px solid #ccc;border-radius:8px;font-size:0.85rem;background:#fff}
+    .cfg-select{width:100%;padding:0.5rem 0.6rem;border:1px solid #ccc;border-radius:8px;font-size:0.85rem;background:#fff}
+    .dom-faixas{display:flex;flex-direction:column;gap:0.4rem}
+    .dom-faixa{display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap}
+    .dom-faixa .cfg-input,.dom-faixa .cfg-select{width:auto;padding:0.4rem 0.5rem}
+    .cfg-grid .sub{text-align:left;margin:0;font-size:0.78rem;color:#666}
+    .cfg-label{display:block;font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:0.25rem;word-break:break-word}
+    .campo-form{margin-bottom:0.6rem}
+    .prod-cat{border-top:1px solid #e1e8ed;margin-top:0.5rem;padding-top:0.4rem}
+    .prod-cat:first-child{border-top:none;margin-top:0;padding-top:0}
+    .prod-cat b{color:#075e54;font-size:0.85rem}
+    .prod-cat ul{list-style:none;margin-top:0.25rem}
+    .prod-cat li{font-size:0.85rem;color:#555;padding:0.15rem 0;display:flex;justify-content:space-between;gap:0.5rem;flex-wrap:wrap}
+    .prod-cat li .precio{color:#1f9d55;font-weight:700;white-space:nowrap}
+    .prod-cat li .ingr{color:#999;font-size:0.75rem;width:100%}
+    .pos-card{border:2px solid #25d366;border-radius:10px;padding:0.9rem;margin-bottom:0.7rem;background:linear-gradient(135deg,#f7fdf9,#eafaf0)}
+    .pos-card h4{margin:0 0 0.3rem;color:#075e54;font-size:0.95rem}
+    .pos-card .sub{color:#666;font-size:0.8rem}
+    .bot-line{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap}
+    /* ===== PIE ===== */
+    footer{margin-top:2rem;padding:1rem;text-align:center;color:#888;font-size:0.8rem;border-top:1px solid #e1e8ed}
+    /* ===== RESPONSIVO ===== */
+    @media (max-width: 900px){
+      .conv-layout{grid-template-columns:1fr}
+      .conv-list,.conv-box{max-height:50vh;height:50vh}
+    }
+    @media (max-width: 640px){
+      header{padding:0.9rem 1rem}
+      header h1{font-size:1.15rem}
+      nav{gap:0.4rem}
+      nav button{min-width:calc(50% - 0.4rem);max-width:none;flex:1 1 45%;font-size:0.85rem;padding:0.55rem 0.6rem}
+      .container{padding:1rem 0.75rem}
+      .tot{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem}
+      .tot div{padding:1rem}
+      .agents-grid{grid-template-columns:1fr;gap:0.9rem}
+      .agent-card{padding:1.1rem}
+      .modal{padding:0.5rem}
+      .modal-content{max-height:95vh;padding:1rem}
+      .chat-msg{max-width:92%}
+      .chat-input-area{flex-direction:row}
+      .chat-input-area input{font-size:16px}
+      .tot .valor{font-size:1.15rem}
+    }
+    @media (max-width: 380px){
+      nav button{flex:1 1 100%;min-width:100%}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>{{negocio}}</h1>
+  <nav id="tabNav"></nav>
+  <a href="/panel-empresarial" class="panel-link" title="Panel Empresarial: Contabilidad, Inventario, Config v2, Seguridad">🏢 Panel Empresarial</a>
+</header>
+<div id="estadoBanner" style="display:none;background:#f44336;color:#fff;text-align:center;padding:.6rem 1rem;font-weight:700;font-size:.95rem">⚠️ El bot de WhatsApp está DESCONECTADO. Los pedidos que lleguen NO se registran.</div>
+
+<div class="container">
+  <!-- TAB PEDIDOS -->
+  <div id="tab-pedidos" class="tab-content active">
+    <h2>Pedidos y Ventas</h2>
+    <p class="sub">Resumen de pedidos del día y total histórico de tu negocio.</p>
+    <div class="tot">
+      <div><b>Pedidos hoy</b><span class="valor">{{pedidosHoy}}</span></div>
+      <div><b>Ventas hoy</b><span class="valor">{{moneda}}{{ventasHoy}}</span></div>
+      <div><b>Total histórico</b><span class="valor">{{moneda}}{{ventasTotal}}</span></div>
+      <div><b>Exportar datos</b><a href="/export.csv">⬇ CSV (Excel)</a></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Detalle</th><th>Ubicación / Dirección</th><th>Total</th><th>Teléfono</th><th>Estado</th></tr>
+        {{filasHtml}}
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB CLIENTES -->
+  <div id="tab-clientes" class="tab-content">
+    <h2>Clientes</h2>
+    <p class="sub">Listado de clientes registrados con su historial de pedidos.</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Teléfono</th><th>Nombre</th><th>Total pedidos</th><th>Última compra</th><th>Acciones</th></tr>
+        <tbody id="clientesTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB CONVERSACIONES -->
+  <div id="tab-conversaciones" class="tab-content">
+    <h2>Conversaciones</h2>
+    <p class="sub">Historial de conversaciones con tus clientes.</p>
+    <div class="conv-layout">
+      <div>
+        <h2 style="text-align:center">Hilos de chat</h2>
+        <div id="listaHilos" class="conv-list"></div>
+      </div>
+      <div>
+        <h2 style="text-align:center">Detalle de la conversación</h2>
+        <div id="visorConv" class="conv-box"></div>
+      </div>
+    </div>
+</div>
+
+  <!-- TAB CITAS (segmento salud) -->
+  <div id="tab-citas" class="tab-content">
+    <h2>Citas Agendadas</h2>
+    <p class="sub">Gestiona las citas agendadas por tus pacientes. Solo visible si el segmento del negocio es <b>salud</b>.</p>
+    <div id="citasContent"></div>
+  </div>
+
+  <!-- TAB HISTORIAL CITAS (segmento salud) -->
+  <div id="tab-historial_citas" class="tab-content">
+    <h2>Historial de Citas por Paciente</h2>
+    <p class="sub">Consulta el historial completo de citas de cada paciente.</p>
+    <div id="historialCitasContent"></div>
+  </div>
+
+  <!-- TAB PACIENTES (segmento salud) -->
+  <div id="tab-pacientes" class="tab-content">
+    <h2>Pacientes</h2>
+    <p class="sub">Listado de pacientes registrados con su historial de citas.</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Teléfono</th><th>Nombre</th><th>Total citas</th><th>Última cita</th><th>Acciones</th></tr>
+        <tbody id="pacientesTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB INVENTARIO (segmento retail) -->
+  <div id="tab-inventario" class="tab-content">
+    <h2>Inventario / Stock</h2>
+    <p class="sub">Gestión de stock por producto. Configura stock en Configuración → Domicilios (sección retail).</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Producto</th><th>Stock</th><th>Precio</th><th>Categoría</th><th>Acciones</th></tr>
+        <tbody id="inventarioTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB RECURSOS (segmento belleza) -->
+  <div id="tab-recursos" class="tab-content">
+    <h2>Recursos (Sillas / Camillas / Cabinas)</h2>
+    <p class="sub">Gestión de recursos físicos. Cada cita asigna un recurso. Configura en Configuración → Recursos.</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Recurso</th><th>Tipo</th><th>Profesional asignado</th><th>Estado</th><th>Acciones</th></tr>
+        <tbody id="recursosTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB PROFESIONALES (segmento belleza) -->
+  <div id="tab-profesionales" class="tab-content">
+    <h2>Profesionales / Equipo</h2>
+    <p class="sub">Lista de profesionales con sus especialidades y horarios.</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Nombre</th><th>Especialidad</th><th>Horario</th><th>Recurso fijo</th><th>Activo</th><th>Acciones</th></tr>
+        <tbody id="profesionalesTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB PAQUETES (segmento belleza) -->
+  <div id="tab-paquetes" class="tab-content">
+    <h2>Paquetes y Membresías</h2>
+    <p class="sub">Combos de servicios con precio especial. Se ofrecen al cliente al elegir servicio.</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Nombre</th><th>Servicios incluidos</th><th>Precio</th><th>Duración total (min)</th><th>Activo</th><th>Acciones</th></tr>
+        <tbody id="paquetesTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB ASISTENTES IA (incluye consumo) -->
+  <div id="tab-asistentes" class="tab-content">
+    <h2>Nuestros Asistentes</h2>
+    <p class="sub">Nuestros asistentes especializados están listos para ayudarte. Cada uno se enfoca en un área clave de tu negocio.</p>
+    <div id="asistentesGrid" class="agents-grid"></div>
+    <h2 style="margin-top:2.2rem">Consumo de IA</h2>
+    <p class="sub">Cada sección usa su propia clave de IA. Así el chat de WhatsApp (el que más se usa) nunca satura a los demás asistentes. Aquí ves lo consumido vs lo incluido en tu plan.</p>
+    <div id="consumoGrid" class="agents-grid"></div>
+  </div>
+
+  <!-- TAB CONFIGURACIÓN -->
+  <div id="tab-configuracion" class="tab-content">
+    <h2>Configuración del Sistema</h2>
+    <p class="sub">Resumen de la configuración activa de tu negocio: datos generales, menú, inteligencia artificial, integración con tu punto de venta y facturación electrónica.</p>
+    <div id="configuracionContent"></div>
+  </div>
+</div>
+
+<footer>SOLUCIONA INTELIGENCIA ARTIFICIAL · Sistema multi-negocio</footer>
+
+<!-- MODAL CHAT ASISTENTE -->
+<div id="agentModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalAgentTitle">Asistente</h3>
+      <button onclick="closeModal()" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="menuUploadArea" class="menu-upload"></div>
+    <div id="chatBox" class="chat-box"></div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Escribe tu consulta..." onkeypress="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let allAsistentes = [];
+  let currentAsistente = null;
+  let menuImgBase64 = null;
+
+  // Escape HTML global para evitar inyección/ruptura DOM
+  function escH(v) {
+    return String(v == null ? '' : v).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"').replace(/'/g, "'");
+  }
+
+function switchTab(tab, evt) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    const tabEl = document.getElementById('tab-' + tab);
+    if (tabEl) tabEl.classList.add('active');
+    if (evt && evt.target) evt.target.classList.add('active');
+    if (tab === 'conversaciones') loadConversaciones();
+    if (tab === 'clientes') loadClientes();
+    if (tab === 'asistentes') { loadConsumo(); }
+    if (tab === 'configuracion') loadConfiguracion();
+    if (tab === 'citas') loadCitas();
+    if (tab === 'historial_citas') loadHistorialCitas();
+    if (tab === 'pacientes') loadPacientes();
+    if (tab === 'inventario') loadInventario();
+    if (tab === 'recursos') loadRecursos();
+    if (tab === 'profesionales') loadProfesionales();
+    if (tab === 'paquetes') loadPaquetes();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Configuración de tabs por segmento DIAN
+  const TABS_POR_SEGMENTO = {
+    comidas: [
+      { id: 'pedidos', label: '📦 Pedidos y Ventas', onclick: "switchTab('pedidos', event)" },
+      { id: 'cocina', label: '🍳 Cocina', onclick: "window.open('/cocina','_blank')" },
+      { id: 'clientes', label: '👥 Clientes', onclick: "switchTab('clientes', event)" },
+      { id: 'conversaciones', label: '💬 Conversaciones', onclick: "switchTab('conversaciones', event)" },
+      { id: 'asistentes', label: '🤖 Asistentes IA', onclick: "switchTab('asistentes', event)" },
+      { id: 'configuracion', label: '⚙️ Configuración', onclick: "switchTab('configuracion', event)" }
+    ],
+    salud: [
+      { id: 'citas', label: '📅 Citas', onclick: "switchTab('citas', event)" },
+      { id: 'historial_citas', label: '📋 Historial Citas', onclick: "switchTab('historial_citas', event)" },
+      { id: 'pacientes', label: '👥 Pacientes', onclick: "switchTab('pacientes', event)" },
+      { id: 'conversaciones', label: '💬 Conversaciones', onclick: "switchTab('conversaciones', event)" },
+      { id: 'asistentes', label: '🤖 Asistentes IA', onclick: "switchTab('asistentes', event)" },
+      { id: 'configuracion', label: '⚙️ Configuración', onclick: "switchTab('configuracion', event)" }
+    ],
+    retail: [
+      { id: 'pedidos', label: '📦 Pedidos y Ventas', onclick: "switchTab('pedidos', event)" },
+      { id: 'inventario', label: '📦 Inventario', onclick: "switchTab('inventario', event)" },
+      { id: 'clientes', label: '👥 Clientes', onclick: "switchTab('clientes', event)" },
+      { id: 'conversaciones', label: '💬 Conversaciones', onclick: "switchTab('conversaciones', event)" },
+      { id: 'asistentes', label: '🤖 Asistentes IA', onclick: "switchTab('asistentes', event)" },
+      { id: 'configuracion', label: '⚙️ Configuración', onclick: "switchTab('configuracion', event)" }
+    ],
+    belleza: [
+      { id: 'citas', label: '📅 Citas', onclick: "switchTab('citas', event)" },
+      { id: 'historial_citas', label: '📋 Historial Citas', onclick: "switchTab('historial_citas', event)" },
+      { id: 'clientes', label: '👥 Clientes', onclick: "switchTab('clientes', event)" },
+      { id: 'recursos', label: '🪑 Recursos (Sillas/Camillas)', onclick: "switchTab('recursos', event)" },
+      { id: 'profesionales', label: '👨‍🎨 Profesionales', onclick: "switchTab('profesionales', event)" },
+      { id: 'paquetes', label: '📦 Paquetes', onclick: "switchTab('paquetes', event)" },
+      { id: 'conversaciones', label: '💬 Conversaciones', onclick: "switchTab('conversaciones', event)" },
+      { id: 'asistentes', label: '🤖 Asistentes IA', onclick: "switchTab('asistentes', event)" },
+      { id: 'configuracion', label: '⚙️ Configuración', onclick: "switchTab('configuracion', event)" }
+    ]
+  };
+
+  function renderTabs(segmento) {
+    const nav = document.getElementById('tabNav');
+    const tabs = TABS_POR_SEGMENTO[segmento] || TABS_POR_SEGMENTO.comidas;
+    nav.innerHTML = tabs.map((t, i) => `
+      <button class="tab-btn ${i === 0 ? 'active' : ''}" onclick="${t.onclick}">${t.label}</button>
+    `).join('');
+    // Activar primer tab por defecto
+    const firstTab = tabs[0]?.id;
+    if (firstTab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      const el = document.getElementById('tab-' + firstTab);
+      if (el) el.classList.add('active');
+    }
+  }
+
+  async function loadAsistentes() {
+    try {
+      const res = await fetch('/api/asistentes', { credentials: 'same-origin' });
+      const data = await res.json();
+      allAsistentes = data.asistentes || [];
+      renderAsistentes(allAsistentes);
+    } catch(e) {
+      document.getElementById('asistentesGrid').innerHTML = '<p style="color:#c00;text-align:center">No se pudieron cargar los asistentes.</p>';
+    }
+  }
+
+  function renderAsistentes(asistentes) {
+    const grid = document.getElementById('asistentesGrid');
+    if (!asistentes.length) {
+      grid.innerHTML = '<p style="color:#666;text-align:center">No hay asistentes configurados.</p>';
+      return;
+    }
+    grid.innerHTML = asistentes.map(a => `
+      <div class="agent-card" onclick="openAsistente('${a.id}')">
+        <div>
+          <div class="agent-header">
+            <span class="agent-emoji">${a.emoji || '🤖'}</span>
+            <div class="agent-title">
+              <h3>${a.nombre}</h3>
+              <span>${a.id}</span>
+            </div>
+          </div>
+          <div class="agent-desc">${a.descripcion}</div>
+        </div>
+        <button class="agent-btn">Abrir asistente</button>
+      </div>
+    `).join('');
+  }
+
+  function openAsistente(id) {
+    currentAsistente = allAsistentes.find(a => a.id === id);
+    if (!currentAsistente) return;
+    document.getElementById('modalAgentTitle').innerText = currentAsistente.nombre;
+    const box = document.getElementById('chatBox');
+    box.innerHTML = `<div class="chat-msg agent">¡Hola! Soy ${currentAsistente.nombre} ${currentAsistente.emoji || ''}. ${currentAsistente.descripcion}</div>`;
+
+    const uploadArea = document.getElementById('menuUploadArea');
+    if (currentAsistente.tipo === 'vision') {
+      uploadArea.innerHTML = `<input type="file" id="menuFile" accept="image/*" onchange="handleMenuFile(this)"><button class="btn-aplicar" onclick="enviarImagen()">📷 Extraer menú</button>`;
+    } else {
+      uploadArea.innerHTML = '';
+    }
+    menuImgBase64 = null;
+    document.getElementById('agentModal').classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('agentModal').classList.remove('active');
+    currentAsistente = null;
+    menuImgBase64 = null;
+  }
+
+  function handleMenuFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => { menuImgBase64 = e.target.result; };
+    reader.readAsDataURL(file);
+  }
+
+  async function enviarImagen() {
+    if (!currentAsistente || currentAsistente.tipo !== 'vision') return;
+    if (!menuImgBase64) {
+      document.getElementById('chatBox').innerHTML += `<div class="chat-msg agent" style="color:#c00">Primero sube una foto del menú (botón "Elegir archivo").</div>`;
+      return;
+    }
+    await preguntarAsistenteConfig(menuImgBase64);
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    const box = document.getElementById('chatBox');
+    if (!msg || !currentAsistente) return;
+
+    if (currentAsistente.tipo === 'vision' && menuImgBase64) {
+      await preguntarAsistenteConfig(menuImgBase64);
+      return;
+    }
+
+    box.innerHTML += `<div class="chat-msg user">${msg}</div>`;
+    input.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    const loadingId = 'load-' + Date.now();
+    box.innerHTML += `<div id="${loadingId}" class="chat-msg agent">Pensando...</div>`;
+    box.scrollTop = box.scrollHeight;
+
+    try {
+      const res = await fetch('/api/asistente-chat', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ asistenteId: currentAsistente.id, message: msg })
+      });
+      const data = await res.json();
+      document.getElementById(loadingId).remove();
+      if (data.error) { box.innerHTML += `<div class="chat-msg agent" style="color:red">${data.error}</div>`; return; }
+      box.innerHTML += `<div class="chat-msg agent">${(data.reply || '').replace(/</g,'&lt;').replace(/\n/g, '<br>')}</div>`;
+    } catch(e) {
+      document.getElementById(loadingId).remove();
+      box.innerHTML += `<div class="chat-msg agent" style="color:red">Error de conexión con el asistente.</div>`;
+    }
+    box.scrollTop = box.scrollHeight;
+  }
+
+  async function preguntarAsistenteConfig(imgBase64) {
+    const box = document.getElementById('chatBox');
+    const loadingId = 'load-' + Date.now();
+    box.innerHTML += `<div id="${loadingId}" class="chat-msg agent">📷 Leyendo la imagen del menú...</div>`;
+    box.scrollTop = box.scrollHeight;
+    try {
+      const res = await fetch('/api/asistente-chat', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ asistenteId: currentAsistente.id, message: 'extrae el menú', image: imgBase64 })
+      });
+      const data = await res.json();
+      document.getElementById(loadingId).remove();
+      if (data.propuesta && data.propuesta.length) {
+        box.innerHTML += `<div class="chat-msg agent">${(data.reply || 'Encontré los platos.').replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>`;
+        const lista = document.createElement('div');
+        lista.style.margin = '0.5rem 0';
+        data.propuesta.forEach(p => {
+          const div = document.createElement('div');
+          div.className = 'propuesta-item';
+          div.innerHTML = `<b>${(p.nombre||'').replace(/</g,'&lt;')}</b> — $${p.precio || 0}${p.ingredientes ? '<br><span style="color:#666">' + p.ingredientes.replace(/</g,'&lt;') + '</span>' : ''}`;
+          lista.appendChild(div);
+        });
+        box.appendChild(lista);
+        const btn = document.createElement('button');
+        btn.className = 'btn-aplicar';
+        btn.textContent = 'âœ“ Aplicar al menú';
+        btn.onclick = () => aplicarPropuesta(data.propuesta);
+        box.appendChild(btn);
+      } else {
+        box.innerHTML += `<div class="chat-msg agent">${(data.reply || 'No detecté platos en la imagen.').replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>`;
+      }
+      menuImgBase64 = null;
+    } catch(e) {
+      document.getElementById(loadingId).remove();
+      box.innerHTML += `<div class="chat-msg agent" style="color:red">Error leyendo la imagen: ${e.message}</div>`;
+    }
+    box.scrollTop = box.scrollHeight;
+  }
+
+  async function aplicarPropuesta(productos) {
+    try {
+      const r = await fetch('/api/menu-aplicar', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productos })
+      });
+      const data = await r.json();
+      const box = document.getElementById('chatBox');
+      box.innerHTML += `<div class="chat-msg agent">âœ… Menú actualizado: ${data.actualizados || 0} productos actualizados y ${data.nuevos || 0} nuevos.</div>`;
+      box.scrollTop = box.scrollHeight;
+    } catch(e) {
+      document.getElementById('chatBox').innerHTML += `<div class="chat-msg agent" style="color:red">Error aplicando menú: ${e.message}</div>`;
+    }
+  }
+
+  async function cambiarEstado(id, estado) {
+    try {
+      await fetch('/api/pedido/' + id + '/estado', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado })
+      });
+    } catch (e) {}
+    location.reload();
+  }
+
+async function loadConversaciones() {
+    try {
+      const res = await fetch('/api/conversaciones', { credentials: 'same-origin' });
+      const hilos = await res.json();
+      const box = document.getElementById('listaHilos');
+      if (!hilos.length) { box.innerHTML = '<p style="padding:1rem;color:#666;text-align:center">Sin conversaciones aún.</p>'; return; }
+      box.innerHTML = hilos.map(h => `
+        <div class="conv-item" onclick="verConv('${h.telefono}')">
+          <div class="nom">${h.remitente || 'Cliente'}</div>
+          <div class="det">📞 ${fmtTel(h.telefono)} · ${h.total} msgs</div>
+        </div>`).join('');
+    } catch (e) { console.error(e); }
+  }
+
+async function verConv(tel) {
+    const res = await fetch('/api/conversacion?tel=' + encodeURIComponent(tel), { credentials: 'same-origin' });
+    const msgs = await res.json();
+    const box = document.getElementById('visorConv');
+    box.innerHTML = msgs.map(m => `
+      <div class="chat-msg ${m.rol === 'bot' ? 'agent' : 'user'}">
+        <div style="font-size:0.7rem;opacity:0.6">${m.fecha}</div>${m.texto.replace(/</g,'<')}
+      </div>`).join('') || '<p style="color:#666;text-align:center">Sin mensajes.</p>';
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function verChat(tel) {
+    switchTab('conversaciones', { target: document.querySelector('.tab-btn:nth-child(3)') });
+    setTimeout(() => verConv(tel), 100);
+  }
+
+
+function fmtTel(t) {
+    if (!t) return '-';
+    const digits = String(t).replace(/\D/g, '');
+    // Placeholder del dueño en config.json
+    if (digits === '573000000000') return '<span style="color:#888">(número dueño no configurado)</span>';
+    // Numero real: 10-13 digitos con codigo de pais (ej 57 para Colombia).
+    // LID de WhatsApp (15 digitos): aun sin mapear, pero se muestra el numero
+    // tal cual y se resuelve automaticamente al llegar el sender_pn del paquete.
+    if (digits.length > 13) {
+      return '<span title="Número temporal de WhatsApp (LID). Se reemplaza automáticamente por el número real del cliente cuando el sistema recibe el número del paquete." style="color:#c77700">' + digits + ' ⏳</span>';
+    }
+    // Formato basico: +CC XXX XXX XXXX (asumiendo 57 Colombia si empieza con 57)
+    if (digits.length === 12 && digits.startsWith('57')) {
+      return '+' + digits.substring(0,2) + ' ' + digits.substring(2,5) + ' ' + digits.substring(5,8) + ' ' + digits.substring(8);
+    }
+    return digits;
+  }
+  async function loadClientes() {
+    try {
+      const res = await fetch('/api/clientes', { credentials: 'same-origin' });
+      const clientes = await res.json();
+      const tbody = document.getElementById('clientesTableBody');
+      if (!clientes.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#666;padding:2rem">Sin clientes registrados aún.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = clientes.map(c => `
+        <tr>
+          <td>${fmtTel(c.telefono)}</td>
+          <td>${c.nombre || '-'}</td>
+          <td>${c.total_pedidos || 0}</td>
+          <td>${c.ultima_compra ? new Date(c.ultima_compra).toLocaleString('es-CO') : '-'}</td>
+          <td><button onclick="verChat('${c.telefono}')" style="background:#075e54;color:#fff;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer">Ver chat</button></td>
+        </tr>
+      `).join('');
+} catch (e) { console.error(e); }
+  }
+
+  async function loadConsumo() {
+    try {
+      const res = await fetch('/api/consumo', { credentials: 'same-origin' });
+      const data = await res.json();
+      const nombres = { chatbot: '🤝 Chat WhatsApp (toma pedidos)', asistentes: '🤖 Asistentes IA', vision: '📸 Visión (foto de menú)' };
+      const grid = document.getElementById('consumoGrid');
+      grid.innerHTML = data.roles.map(r => {
+        const usados = r.mes;
+        const max = r.limite_mensual > 0 ? r.limite_mensual : (r.limite_diario > 0 ? r.limite_diario : 0);
+        const pct = max > 0 ? Math.min(100, Math.round(usados / max * 100)) : 0;
+        const color = r.cortado ? '#f44336' : pct > 80 ? '#ff9800' : '#4caf50';
+        const barra = max > 0 ? `<div style="background:#eee;border-radius:6px;height:14px;margin:.5rem 0"><div style="background:${color};height:14px;border-radius:6px;width:${pct}%"></div></div>` : '<p style="margin:.3rem 0;color:#888">Sin límite definido en el plan</p>';
+        return `<div class="agent-card" style="border-left:4px solid ${color}">
+          <div><b>${nombres[r.rol] || r.rol}</b> <span style="font-size:.72rem;color:#888">· ${r.proveedor}</span></div>
+          <div style="font-size:.78rem;color:#555;margin:.2rem 0">Modelo: ${r.modelo}</div>
+          ${barra}
+          <div style="font-size:.8rem"><b>${usados}</b> consultas en el mes${r.limite_mensual > 0 ? ` de ${r.limite_mensual}` : ''} · <b>${r.hoy}</b> hoy${r.limite_diario > 0 ? ` de ${r.limite_diario}` : ''}</div>
+          <div style="font-size:.72rem;color:#888">${r.tokensMes.toLocaleString('es-CO')} tokens en el mes</div>
+          ${r.cortado ? `<div style="color:#f44336;font-weight:700;margin-top:.3rem">⚠️ Cuota agotada (${r.cortado})</div>` : ''}
+          ${!r.tieneKey ? `<div style="color:#ff9800;font-size:.75rem;margin-top:.3rem">Sin clave API configurada — usaría el fallback gratuito</div>` : ''}
+        </div>`;
+      }).join('');
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadIAPool() {
+    const cont = document.getElementById('ia-pool-grid');
+    if (!cont) return;
+    try {
+      const res = await fetch('/api/ia-pool', { credentials: 'same-origin' });
+      const data = await res.json();
+      const prov = data.pool.proveedores;
+      const emojis = { gemini: '🟢', openai: '🔵', groq: '🟣', nvidia: '🟢', qwen: '🔴', deepseek: '🤖' };
+      cont.innerHTML = Object.entries(prov).map(([nombre, p]) => {
+        const claves = p.claves.map((c, i) => `
+          <div style="display:flex;gap:.4rem;align-items:center;margin:.25rem 0">
+            <span class="badge ${c.real ? (c.suspendida ? 'warn' : 'ok') : 'off'}" style="min-width:74px">${c.real ? 'activa' : 'vacía'}</span>
+            <input class="cfg-input" style="flex:1" data-pool="${nombre}" data-key-idx="${i}" placeholder="API key ${i + 1}${c.real ? ' (' + c.corta + ')' : ''}" ${c.real ? `value="••••${c.corta.slice(0, -1)}"` : ''}>
+          </div>`).join('');
+        return `<div style="border:1px solid #e0e0e0;border-radius:8px;padding:.6rem;margin:.5rem 0">
+          <div style="font-weight:700">${emojis[nombre] || '•'} ${nombre.toUpperCase()}</div>
+          <div class="sub" style="margin:.2rem 0">Modelos: ${(p.modelos || []).join(', ') || '—'}</div>
+          ${claves || '<div class="sub">Sin claves</div>'}
+          <button class="btn-guardar" style="margin-top:.4rem" onclick="guardarIAPool('${nombre}')">💾 Guardar ${nombre}</button>
+          <span id="msg-iapool-${nombre}" class="guardar-msg"></span>
+        </div>`;
+      }).join('');
+    } catch (e) {
+      cont.innerHTML = '<div class="sub" style="color:#f44336">Error cargando el pool: ' + escH(e.message) + '</div>';
+    }
+  }
+
+  async function guardarIAPool(nombre) {
+    const cont = document.getElementById('ia-pool-grid');
+    const inputs = cont.querySelectorAll(`[data-pool="${nombre}"]`);
+    const claves = [];
+    inputs.forEach(inp => {
+      const v = inp.value.trim();
+      claves.push(/^••••/.test(v) || v === '' ? '' : v);
+    });
+    try {
+      const res = await fetch('/api/ia-pool', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [nombre]: { claves } })
+      });
+      const data = await res.json();
+      const msg = document.getElementById('msg-iapool-' + nombre);
+      if (msg) {
+        msg.textContent = data.ok ? '✓ Guardado' : '✗ ' + (data.error || 'Error');
+        msg.className = 'guardar-msg ' + (data.ok ? 'ok' : 'err');
+      }
+      if (data.ok) loadIAPool();
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadConfiguracion() {
+    const cont = document.getElementById('configuracionContent');
+    cont.innerHTML = '<p style="color:#888">Cargando configuración…</p>';
+    try {
+      const res = await fetch('/api/configuracion', { credentials: 'same-origin' });
+      const d = await res.json();
+
+      const badge = (estado) =>
+        estado === 'configurado' || estado === true ? '<span class="badge ok">Configurado</span>'
+        : estado === 'incompleto' || estado === false ? '<span class="badge warn">Incompleto</span>'
+        : '<span class="badge off">Sin configurar</span>';
+
+      const item = (label, val, cls) => `<div class="cfg-item"><b>${label}</b><div class="val ${cls || ''}">${val}</div></div>`;
+      const seccion = (titulo, desc, gridHtml) => `
+        <div class="cfg-section">
+          <h3>${titulo}</h3>
+          <div class="cfg-desc">${desc}</div>
+          <div class="cfg-grid">${gridHtml}</div>
+        </div>`;
+
+      const msg = (id, texto, ok) => `<div id="${id}" class="guardar-msg ${ok ? 'ok' : 'err'}">${texto}</div>`;
+
+      const escH = (v) => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+      let html = '';
+
+      // ----- Negocio -----
+      html += seccion('🏪 Negocio', 'Datos generales del punto de venta y del panel. Puedes editarlos y guardarlos.', `
+        ${item('Nombre del negocio', `<input class="cfg-input" id="cfg-negocio" value="${escH(d.negocio.nombre)}" placeholder="Nombre del negocio (se configura con IA)">`)}
+        ${item('Moneda', `<input class="cfg-input" id="cfg-moneda" value="${escH(d.negocio.moneda)}">`)}
+        ${item('Hora de reporte diario', `<input class="cfg-input" id="cfg-hora" value="${escH(d.negocio.hora_reporte)}">`)}
+        ${item('Número del dueño (WhatsApp)', `<input class="cfg-input" id="cfg-dueno" value="${escH(d.negocio.numero_dueno)}">`)}
+        ${item('Cliente ID', d.negocio.clienteId)}
+        ${item('Puerto del servidor', d.negocio.puerto)}
+        ${item('Panel protegido con contraseña', badge(d.negocio.panel_protegido))}
+        ${item('Carpeta de datos', `<span class="sub">${d.negocio.dataDir}</span>`)}
+        <div class="cfg-item" style="grid-column:1/-1">
+          <button class="btn-guardar" onclick="guardarConfig({negocio:cfg('cfg-negocio'),moneda:cfg('cfg-moneda'),hora_reporte:cfg('cfg-hora'),numero_dueno:cfg('cfg-dueno')},'msg-negocio')">💾 Guardar negocio</button>
+          ${msg('msg-negocio', '')}
+        </div>
+      `);
+
+      // ----- Domicilios / tarifas por distancia -----
+      const dom = d.domicilios || {};
+      const faixas = dom.faixas || [];
+      const faixaRows = faixas.map((f, i) => `
+        <div class="dom-faixa" data-i="${i}">
+          <input class="cfg-input" style="width:70px" data-faixa="hasta_km" value="${f.hasta_km}">
+          <select class="cfg-select" data-faixa="tipo">
+            <option value="gratis" ${f.tipo === 'gratis' ? 'selected' : ''}>Gratis</option>
+            <option value="fijo" ${f.tipo === 'fijo' ? 'selected' : ''}>Valor fijo</option>
+            <option value="por_km" ${f.tipo === 'por_km' ? 'selected' : ''}>Por km</option>
+          </select>
+          <input class="cfg-input" style="width:90px" data-faixa="valor" value="${f.valor}">
+          <input class="cfg-input" style="width:90px" data-faixa="minimo" value="${f.minimo || ''}" placeholder="mín">
+          <input class="cfg-input" style="width:90px" data-faixa="pedido_minimo" value="${f.pedido_minimo || ''}" placeholder="mín pedido">
+        </div>`).join('');
+      html += seccion('🛵 Domicilios (tarifas por distancia)', 'Configura el costo del envío según la distancia entre tu local y el cliente. El bot pide la ubicación por GPS y calcula el valor automáticamente con las faixas de kilómetros (en orden ascendente).', `
+        ${item('Ubicación del local (GPS)', `
+          <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">
+            <input class="cfg-input" id="cfg-dom-lat" style="width:110px" placeholder="lat" value="${d.ubicacion_negocio ? d.ubicacion_negocio.lat : ''}">
+            <input class="cfg-input" id="cfg-dom-lng" style="width:110px" placeholder="lng" value="${d.ubicacion_negocio ? d.ubicacion_negocio.lng : ''}">
+            <button class="btn-guardar" onclick="guardarDomicilios('ubicacion')">💾 Guardar GPS</button>
+            ${msg('msg-dom-ubicacion', '')}
+          </div>
+          <div class="sub" style="margin-top:.4rem">${d.ubicacion_negocio && d.ubicacion_negocio.configurada ? '✓ GPS del local configurado' : '⚠️ Sin GPS del local: el domicilio no se puede cotizar. Encuentra tus coordenadas en Google Maps (clic derecho → copiar).'}</div>`)}
+        ${item('Radio máximo de entrega (km)', `<input class="cfg-input" id="cfg-dom-radio" type="number" min="0" value="${dom.radio_max_entrega_km || 0}">`)}
+        ${item('Envío gratis si el total supera ($)', `<input class="cfg-input" id="cfg-dom-gratis" type="number" min="0" value="${dom.gratis_si_total_sobre || 0}">`)}
+        ${item('Faixas (hasta km · tipo · valor · mín · mín pedido)', `<div class="dom-faixas">${faixaRows || '<div class="sub">Sin faixas configuradas.</div>'}</div>`)}
+        <div class="cfg-item" style="grid-column:1/-1">
+          <button class="btn-guardar" onclick="guardarDomicilios('faixas')">💾 Guardar tarifas</button>
+          <button class="btn-guardar" style="background:#075e54" onclick="agregarFaixa()">➕ Añadir faixa</button>
+          ${msg('msg-dom-faixas', '')}
+          <div class="sub" style="margin-top:.5rem">Ejemplo: "hasta 3 km → gratis", "hasta 8 km → $5.000", "hasta 15 km → $800/km (mín $5.000)". Si el cliente está fuera del radio máximo, se le avisa amablemente.</div>
+        </div>
+      `);
+
+      // ----- Menú: color + categorías + productos -----
+      const swatches = ['#1f9d55','#075e54','#e91e63','#f44336','#ff9800','#2196f3','#9c27b0','#795548','#607d8b','#000000'].map(c =>
+        `<div class="swatch ${c === d.menu.color ? 'sel' : ''}" data-color="${c}" style="background:${c}" onclick="elegirColor('${c}')"></div>`).join('');
+      const chipsCat = (d.menu.categorias_limpias || []).map(c => `<span class="chip">${c}</span>`).join('') || '<span class="sub">—</span>';
+
+      const buscar = (p, q) => {
+        const t = q.toLowerCase();
+        return (p.nombre || '').toLowerCase().includes(t) ||
+          (p.ingredientes || '').toLowerCase().includes(t) ||
+          (p.alias || []).some(a => a.toLowerCase().includes(t));
+      };
+      const renderProductos = (q) => {
+        const query = (q || '').trim();
+        const cats = d.menu.productos_por_categoria || [];
+        const html = cats.map(cat => {
+          const lista = cat.productos.filter(p => !query || buscar(p, query));
+          if (!lista.length) return '';
+          return `<div class="prod-cat"><b>${escH(cat.categoria)} <span style="color:#888;font-weight:400">(${lista.length})</span></b><ul>${lista.map(p => `
+            <li><span>${escH(p.nombre)}</span><span class="precio">${d.negocio.moneda}${p.precio.toLocaleString('es-CO')}</span>
+              ${p.ingredientes ? `<span class="ingr">${escH(p.ingredientes)}</span>` : ''}</li>`).join('')}</ul></div>`;
+        }).join('') || '<p style="color:#888;font-size:.85rem;padding:.5rem 0">Sin resultados.</p>';
+        document.getElementById('prod-lista').innerHTML = html;
+      };
+
+      html += seccion('🍔 Menú', 'Color de marca del menú web, categorías y catálogo de productos. El color se aplica en caliente al menú que ve el cliente.', `
+        ${item('Total de productos', `${d.menu.total_productos} productos`)}
+        ${item('Color del menú web', `
+          <div class="color-picker-row">
+            <input type="color" id="cfg-color" value="${d.menu.color}" onchange="elegirColor(this.value)">
+            <span style="font-weight:600;font-variant-numeric:tabular-nums">${d.menu.color}</span>
+          </div>
+          <div class="swatches" style="margin-top:.5rem">${swatches}</div>
+          <button class="btn-guardar" style="margin-top:.6rem" onclick="guardarConfig({menu:{color:cfgColor()}},'msg-color')">💾 Guardar color</button>
+          ${msg('msg-color', '')}`)}
+        ${item('Imágenes de productos', badge(d.menu.tiene_imagenes))}
+        ${d.menu.url ? item('URL del menú', `<input class="cfg-input" id="cfg-menu-url" value="${escH(d.menu.url)}"><button class="btn-guardar" style="margin-top:.5rem" onclick="guardarConfig({menu:{url:cfg('cfg-menu-url')}},'msg-menu-url')">💾 Guardar URL</button>${msg('msg-menu-url','')}`) : ''}
+        <div class="cfg-item" style="grid-column:1/-1"><b>Categorías</b>
+          <div class="chips" style="margin-top:.4rem">${chipsCat}</div>
+        </div>
+        <div class="cfg-item" style="grid-column:1/-1"><b>Productos del menú</b>
+          <input class="cfg-input" id="cfg-prod-buscar" placeholder="🔍 Buscar producto por nombre, ingrediente o alias…" oninput="renderProductos(this.value)" style="margin:.4rem 0">
+          <div id="prod-lista" style="max-height:340px;overflow-y:auto;padding-right:.3rem"></div>
+        </div>
+      `);
+
+      // ----- IA -----
+      const iaKey = (r) => {
+        let rango = 'Sin límite';
+        if (r.limite_mensual > 0) rango = `${r.limite_mensual}/mes`;
+        else if (r.limite_diario > 0) rango = `${r.limite_diario}/día`;
+        return `<span class="sub">Límite: ${rango}</span>`;
+      };
+      html += seccion('🤖 Inteligencia Artificial', 'Cada sección usa su propia clave. Aquí se muestra el proveedor y si la clave está cargada (nunca se muestra la clave).', `
+        ${item('Chatbot WhatsApp · Proveedor', d.ia.chatbot.proveedor)}
+        ${item('Chatbot · Modelo', d.ia.chatbot.modelo)}
+        ${item('Chatbot · Clave API', badge(d.ia.chatbot.tiene_key))}
+        ${item('Chatbot · Cuota', iaKey(d.ia.chatbot))}
+        ${item('Asistentes IA · Modelo', d.ia.asistentes.modelo)}
+        ${item('Asistentes · Clave API', badge(d.ia.asistentes.tiene_key))}
+        ${item('Asistentes · Cuota', iaKey(d.ia.asistentes))}
+        ${item('Visión (foto de menú) · Modelo', d.ia.vision.modelo)}
+        ${item('Visión · Clave API', badge(d.ia.vision.tiene_key))}
+        ${item('Visión · Cuota', iaKey(d.ia.vision))}
+        ${item('Gemini · Modelo', d.ia.gemini.modelo)}
+        ${item('Gemini · Clave API', badge(d.ia.gemini.tiene_key))}
+        <div class="cfg-item" style="grid-column:1/-1"><b>Pool de claves IA (rotación automática)</b>
+          <div class="sub" style="margin:.3rem 0">Si un proveedor falla o se agota (401/403/429), el sistema rota a otra clave del mismo proveedor y luego a otro proveedor del pool.</div>
+          <div id="ia-pool-grid" style="margin-top:.5rem">Cargando…</div>
+        </div>
+      `);
+
+      // ----- POS propio + Integración -----
+      const posActivo = d.integracion.tipo_activo === 'pos-propio';
+      html += seccion('🖥️ Nuestro Punto de Venta (POS)', 'Tu POS integrado recibe cada pedido confirmado y lo muestra en el panel y en la pantalla de cocina, sin software externo.', `
+        <div class="cfg-item" style="grid-column:1/-1">
+          <div class="pos-card">
+            <h4>🛒 POS Soluciona — Integrado</h4>
+            <div class="sub">Registro automático de pedidos en el panel · Pantalla de cocina (KDS) · Estados en tiempo real · Exportar CSV</div>
+            <div style="margin-top:.6rem;display:flex;gap:.5rem;flex-wrap:wrap">
+              <button class="btn-guardar" onclick="window.open('/cocina','_blank')">🍳 Abrir Cocina</button>
+              <button class="btn-guardar" style="background:#075e54" onclick="window.open('/','_self')">📋 Ver Pedidos</button>
+            </div>
+            ${posActivo ? '<div style="margin-top:.5rem"><span class="badge ok">Activo y configurado</span></div>' : ''}
+          </div>
+        </div>
+        ${item('Tipo activo', posActivo ? 'POS Soluciona (integrado)' : d.integracion.tipo_activo)}
+      `);
+
+      const adaptRows = d.integracion.adaptadores.map(a => {
+        if (a.tipo === 'pos-propio') return '';
+        const estado =
+          a.estado === 'configurado' ? '<span class="badge ok">Configurado</span>'
+          : a.estado === 'incompleto' ? `<span class="badge warn">Incompleto (falta: ${a.faltantes.join(', ')})</span>`
+          : '<span class="badge off">Disponible</span>';
+        const activo = a.activo ? ' <span class="badge info">Activo</span>' : '';
+        return `<tr><td>${a.tipo}${activo}</td><td>${estado}</td></tr>`;
+      }).join('');
+      html += seccion('🔌 Integración con POS externos (opcional)', '¿Quieres reenviar cada pedido a otro facturador? Actívalo configurando uno de estos adaptadores. Por defecto todo queda en tu POS integrado.', `
+        <div class="cfg-item" style="grid-column:1/-1"><b>Adaptadores externos</b>
+          <div style="overflow-x:auto">
+            <table class="tabla" style="min-width:340px">
+              <tr><th>Adaptador</th><th>Estado</th></tr>
+              ${adaptRows || '<tr><td colspan="2" style="color:#888">Sin adaptadores externos</td></tr>'}
+            </table>
+          </div>
+        </div>
+      `);
+
+      // ----- Facturación -----
+      const fc = d.facturacion;
+      const provOpts = ['', 'pos-propio', 'alegra', 'siigo', 'factus', 'alanube', 'opendata', 'dian-gratuito'].map(p =>
+        `<option value="${p}" ${fc.proveedor === p ? 'selected' : ''}>${p || '— Sin proveedor —'}</option>`).join('');
+      html += seccion('🧾 Facturación Electrónica (DIAN)', 'Emisión de facturas desde cada pedido confirmado. Configura el envío por correo y los parámetros de emisión.', `
+        ${item('Proveedor', `<select class="cfg-select" id="cfg-fc-prov">${provOpts}</select>`)}
+        ${item('Emisión automática', `
+          <select class="cfg-select" id="cfg-fc-auto">
+            <option value="true" ${fc.emision_automatica ? 'selected' : ''}>Sí, al confirmar el pago</option>
+            <option value="false" ${!fc.emision_automatica ? 'selected' : ''}>No, solo manual</option>
+          </select>`)}
+        ${item('Estado que dispara la factura', `
+          <select class="cfg-select" id="cfg-fc-estado">
+            <option value="pagado" ${fc.estado_dispara === 'pagado' ? 'selected' : ''}>Pagado</option>
+            <option value="entregado" ${fc.estado_dispara === 'entregado' ? 'selected' : ''}>Entregado</option>
+            <option value="listo" ${fc.estado_dispara === 'listo' ? 'selected' : ''}>Listo</option>
+          </select>`)}
+        ${item('Enviar factura al correo del cliente', `
+          <select class="cfg-select" id="cfg-fc-mail">
+            <option value="true" ${fc.enviar_mail ? 'selected' : ''}>Sí, enviar por correo</option>
+            <option value="false" ${!fc.enviar_mail ? 'selected' : ''}>No</option>
+          </select>`)}
+        ${item('Correo del negocio (remitente)', `<input class="cfg-input" id="cfg-fc-email" type="email" placeholder="factura@tunegocio.com" value="${escH(fc.email_remitente)}">`)}
+        ${item('Correo del cliente (por defecto)', `<input class="cfg-input" id="cfg-fc-cliente" type="email" placeholder="cliente@correo.com" value="${escH(fc.email_cliente)}">`)}
+        <div class="cfg-item" style="grid-column:1/-1">
+          <button class="btn-guardar" onclick="guardarFacturacion()">💾 Guardar facturación</button>
+          ${msg('msg-facturacion', '')}
+          <div class="sub" style="margin-top:.5rem">Parámetros legales (NIT, resolución, ambiente DIAN, certificado) se configuran en el middleware de facturación. Más información en ESTADO_PROYECTO.md.</div>
+        </div>
+      `);
+
+      // ----- Bot WhatsApp -----
+      const bot = d.bot;
+      html += seccion('💬 Bot WhatsApp', 'Estado de conexión y datos del WhatsApp vinculado al negocio.', `
+        ${item('Conexión', bot.conectado ? '<span class="badge ok">Conectado</span>' : '<span class="badge err">Desconectado</span>')}
+        ${item('Número del WhatsApp (QR)', bot.numero_formateado || '<span class="badge warn">Solo visible al conectar</span>')}
+        ${item('Nombre del WhatsApp', bot.nombre ? `<span class="val">${bot.nombre}</span>` : '<span class="badge warn">Por definir</span>')}
+        ${item('Último cambio', bot.ultimoCambio ? new Date(bot.ultimoCambio).toLocaleString('es-CO') : '—')}
+      `);
+
+      cont.innerHTML = html;
+      window.renderProductosGlobal = renderProductos;
+      renderProductos('');
+      loadIAPool();
+    } catch (e) {
+      console.error(e);
+      cont.innerHTML = '<p style="color:#c00">No se pudo cargar la configuración.</p>';
+    }
+  }
+
+  // Helpers de formulario de configuración
+  function cfg(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+  function cfgColor() {
+    const el = document.getElementById('cfg-color');
+    return el ? el.value : '';
+  }
+  function elegirColor(c) {
+    const el = document.getElementById('cfg-color');
+    if (el) el.value = c;
+    document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('sel', s.getAttribute('data-color') === c));
+  }
+  function renderProductos(q) {
+    window.renderProductosGlobal && window.renderProductosGlobal(q);
+  }
+  async function guardarConfig(campos, msgId) {
+    const el = document.getElementById(msgId);
+    if (el) el.innerHTML = 'Guardando…';
+    try {
+      const res = await fetch('/api/configuracion', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(campos)
+      });
+      const data = await res.json();
+      if (data.ok && data.actualizados && data.actualizados.length) {
+        if (el) el.className = 'guardar-msg ok';
+        if (el) el.innerHTML = '✅ Guardado: ' + data.actualizados.join(', ');
+      } else if (data.ok) {
+        if (el) el.innerHTML = 'No hubo cambios que guardar.';
+      } else {
+        if (el) el.className = 'guardar-msg err';
+        if (el) el.innerHTML = '❌ ' + (data.error || 'Error al guardar');
+      }
+    } catch (e) {
+      if (el) el.className = 'guardar-msg err';
+      if (el) el.innerHTML = '❌ Error de conexión';
+    }
+  }
+  async function guardarFacturacion() {
+    await guardarConfig({
+      facturacion: {
+        proveedor: cfg('cfg-fc-prov'),
+        emision_automatica: cfg('cfg-fc-auto') === 'true',
+        estado_dispara: cfg('cfg-fc-estado'),
+        enviar_mail: cfg('cfg-fc-mail') === 'true',
+        email_remitente: cfg('cfg-fc-email'),
+        email_cliente: cfg('cfg-fc-cliente')
+      }
+    }, 'msg-facturacion');
+  }
+  async function guardarDomicilios(tipo) {
+    if (tipo === 'ubicacion') {
+      await guardarConfig({
+        ubicacion_negocio: { lat: cfg('cfg-dom-lat'), lng: cfg('cfg-dom-lng') }
+      }, 'msg-dom-ubicacion');
+      return;
+    }
+    const faixas = Array.from(document.querySelectorAll('.dom-faixa')).map(row => {
+      const get = (k) => row.querySelector(`[data-faixa="${k}"]`).value;
+      return {
+        hasta_km: get('hasta_km'),
+        tipo: get('tipo'),
+        valor: get('valor'),
+        minimo: get('minimo') || undefined,
+        pedido_minimo: get('pedido_minimo') || undefined
+      };
+    }).filter(f => f.hasta_km !== '');
+    await guardarConfig({
+      domicilios: {
+        faixas,
+        radio_max_entrega_km: cfg('cfg-dom-radio'),
+        gratis_si_total_sobre: cfg('cfg-dom-gratis')
+      }
+    }, 'msg-dom-faixas');
+  }
+  function agregarFaixa() {
+    const cont = document.querySelector('.dom-faixas');
+    const vacio = cont.querySelector('.sub');
+    if (vacio) vacio.remove();
+    const row = document.createElement('div');
+    row.className = 'dom-faixa';
+    row.innerHTML = `
+      <input class="cfg-input" style="width:70px" data-faixa="hasta_km" placeholder="km">
+      <select class="cfg-select" data-faixa="tipo">
+        <option value="gratis">Gratis</option>
+        <option value="fijo">Valor fijo</option>
+        <option value="por_km">Por km</option>
+      </select>
+      <input class="cfg-input" style="width:90px" data-faixa="valor" placeholder="valor">
+      <input class="cfg-input" style="width:90px" data-faixa="minimo" placeholder="mín">
+      <input class="cfg-input" style="width:90px" data-faixa="pedido_minimo" placeholder="mín pedido">
+      <button class="btn-guardar" onclick="this.closest('.dom-faixa').remove()">🗑️</button>`;
+    cont.appendChild(row);
+  }
+
+  async function loadCitas() {
+    const cont = document.getElementById('citasContent');
+    cont.innerHTML = '<p style="color:#888">Cargando citas…</p>';
+    try {
+      const res = await fetch('/api/citas', { credentials: 'same-origin' });
+      const citas = await res.json();
+      if (!citas.length) {
+        cont.innerHTML = '<p style="text-align:center;color:#666">No hay citas registradas.</p>';
+        return;
+      }
+      const estadoBadge = (e) => {
+        const c = { reservada: '#25D366', confirmada: '#2196f3', cancelada: '#f44336', completada: '#607d8b' }[e] || '#888';
+        return `<span style="background:${c};color:#fff;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700">${e}</span>`;
+      };
+      cont.innerHTML = citas.map(c => `
+        <div class="cfg-item" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
+            <b>#${c.id}</b> ${c.fecha} ${c.hora} <span class="sub">| ${c.servicio}</span><br>
+            <span class="sub">${c.paciente} · ${c.profesional}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+            ${estadoBadge(c.estado)}
+            ${c.estado === 'reservada' || c.estado === 'confirmada'
+              ? `<button class="btn-guardar" onclick="cambiarEstadoCita(${c.id},'cancelada')" style="background:#f44336">Cancelar</button>`
+              : ''}
+          </div>
+        </div>
+      `).join('');
+    } catch(e) {
+      cont.innerHTML = '<p style="color:#c00;text-align:center">Error cargando citas.</p>';
+    }
+  }
+
+async function cambiarEstadoCita(id, estado) {
+    try {
+      await fetch('/api/citas', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, estado })
+      });
+      loadCitas();
+    } catch(e) {}
+  }
+
+  async function loadHistorialCitas() {
+    const cont = document.getElementById('historialCitasContent');
+    cont.innerHTML = '<p style="color:#888">Cargando historial…</p>';
+    try {
+      const res = await fetch('/api/citas', { credentials: 'same-origin' });
+      const citas = await res.json();
+      if (!citas.length) {
+        cont.innerHTML = '<p style="text-align:center;color:#666">No hay citas registradas.</p>';
+        return;
+      }
+      // Agrupar por paciente
+      const porPaciente = {};
+      for (const c of citas) {
+        const key = c.paciente + '|' + c.telefono;
+        if (!porPaciente[key]) porPaciente[key] = { paciente: c.paciente, telefono: c.telefono, citas: [] };
+        porPaciente[key].citas.push(c);
+      }
+      const estadoBadge = (e) => {
+        const c = { reservada: '#25D366', confirmada: '#2196f3', cancelada: '#f44336', completada: '#607d8b' }[e] || '#888';
+        return `<span style="background:${c};color:#fff;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700">${e}</span>`;
+      };
+      cont.innerHTML = Object.values(porPaciente).map(p => `
+        <div class="cfg-item" style="margin-bottom:1rem">
+          <div style="font-weight:700;margin-bottom:.4rem">${escH(p.paciente)} <span class="sub">(${p.telefono})</span></div>
+          ${p.citas.map(c => `
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.4rem;background:#f8fafc;border-radius:6px;margin:.2rem 0">
+              <div><b>#${c.id}</b> ${c.fecha} ${c.hora} <span class="sub">| ${c.servicio}</span><br><span class="sub">${c.profesional}</span></div>
+              <div>${estadoBadge(c.estado)}</div>
+            </div>`).join('')}
+        </div>
+      `).join('');
+    } catch(e) {
+      cont.innerHTML = '<p style="color:#c00;text-align:center">Error cargando historial.</p>';
+    }
+  }
+
+  async function loadPacientes() {
+    const tbody = document.getElementById('pacientesTableBody');
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888">Cargando…</td></tr>';
+    try {
+      const res = await fetch('/api/citas', { credentials: 'same-origin' });
+      const citas = await res.json();
+      // Agrupar por teléfono
+      const porTel = {};
+      for (const c of citas) {
+        if (!porTel[c.telefono]) porTel[c.telefono] = { nombre: c.paciente, telefono: c.telefono, total: 0, ultima: '' };
+        porTel[c.telefono].total++;
+        if (!porTel[c.telefono].ultima || c.fecha + ' ' + c.hora > porTel[c.telefono].ultima) {
+          porTel[c.telefono].ultima = c.fecha + ' ' + c.hora;
+        }
+      }
+      if (!Object.keys(porTel).length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#666">No hay pacientes.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = Object.values(porTel).map(p => `
+        <tr>
+          <td>${escH(p.telefono)}</td>
+          <td>${escH(p.nombre)}</td>
+          <td>${p.total}</td>
+          <td>${escH(p.ultima)}</td>
+          <td><button class="btn-guardar" onclick="verHistorialPaciente('${escH(p.telefono)}')">Ver historial</button></td>
+        </tr>`).join('');
+    } catch(e) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#c00">Error cargando pacientes.</td></tr>';
+    }
+  }
+
+  function verHistorialPaciente(tel) {
+    switchTab('historial_citas', { target: document.querySelector('.tab-btn:nth-child(2)') });
+    // Filtrar en la vista (simple: recargar y el usuario ve su historial)
+    // Opcional: agregar filtro por teléfono en loadHistorialCitas
+  }
+
+  async function loadInventario() {
+    const tbody = document.getElementById('inventarioTableBody');
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888">Cargando…</td></tr>';
+    try {
+      const res = await fetch('/api/configuracion', { credentials: 'same-origin' });
+      const cfg = await res.json();
+      const stock = cfg.stock || {};
+      const prods = (cfg.menu?.productos_por_categoria || []).flatMap(c => c.productos || []);
+      if (!prods.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#666">No hay productos configurados.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = prods.map(p => {
+        const s = stock[p.nombre] || {};
+        const stockVal = s.stock != null ? s.stock : '∞';
+        const agotado = s.stock != null && s.stock <= 0 ? ' ❌ AGOTADO' : '';
+        return `
+          <tr${agotado ? ' style="background:#fff0f0"' : ''}>
+            <td>${escH(p.nombre)}${agotado}</td>
+            <td>${stockVal}</td>
+            <td>${cfg.negocio?.moneda || '$'}${p.precio.toLocaleString('es-CO')}</td>
+            <td>${escH(p.categoria || '')}</td>
+            <td><button class="btn-guardar" onclick="editarStock('${escH(p.nombre)}', ${s.stock != null ? s.stock : ''})">Editar</button></td>
+          </tr>`;
+      }).join('');
+    } catch(e) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#c00">Error cargando inventario.</td></tr>';
+    }
+  }
+
+  async function loadRecursos() {
+    const tbody = document.getElementById('recursosTableBody');
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888">Cargando…</td></tr>';
+    try {
+      const res = await fetch('/api/configuracion', { credentials: 'same-origin' });
+      const cfg = await res.json();
+      const recursos = cfg.recursos || [];
+      if (!recursos.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#666">No hay recursos configurados. Agrégalos en Configuración.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = recursos.map((r, i) => `
+        <tr>
+          <td>${escH(r.nombre || `Recurso ${i+1}`)}</td>
+          <td>${escH(r.tipo || 'Silla')}</td>
+          <td>${escH(r.profesional_asignado || '—')}</td>
+          <td><span class="badge ${r.activo === false ? 'off' : 'ok'}">${r.activo === false ? 'Inactivo' : 'Activo'}</span></td>
+          <td><button class="btn-guardar" onclick="editarRecurso(${i})">Editar</button></td>
+        </tr>`).join('');
+    } catch(e) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#c00">Error cargando recursos.</td></tr>';
+    }
+  }
+
+  async function loadProfesionales() {
+    const tbody = document.getElementById('profesionalesTableBody');
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888">Cargando…</td></tr>';
+    try {
+      const res = await fetch('/api/configuracion', { credentials: 'same-origin' });
+      const cfg = await res.json();
+      const profs = cfg.profesionales || [];
+      if (!profs.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#666">No hay profesionales configurados.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = profs.map((p, i) => `
+        <tr>
+          <td>${escH(p.nombre || `Profesional ${i+1}`)}</td>
+          <td>${escH(p.especialidad || 'General')}</td>
+          <td>${escH(p.horario || 'Tiempo completo')}</td>
+          <td>${escH(p.recurso_fijo || 'Rotativo')}</td>
+          <td><span class="badge ${p.activo === false ? 'off' : 'ok'}">${p.activo === false ? 'Inactivo' : 'Activo'}</span></td>
+          <td><button class="btn-guardar" onclick="editarProfesional(${i})">Editar</button></td>
+        </tr>`).join('');
+    } catch(e) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#c00">Error cargando profesionales.</td></tr>';
+    }
+  }
+
+  async function loadPaquetes() {
+    const tbody = document.getElementById('paquetesTableBody');
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888">Cargando…</td></tr>';
+    try {
+      const res = await fetch('/api/configuracion', { credentials: 'same-origin' });
+      const cfg = await res.json();
+      const paquetes = cfg.paquetes || [];
+      if (!paquetes.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#666">No hay paquetes configurados.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = paquetes.map((p, i) => `
+        <tr>
+          <td>${escH(p.nombre || `Paquete ${i+1}`)}</td>
+          <td>${Array.isArray(p.servicios) ? p.servicios.join(', ') : escH(p.servicios || '')}</td>
+          <td>${cfg.negocio?.moneda || '$'}${Number(p.precio || 0).toLocaleString('es-CO')}</td>
+          <td>${p.duracion_min || '—'}</td>
+          <td><span class="badge ${p.activo === false ? 'off' : 'ok'}">${p.activo === false ? 'Inactivo' : 'Activo'}</span></td>
+          <td><button class="btn-guardar" onclick="editarPaquete(${i})">Editar</button></td>
+        </tr>`).join('');
+    } catch(e) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#c00">Error cargando paquetes.</td></tr>';
+    }
+  }
+
+  function editarRecurso(idx) { alert('Editar recurso ' + idx + ' - implementar modal'); }
+  function editarProfesional(idx) { alert('Editar profesional ' + idx + ' - implementar modal'); }
+  function editarPaquete(idx) { alert('Editar paquete ' + idx + ' - implementar modal'); }
+
+  function editarStock(producto, stockActual) {
+    const nuevo = prompt(`Stock para "${producto}" (actual: ${stockActual != null ? stockActual : 'ilimitado'}):`, stockActual != null ? stockActual : '');
+    if (nuevo === null) return;
+    const val = nuevo === '' ? null : parseInt(nuevo, 10);
+    if (val !== null && isNaN(val)) { alert('Valor inválido'); return; }
+    // Delegar a /api/configuracion del tenant
+    guardarConfig({
+      stock: { [producto]: { stock: val } }
+    }, 'msg-stock-' + producto.replace(/\s+/g, '-'));
+  }
+
+  // Carga inicial: obtiene segmento y renderiza tabs
+  async function initDashboard() {
+    try {
+      const res = await fetch('/api/configuracion', { credentials: 'same-origin' });
+      const cfg = await res.json();
+      const seg = cfg.segmento || 'comidas';
+      renderTabs(seg);
+    } catch(e) {
+      renderTabs('comidas'); // fallback
+    }
+    loadAsistentes();
+    checkEstado();
+    setInterval(checkEstado, 15000);
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+
+  initDashboard();
+</script>
+</body>
+</html>
+

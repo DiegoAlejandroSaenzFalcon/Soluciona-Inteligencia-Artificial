@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/icon-192.png">
+  <title>🍳 Cocina — {{negocio}}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{width:100%;height:100%;overflow:hidden}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#111;color:#fff}
+    header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#1a1a1a;border-bottom:3px solid #25d366}
+    header h1{font-size:1.6rem;font-weight:800;letter-spacing:1px}
+    header .reloj{font-size:1.4rem;font-weight:700;color:#25d366;font-variant-numeric:tabular-nums}
+    main{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;padding:16px;height:calc(100vh - 64px);overflow-y:auto}
+    .tarjeta{background:#1e1e1e;border-radius:14px;padding:16px;border-left:8px solid #ff9800;box-shadow:0 2px 10px rgba(0,0,0,.4);display:flex;flex-direction:column;min-height:200px}
+    .tarjeta.en_cocina{border-left-color:#2196f3}
+    .tarjeta.listo{border-left-color:#4caf50}
+    .tarjeta .cab{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+    .tarjeta .num{font-size:2rem;font-weight:900;color:#25d366}
+    .tarjeta .hora{font-size:1rem;color:#bbb}
+    .tarjeta .tick{font-size:1.6rem;font-weight:800;color:#ff9800;font-variant-numeric:tabular-nums}
+    .tarjeta.en_cocina .tick{color:#2196f3}
+    .tarjeta.listo .tick{color:#4caf50}
+    .tarjeta ul{list-style:none;flex:1;margin-bottom:10px}
+    .tarjeta li{font-size:1.5rem;font-weight:600;padding:4px 0;border-bottom:1px dashed #333;line-height:1.3}
+    .tarjeta li .cant{color:#25d366;font-weight:900;margin-right:8px}
+    .tarjeta li .nota{display:block;font-size:.95rem;color:#ffc107;font-weight:500;margin-top:2px}
+    .botones{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .botones button{border:none;border-radius:10px;padding:14px 8px;font-size:1.15rem;font-weight:800;cursor:pointer;color:#fff;transition:transform .1s}
+    .botones button:active{transform:scale(.95)}
+    .btn-cocina{background:#2196f3}
+    .btn-listo{background:#25d366}
+    .btn-entregado{background:#607d8b}
+    .btn-cancelar{background:#f44336}
+    .btn-espera{background:#ff9800;color:#111}
+    .vacío{position:fixed;inset:64px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#555;font-size:2rem;font-weight:700;text-align:center;gap:12px}
+    .vacío span{font-size:5rem}
+    @media (max-width:700px){
+      header h1{font-size:1.1rem}
+      header .reloj{font-size:1.1rem}
+      main{grid-template-columns:1fr;padding:10px;height:calc(100vh - 56px)}
+      .tarjeta li{font-size:1.2rem}
+      .tarjeta .num{font-size:1.6rem}
+      .botones button{font-size:1rem;padding:12px 6px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="window.location.href='/'" title="Volver al panel" style="background:#2d2d2d;color:#fff;border:1px solid #444;border-radius:8px;padding:8px 14px;font-size:1rem;font-weight:700;cursor:pointer">← Volver</button>
+    <h1>🍳 COCINA — {{negocio}}</h1>
+  </div>
+  <div class="reloj" id="reloj">--:--</div>
+</header>
+<div id="estadoBanner" style="display:none;background:#f44336;color:#fff;text-align:center;padding:8px;font-weight:800;font-size:1.1rem">⚠️ BOT DESCONECTADO — Los pedidos nuevos NO llegan.</div>
+<main id="grid"></main>
+<div class="vacío" id="vacio" style="display:none"><span>🍽️</span>Sin pedidos pendientes<br><small style="color:#444">Los pedidos nuevos aparecen solos</small></div>
+
+<script>
+  const GRID = document.getElementById('grid');
+  const VACIO = document.getElementById('vacio');
+  const ESTADOS_VISIBLES = ['recibido', 'en_cocina', 'listo'];
+  const ETIQUETA = { recibido: 'NUEVO', en_cocina: 'EN COCINA', listo: 'LISTO' };
+  let anteriores = new Set();
+  let primerCarga = true;
+
+  function tick(hora) {
+    const d = new Date(hora);
+    const seg = Math.floor((Date.now() - d) / 1000);
+    if (seg < 0) return '0s';
+    const m = Math.floor(seg / 60);
+    const s = seg % 60;
+    if (m < 60) return m + 'm ' + String(s).padStart(2, '0') + 's';
+    const h = Math.floor(m / 60);
+    return h + 'h ' + (m % 60) + 'm';
+  }
+
+  function sonar() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'square'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.4, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+      o.start();
+      o.stop(ctx.currentTime + 0.6);
+    } catch (e) {}
+  }
+
+  async function cargar() {
+    try {
+      const res = await fetch('/api/pedidos', { credentials: 'same-origin' });
+      const pedidos = await res.json();
+      const pendientes = pedidos
+        .filter(p => ESTADOS_VISIBLES.includes(p.estado || 'recibido'))
+        .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+      window.pendientes = pendientes;
+      const ids = new Set(pendientes.map(p => p.id));
+      const nuevos = [...ids].filter(i => !anteriores.has(i) && !primerCarga);
+      if (nuevos.length) sonar();
+      anteriores = ids;
+      primerCarga = false;
+
+      if (!pendientes.length) {
+        GRID.innerHTML = '';
+        VACIO.style.display = 'flex';
+        return;
+      }
+      VACIO.style.display = 'none';
+      GRID.innerHTML = pendientes.map(p => {
+        const est = p.estado || 'recibido';
+        const items = (p.items || []).map(i => `
+          <li><span class="cant">${i.cantidad}×</span>${(i.producto || '').replace(/</g,'&lt;')}${i.nota ? '<span class="nota">📝 ' + i.nota.replace(/</g,'&lt;') + '</span>' : ''}</li>`).join('');
+        const btns = est === 'recibido'
+          ? `<button class="btn-cocina" onclick="cmb(${p.id},'en_cocina')">👨‍🍳 Cocina</button><button class="btn-listo" onclick="cmb(${p.id},'listo')">✅ Listo</button><button class="btn-cancelar" onclick="cmb(${p.id},'cancelado')">❌</button>`
+          : est === 'en_cocina'
+            ? `<button class="btn-listo" onclick="cmb(${p.id},'listo')">✅ Listo</button><button class="btn-cancelar" onclick="cmb(${p.id},'cancelado')">❌</button>`
+            : `<button class="btn-entregado" onclick="cmb(${p.id},'entregado')">🚚 Entregado</button>`;
+        return `
+          <div class="tarjeta ${est}" data-fecha="${p.fecha}">
+            <div class="cab">
+              <span class="num">#${p.id}</span>
+              <span class="hora">${new Date(p.fecha).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })} · ${ETIQUETA[est] || est}</span>
+            </div>
+            <ul>${items}</ul>
+            <div class="tick">⏱ ${tick(p.fecha)}</div>
+            <div class="botones">${btns}</div>
+          </div>`;
+      }).join('');
+    } catch (e) {
+      GRID.innerHTML = '<div class="tarjeta">Error cargando pedidos</div>';
+    }
+  }
+
+  async function cmb(id, estado) {
+    try {
+      await fetch('/api/pedido/' + id + '/estado', {
+        method: 'POST', credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado })
+      });
+    } catch (e) {}
+    cargar();
+  }
+
+  setInterval(() => {
+    document.getElementById('reloj').textContent = new Date().toLocaleTimeString('es-CO');
+    document.querySelectorAll('.tarjeta').forEach(t => {
+      const f = t.getAttribute('data-fecha');
+      if (f) t.querySelector('.tick').textContent = '⏱ ' + tick(f);
+    });
+  }, 1000);
+
+  setInterval(cargar, 15000);
+  cargar();
+  async function checkEstado() {
+    try {
+      const res = await fetch('/api/estado', { credentials: 'same-origin' });
+      const e = await res.json();
+      document.getElementById('estadoBanner').style.display = e.conectado ? 'none' : 'block';
+    } catch (err) {}
+  }
+  checkEstado();
+  setInterval(checkEstado, 15000);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>

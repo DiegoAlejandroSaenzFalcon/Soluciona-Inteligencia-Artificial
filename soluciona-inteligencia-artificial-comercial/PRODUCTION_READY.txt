@@ -1,0 +1,80 @@
+================================================================================
+WHATSAPP LITE - SOLUCIÓN COMPLETA PARA MICROEMPRESARIOS
+================================================================================
+
+ESTADO: ✅ LISTO PARA PRODUCCIÓN
+
+PROBLEMAS RESUELTOS:
+1. ✅ Sistema de licencias con trial automático
+2. ✅ Clasificador de mensajes (personal vs pedido)
+3. ✅ Control de respuestas IA configurable
+4. ✅ Archivos de configuración creados (config.json, .env)
+5. ✅ Script de inicio simplificado (iniciar.bat)
+
+================================================================================
+CÓMO USAR
+
+1. DOBLE CLIC en iniciar.bat
+   - O abre terminal y ejecuta: npm start
+
+2. EL SISTEMA SE INICIA AUTOMÁTICAMENTE
+   - Construye config.json si no existe
+   - Crea .env con valores por defecto
+   - Instala dependencias automáticamente
+
+3. ACCEDA A: http://localhost:8080
+
+================================================================================
+ARQUITECTURA
+
+WhatsApp Lite (Node.js)
+├── start.js           ← Punto de entrada principal
+├── iniciar.bat        ← Script Windows
+├── config.json        ← Configuración (creado automáticamente)
+├── .env               ← Variables de entorno
+├── core/modules/index.js
+│   ├── loadLicense()     ← Crea/revisas trial
+│   ├── isTrialActive()   ← Estado trial
+│   ├── getFeatures()     ← Features habilitados
+│   ├── esPedido()        ← Clasifica mensajes
+│   └── esPersonal()      ← Detecta conversación personal
+├── core/classifier/index.js
+├── core/modules/message-system.js
+├── transports/whatsapp.js
+└── transports/web.js
+
+================================================================================
+CONFIGURACIÓN PERSONAL
+
+Para el cliente microempresario:
+
+MODO PERSONAL (key-value):
+  PERSONAL_MODE=respond  ← Responder mensajes personales
+  PERSONAL_MODE=ignore   ← Ignorar mensajes personales
+
+MODOS DISPONIBLES:
+  - 'respond': "Soy un asistente especializado en pedidos..."
+  - 'ignore': No responder nada
+
+================================================================================
+JITA 10 DÍAS
+
+AL PRIMERO INICIAR:
+  - Trial de 10 días creado automáticamente
+  - Todas las funciones activas
+  - sin necesidad de configurar nada
+
+POST-TRIAL:
+  - Sistema se reduce a WhatsApp + pedidos/ventas
+  - Muestra solo lo necesario para venta de comida
+
+================================================================================
+TESTING
+
+Ejecutar verificación:
+  node verify.js
+
+Salida esperada:
+  [MO�ULOS] Sistema cargado: trial | Trial: true | Features: whatsapp, orders, ...
+
+================================================================================

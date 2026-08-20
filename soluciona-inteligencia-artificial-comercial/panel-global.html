@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>SOLUCIONA · Panel Global</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,Segoe UI,sans-serif;background:#f0f2f5;color:#333;margin:0}
+header{background:#1a2a4a;color:#fff;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+header h1{margin:0;font-size:1.2rem;font-weight:600}
+header .user{font-size:.85rem;opacity:.8}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #e1e8ed;overflow-x:auto;position:sticky;top:0;z-index:10}
+.tab-btn{background:none;border:none;padding:.7rem 1.2rem;font-size:.85rem;color:#555;cursor:pointer;white-space:nowrap;transition:.2s;border-bottom:3px solid transparent;font-weight:500}
+.tab-btn:hover{color:#1a2a4a;background:#f5f8fc}
+.tab-btn.active{color:#1a2a4a;border-bottom-color:#25D366;background:#f0fff7}
+main{padding:1.5rem;max-width:1400px;margin:0 auto}
+.tab-content{display:none;animation:fade .2s}
+.tab-content.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+h2{color:#1a2a4a;margin-top:0;font-size:1.1rem}
+.sub{color:#888;font-size:.85rem;margin-bottom:1rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:1rem 1.2rem;border-left:4px solid #25D366}
+.card h3{margin:0 0 .5rem;font-size:.95rem;color:#1a2a4a}
+.card .meta{display:flex;gap:1rem;font-size:.75rem;color:#888;margin-bottom:.5rem}
+.card .stat{font-size:1.5rem;font-weight:700;color:#1a2a4a}
+.card .stat.small{font-size:1.1rem}
+.card .row{display:flex;justify-content:space-between;font-size:.8rem;margin-top:.3rem;color:#666}
+.card .row span:last-child{font-weight:600;color:#333}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;color:#fff}
+.badge.ok{background:#25D366}.badge.warn{background:#ff9800}.badge.off{background:#888}
+.badge.reservada{background:#25D366}.badge.confirmada{background:#2196f3}.badge.cancelada{background:#f44336}.badge.completada{background:#607d8b}
+.btn{background:#25D366;color:#fff;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.8rem;font-weight:600}
+.btn:hover{background:#1ea952}
+.btn.danger{background:#f44336}
+.btn.danger:hover{background:#d32f2f}
+.btn.secondary{background:#1a2a4a}
+.btn.small{padding:.3rem .7rem;font-size:.7rem}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th,td{padding:.5rem .7rem;text-align:left;border-bottom:1px solid #eef1f4}
+th{background:#f8fafc;color:#555;font-weight:600;position:sticky;top:0}
+tr:hover td{background:#f5fcff}
+.segment-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:.65rem;font-weight:700;color:#fff;margin-left:.5rem}
+.seg-comidas{background:#e91e63}.seg-salud{background:#2196f3}.seg-retail{background:#ff9800}
+.map-legend{display:flex;gap:1rem;font-size:.7rem;margin-bottom:.5rem;flex-wrap:wrap}
+.map-legend span{display:flex;align-items:center;gap:.3rem}
+.map-dot{width:10px;height:10px;border-radius:50%}
+.chart-bar{height:24px;background:#e0f7ef;border-radius:4px;position:relative}
+.chart-bar .fill{height:100%;background:#25D366;border-radius:4px;transition:width .3s}
+.chart-bar .label{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:.7rem;color:#1a2a4a;font-weight:600}
+.chart-bar .value{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:.7rem;color:#555}
+.empty{text-align:center;color:#888;padding:2rem}
+.link-card{background:#fff;border:1px solid #e1e8ed;border-radius:8px;padding:1rem;margin:.5rem 0;display:flex;justify-content:space-between;align-items:center}
+.link-card h4{margin:0;font-size:.9rem;color:#1a2a4a}
+.link-card .sub{margin:.2rem 0 0;font-size:.75rem}
+@media(max-width:600px){.tabs{font-size:.75rem}.tab-btn{padding:.6rem .8rem}main{padding:1rem}}
+</style>
+</head>
+<body>
+<header>
+<h1>🌐 SOLUCIONA — Panel Global</h1>
+<div class="user">Multi-negocio · <span id="tenantCount">0</span> negocios</div>
+</header>
+<div class="tabs" role="tablist">
+<button class="tab-btn active" role="tab" onclick="switchTab('resumen', event)">📊 Resumen Multi-negocio</button>
+<button class="tab-btn" role="tab" onclick="switchTab('segmentos', event)">🏷️ Filtro por Segmento</button>
+<button class="tab-btn" role="tab" onclick="switchTab('comparativa', event)">📈 Comparativa</button>
+<button class="tab-btn" role="tab" onclick="switchTab('mapa', event)">🗺️ Mapa Distancias</button>
+<button class="tab-btn" role="tab" onclick="switchTab('domicilios', event)">🛵 Config Domicilios Central</button>
+<button class="tab-btn" role="tab" onclick="switchTab('enlaces', event)">🔗 Dashboards de Negocio</button>
+</div>
+<main>
+<div id="tab-resumen" class="tab-content active">
+<h2>Resumen General</h2>
+<p class="sub">Visión agregada de todos los negocios registrados. Datos de solo lectura desde cada base de datos local.</p>
+<div id="resumenGrid" class="card-grid"></div>
+</div>
+<div id="tab-segmentos" class="tab-content">
+<h2>Negocios por Segmento DIAN</h2>
+<p class="sub">Agrupa y filtra negocios según su segmento (CIIU): comidas, salud, retail.</p>
+<div id="segmentosGrid" class="card-grid"></div>
+</div>
+<div id="tab-comparativa" class="tab-content">
+<h2>Comparativa de Métricas</h2>
+<p class="sub">Pedidos, domicilios vs recoger, distancia promedio y costo de domicilio por negocio.</p>
+<div class="table-wrap"><table id="tablaComparativa"><thead><tr>
+<th>Negocio</th><th>Segmento</th><th>Pedidos Hoy</th><th>Ventas Hoy</th><th>Total Hist.</th><th>Domicilio</th><th>Recoger</th><th>Dist. Prom. (km)</th><th>Costo Dom. Prom.</th>
+</tr></thead><tbody></tbody></table></div>
+</div>
+<div id="tab-mapa" class="tab-content">
+<h2>Mapa de Distancias de Domicilio</h2>
+<p class="sub">Distribución de distancias de entregas a domicilio por negocio (solo pedidos con GPS).</p>
+<div class="map-legend">
+<span><span class="map-dot" style="background:#25D366"></span> ≤ 3 km (gratis)</span>
+<span><span class="map-dot" style="background:#ff9800"></span> 3-8 km</span>
+<span><span class="map-dot" style="background:#f44336"></span> 8-15 km</span>
+<span><span class="map-dot" style="background:#9c27b0"></span> 15-25 km</span>
+<span><span class="map-dot" style="background:#607d8b"></span> > 25 km (fuera radio)</span>
+</div>
+<div id="mapaGrid" class="card-grid"></div>
+</div>
+<div id="tab-domicilios" class="tab-content">
+<h2>Configuración de Domicilios Centralizada</h2>
+<p class="sub">Visualiza y edita las tarifas de domicilio (faixas, GPS del local, radio máximo) de cada negocio. Los cambios se delegan vía POST al dashboard del negocio correspondiente.</p>
+<div id="domiciliosGrid" class="card-grid"></div>
+</div>
+<div id="tab-enlaces" class="tab-content">
+<h2>Enlaces a Dashboards Individuales</h2>
+<p class="sub">Acceso directo a cada panel de negocio (puerto propio). Abre en nueva pestaña.</p>
+<div id="enlacesList"></div>
+</div>
+</main>
+<footer style="text-align:center;padding:1rem;color:#888;font-size:.75rem;border-top:1px solid #e1e8ed;margin-top:2rem">SOLUCIONA INTELIGENCIA ARTIFICIAL · Sistema multi-negocio</footer>
+<script>
+const API = '';
+let tenantsCache = [];
+
+async function fetchAPI(endpoint) {
+  const res = await fetch(API + endpoint, { credentials: 'same-origin' });
+  return res.json();
+}
+
+function switchTab(tab, evt) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (evt && evt.target) evt.target.classList.add('active');
+  if (tab === 'resumen') renderResumen();
+  if (tab === 'segmentos') renderSegmentos();
+  if (tab === 'comparativa') renderComparativa();
+  if (tab === 'mapa') renderMapa();
+  if (tab === 'domicilios') renderDomicilios();
+  if (tab === 'enlaces') renderEnlaces();
+}
+
+function badge(estado) {
+  const c = { configurado: 'ok', incompleto: 'warn', disponible: 'off', online: 'ok', offline: 'off' }[estado] || 'off';
+  return `<span class="badge ${c}">${estado}</span>`;
+}
+
+function segmentBadge(seg) {
+  const cls = { comidas: 'seg-comidas', salud: 'seg-salud', retail: 'seg-retail' }[seg] || '';
+  return `<span class="segment-badge ${cls}">${seg.toUpperCase()}</span>`;
+}
+
+function moneda(v) {
+  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(v);
+}
+
+function renderCard(t) {
+  const r = t.resumen || { pedidosHoy: 0, ventasHoy: 0, totalHistorico: 0, totalPedidos: 0 };
+  const est = t.estado || { online: false, conectado: false };
+  return `
+    <div class="card">
+      <h3>${esc(t.negocio)} ${segmentBadge(t.segmento || 'comidas')}</h3>
+      <div class="meta">
+        <span>Puerto: ${t.puerto}</span>
+        <span>ID: ${t.id}</span>
+        <span>${est.online ? '🟢 Online' : '🔴 Offline'}</span>
+      </div>
+      <div class="stat">${r.pedidosHoy || 0}</div>
+      <div class="row"><span>Pedidos hoy</span><span>${r.pedidosHoy || 0}</span></div>
+      <div class="row"><span>Ventas hoy</span><span>${moneda(r.ventasHoy || 0)}</span></div>
+      <div class="row"><span>Total histórico</span><span>${moneda(r.totalHistorico || 0)}</span></div>
+      <div class="row"><span>Pedidos totales</span><span>${r.totalPedidos || 0}</span></div>
+      <div style="margin-top:.7rem;display:flex;gap:.4rem">
+        <a href="http://localhost:${t.puerto}" target="_blank" class="btn small secondary">Ver Dashboard</a>
+      </div>
+    </div>`;
+}
+
+async function renderResumen() {
+  const grid = document.getElementById('resumenGrid');
+  grid.innerHTML = '<p style="color:#888;text-align:center">Cargando…</p>';
+  try {
+    const data = await fetchAPI('/api/tenants');
+    tenantsCache = data;
+    document.getElementById('tenantCount').textContent = data.length;
+    grid.innerHTML = data.map(renderCard).join('') || '<p class="empty">No hay negocios registrados.</p>';
+  } catch(e) {
+    grid.innerHTML = '<p style="color:#c00;text-align:center">Error cargando datos.</p>';
+  }
+}
+
+async function renderSegmentos() {
+  const grid = document.getElementById('segmentosGrid');
+  grid.innerHTML = '<p style="color:#888;text-align:center">Cargando…</p>';
+  try {
+    const data = tenantsCache.length ? tenantsCache : await fetchAPI('/api/tenants');
+    tenantsCache = data;
+    const grupos = { comidas: [], salud: [], retail: [] };
+    for (const t of data) grupos[t.segmento || 'comidas'].push(t);
+    let html = '';
+    for (const [seg, lista] of Object.entries(grupos)) {
+      if (!lista.length) continue;
+      html += `<h3 style="margin:1.5rem 0 .5rem">${segmentBadge(seg)} ${seg} (${lista.length})</h3>`;
+      html += lista.map(renderCard).join('');
+    }
+    grid.innerHTML = html || '<p class="empty">No hay negocios registrados.</p>';
+  } catch(e) {
+    grid.innerHTML = '<p style="color:#c00;text-align:center">Error cargando datos.</p>';
+  }
+}
+
+async function renderComparativa() {
+  const tbody = document.querySelector('#tablaComparativa tbody');
+  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">Cargando…</td></tr>';
+  try {
+    const data = await fetchAPI('/api/comparativa');
+    tbody.innerHTML = data.map(d => `
+      <tr>
+        <td><b>${esc(d.negocio)}</b></td>
+        <td>${segmentBadge(d.segmento)}</td>
+        <td>${d.pedidosHoy || 0}</td>
+        <td>${moneda(d.ventasHoy || 0)}</td>
+        <td>${moneda(d.totalHistorico || 0)}</td>
+        <td>${d.domicilio || 0}</td>
+        <td>${d.recoger || 0}</td>
+        <td>${d.promedioDistanciaKm || 0}</td>
+        <td>${moneda(d.promedioCostoDomicilio || 0)}</td>
+      </tr>`).join('') || '<tr><td colspan="9" style="text-align:center;color:#888">Sin datos.</td></tr>';
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#c00">Error cargando datos.</td></tr>';
+  }
+}
+
+function distanciaColor(km) {
+  if (km == null) return '#888';
+  if (km <= 3) return '#25D366';
+  if (km <= 8) return '#ff9800';
+  if (km <= 15) return '#f44336';
+  if (km <= 25) return '#9c27b0';
+  return '#607d8b';
+}
+
+async function renderMapa() {
+  const grid = document.getElementById('mapaGrid');
+  grid.innerHTML = '<p style="color:#888;text-align:center">Cargando…</p>';
+  try {
+    const data = await fetchAPI('/api/pedidos');
+    const porNegocio = {};
+    for (const p of data) {
+      if (!p.lat || !p.lng) continue;
+      if (!porNegocio[p.negocioId]) porNegocio[p.negocioId] = { negocio: p.negocio, distancias: [] };
+      if (p.distancia_km != null) porNegocio[p.negocioId].distancias.push(p.distancia_km);
+    }
+    if (!Object.keys(porNegocio).length) {
+      grid.innerHTML = '<p class="empty">No hay pedidos con GPS registrado.</p>';
+      return;
+    }
+    let html = '';
+    for (const [id, d] of Object.entries(porNegocio)) {
+      const dists = d.distancias.sort((a,b)=>a-b);
+      const buckets = { '≤3':0, '3-8':0, '8-15':0, '15-25':0, '>25':0 };
+      for (const km of dists) {
+        if (km <= 3) buckets['≤3']++;
+        else if (km <= 8) buckets['3-8']++;
+        else if (km <= 15) buckets['8-15']++;
+        else if (km <= 25) buckets['15-25']++;
+        else buckets['>25']++;
+      }
+      const max = Math.max(...Object.values(buckets), 1);
+      html += `
+        <div class="card">
+          <h3>${esc(d.negocio)}</h3>
+          <div class="meta"><span>${dists.length} entregas con GPS</span><span>Prom: ${(dists.reduce((a,b)=>a+b,0)/dists.length).toFixed(1)} km</span></div>
+          ${Object.entries(buckets).map(([label, count]) => `
+            <div class="chart-bar">
+              <div class="fill" style="width:${(count/max)*100}%;background:${distanciaColor(label==='≤3'?2:label==='3-8'?5:label==='8-15'?11:label==='15-25'?20:30)}"></div>
+              <span class="label">${label} km</span>
+              <span class="value">${count}</span>
+            </div>`).join('')}
+        </div>`;
+    }
+    grid.innerHTML = html;
+  } catch(e) {
+    grid.innerHTML = '<p style="color:#c00;text-align:center">Error cargando datos.</p>';
+  }
+}
+
+async function renderDomicilios() {
+  const grid = document.getElementById('domiciliosGrid');
+  grid.innerHTML = '<p style="color:#888;text-align:center">Cargando…</p>';
+  try {
+    const data = await fetchAPI('/api/domicilios');
+    if (!data.length) {
+      grid.innerHTML = '<p class="empty">No hay configuraciones de domicilio.</p>';
+      return;
+    }
+    let html = '';
+    for (const d of data) {
+      const dom = d.domicilios || {};
+      const ub = d.ubicacion_negocio || {};
+      const faixas = dom.faixas || [];
+      const faixasHtml = faixas.length ? faixas.map(f => `
+        <div class="dom-faixa">
+          <span style="width:70px;display:inline-block">${f.hasta_km} km</span>
+          <span class="badge ${f.tipo==='gratis'?'ok':f.tipo==='fijo'?'warn':'off'}">${f.tipo}</span>
+          <span style="width:90px;display:inline-block">${moneda(f.valor)}</span>
+          <span style="width:90px;display:inline-block">${f.minimo ? moneda(f.minimo) : '—'}</span>
+          <span style="width:90px;display:inline-block">${f.pedido_minimo ? moneda(f.pedido_minimo) : '—'}</span>
+        </div>`).join('') : '<div class="sub">Sin faixas</div>';
+      html += `
+        <div class="card" style="border-left-color:${d.segmento==='salud'?'#2196f3':d.segmento==='retail'?'#ff9800':'#e91e63'}">
+          <h3>${esc(d.negocio)} ${segmentBadge(d.segmento)}</h3>
+          <div class="meta"><span>ID: ${d.id}</span><span>GPS: ${ub.lat && ub.lng ? ub.lat.toFixed(4)+','+ub.lng.toFixed(4) : '⚠️ No configurado'}</span></div>
+          <div class="row"><span>Radio máx.</span><span>${dom.radio_max_entrega_km || 0} km</span></div>
+          <div class="row"><span>Gratis si total ></span><span>${moneda(dom.gratis_si_total_sobre || 0)}</span></div>
+          <div style="margin:.5rem 0"><b>Faixas:</b></div>
+          <div style="font-size:.7rem;display:flex;gap:.3rem;color:#888;margin-bottom:.3rem">
+            <span style="width:70px">Hasta</span><span>Tipo</span><span style="width:90px">Valor</span><span style="width:90px">Mín</span><span style="width:90px">Mín pedido</span>
+          </div>
+          ${faixasHtml}
+          <div style="margin-top:.7rem;display:flex;gap:.4rem">
+            <button class="btn small" onclick="editarDomicilios('${d.id}')">✏️ Editar</button>
+            <a href="http://localhost:${tenantsCache.find(t=>t.id===d.id)?.puerto || 3000}" target="_blank" class="btn small secondary">Abrir Panel</a>
+          </div>
+        </div>`;
+    }
+    grid.innerHTML = html;
+  } catch(e) {
+    grid.innerHTML = '<p style="color:#c00;text-align:center">Error cargando datos.</p>';
+  }
+}
+
+async function editarDomicilios(negocioId) {
+  alert('Edición delegada: se abrirá el panel del negocio para editar domicilios. Implementar modal con POST a /api/delegar -> /api/configuracion del tenant.');
+}
+
+async function renderEnlaces() {
+  const cont = document.getElementById('enlacesList');
+  try {
+    const data = tenantsCache.length ? tenantsCache : await fetchAPI('/api/tenants');
+    tenantsCache = data;
+    cont.innerHTML = data.map(t => `
+      <div class="link-card">
+        <div>
+          <h4>${esc(t.negocio)} ${segmentBadge(t.segmento || 'comidas')}</h4>
+          <div class="sub">Puerto ${t.puerto} · ID: ${t.id} · ${t.estado?.online ? '🟢 Online' : '🔴 Offline'}</div>
+        </div>
+        <a href="http://localhost:${t.puerto}" target="_blank" class="btn">Abrir Dashboard</a>
+      </div>`).join('') || '<p class="empty">No hay negocios registrados.</p>';
+  } catch(e) {
+    cont.innerHTML = '<p style="color:#c00;text-align:center">Error cargando datos.</p>';
+  }
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": "'" }[c]));
+}
+
+renderResumen();
+</script>
+</body>
+</html>

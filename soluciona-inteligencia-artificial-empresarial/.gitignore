@@ -1,0 +1,12 @@
+# Ignorar datos privados y temporales
+private/
+.env
+*.env
+secrets/
+tickets/*/tmp/
+tickets/*
+!tickets/.gitkeep
+clientes/*
+!clientes/.gitkeep
+*.log
+node_modules/

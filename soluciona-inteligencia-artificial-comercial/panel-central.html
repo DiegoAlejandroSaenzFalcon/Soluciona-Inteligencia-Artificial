@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d3b35">
+  <title>SOLUCIONA · Panel Central</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Segoe UI,Arial,sans-serif;background:#f0f2f5;color:#333}
+    header{background:#0d3b35;color:#fff;padding:1rem 2rem;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.75rem;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    header h1{font-size:1.3rem}
+    .container{max-width:1400px;margin:0 auto;padding:1.5rem 1rem}
+    .tot{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+    .tot div{background:#fff;padding:1.2rem;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.1);border-left:5px solid #25d366;text-align:center}
+    .tot b{display:block;color:#0d3b35;margin-bottom:.25rem}
+    .tot .valor{font-size:1.5rem;font-weight:700}
+    .negocios{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:2rem}
+    .negocio{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.1);cursor:pointer;transition:transform .15s,box-shadow .15s;border:2px solid transparent}
+    .negocio:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.12)}
+    .negocio.sel{border-color:#25d366}
+    .negocio h3{color:#0d3b35;margin-bottom:.4rem}
+    .negocio .badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.72rem;font-weight:700;color:#fff;margin-bottom:.5rem}
+    .badge.on{background:#4caf50}.badge.off{background:#f44336}
+    .negocio .stats{font-size:.85rem;color:#666;line-height:1.6}
+    .selbar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:1rem}
+    .selbar select,.selbar button{padding:.5rem .9rem;border-radius:8px;border:1px solid #ccc;font-size:.95rem}
+    .selbar button{background:#0d3b35;color:#fff;border:none;cursor:pointer;font-weight:600}
+    .table-wrap{overflow-x:auto;background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+    table{border-collapse:collapse;width:100%;min-width:900px}
+    td,th{border:1px solid #e1e8ed;padding:9px 11px;text-align:left;white-space:nowrap}
+    th{background:#25D366;color:#fff;position:sticky;top:0}
+    tr:nth-child(even){background:#f8faf9}
+    .est{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;color:#fff}
+    .est.recibido{background:#ff9800}.est.en_cocina{background:#2196f3}.est.listo{background:#4caf50}.est.entregado{background:#607d8b}.est.cancelado{background:#f44336}
+    @media (max-width:640px){
+      header{padding:.8rem 1rem}
+      .container{padding:1rem .6rem}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>🏢 SOLUCIONA · Panel Central — Todos los negocios</h1>
+  <span id="hora" style="font-weight:700"></span>
+</header>
+<div class="container">
+  <div class="tot">
+    <div><b>Negocios</b><span class="valor" id="totNegocios">0</span></div>
+    <div><b>Bot activo</b><span class="valor" id="totActivos">0</span></div>
+    <div><b>Pedidos hoy</b><span class="valor" id="totHoy">0</span></div>
+    <div><b>Ventas hoy</b><span class="valor" id="totVentas">$0</span></div>
+    <div><b>Total histórico</b><span class="valor" id="totHistorico">$0</span></div>
+  </div>
+
+  <div id="negocios" class="negocios"></div>
+
+  <div class="selbar">
+    <select id="filtroNegocio" onchange="cargarPedidos()">
+      <option value="">Todos los negocios</option>
+    </select>
+    <select id="filtroEstado" onchange="cargarPedidos()">
+      <option value="">Todos los estados</option>
+      <option value="recibido">Recibido</option>
+      <option value="en_cocina">En cocina</option>
+      <option value="listo">Listo</option>
+      <option value="entregado">Entregado</option>
+      <option value="cancelado">Cancelado</option>
+    </select>
+    <button onclick="cargarTodo()">↻ Actualizar</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>#</th><th>Negocio</th><th>Fecha</th><th>Cliente</th><th>Detalle</th><th>Total</th><th>Estado</th></tr>
+      <tbody id="filas"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const ETIQ = { recibido: 'Recibido', en_cocina: 'En cocina', listo: 'Listo', entregado: 'Entregado', cancelado: 'Cancelado' };
+  let negocios = [];
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  async function cargarTodo() {
+    try {
+      const res = await fetch('/api/tenants', { credentials: 'same-origin' });
+      negocios = await res.json();
+      renderNegocios();
+      cargarPedidos();
+    } catch (e) {
+      document.getElementById('negocios').innerHTML = '<p style="color:#c00">No se pudo cargar el panel central.</p>';
+    }
+  }
+
+  function renderNegocios() {
+    const grid = document.getElementById('negocios');
+    const filtro = document.getElementById('filtroNegocio');
+    filtro.innerHTML = '<option value="">Todos los negocios</option>' + negocios.map(n => `<option value="${n.id}">${esc(n.negocio)}</option>`).join('');
+    let activos = 0, hoy = 0, ventas = 0, historico = 0;
+    grid.innerHTML = negocios.map(n => {
+      const on = n.estado && n.estado.online && n.estado.conectado;
+      if (on) activos++;
+      hoy += n.resumen.pedidosHoy;
+      ventas += n.resumen.ventasHoy;
+      historico += n.resumen.totalHistorico;
+      const etiqueta = n.estado && n.estado.online ? (n.estado.conectado ? 'BOT ACTIVO' : 'BOT CAÍDO') : 'SERVIDOR APAGADO';
+      return `<div class="negocio" onclick="selNegocio('${n.id}')">
+        <h3>${esc(n.negocio)}</h3>
+        <span class="badge ${n.estado && n.estado.online && n.estado.conectado ? 'on' : 'off'}">${etiqueta}</span>
+        <div class="stats">
+          📦 ${n.resumen.pedidosHoy} hoy · ${n.resumen.totalPedidos} total<br>
+          💰 ${new Intl.NumberFormat('es-CO').format(n.resumen.ventasHoy)} hoy<br>
+          📊 ${new Intl.NumberFormat('es-CO').format(n.resumen.totalHistorico)} histórico<br>
+          🔌 Puerto ${n.puerto || 3000}
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('totNegocios').textContent = negocios.length;
+    document.getElementById('totActivos').textContent = activos;
+    document.getElementById('totHoy').textContent = hoy;
+    document.getElementById('totVentas').textContent = new Intl.NumberFormat('es-CO').format(ventas);
+    document.getElementById('totHistorico').textContent = new Intl.NumberFormat('es-CO').format(historico);
+  }
+
+  function selNegocio(id) {
+    const f = document.getElementById('filtroNegocio');
+    f.value = id;
+    cargarPedidos();
+  }
+
+  async function cargarPedidos() {
+    const neg = document.getElementById('filtroNegocio').value;
+    const est = document.getElementById('filtroEstado').value;
+    const res = await fetch('/api/pedidos' + (neg ? '?negocio=' + neg : ''), { credentials: 'same-origin' });
+    const pedidos = await res.json();
+    const filas = pedidos
+      .filter(p => !est || p.estado === est)
+      .slice(0, 150)
+      .map(p => `<tr>
+        <td>${p.negocioId === 'default' ? '' : '[' + esc(p.negocioId) + '] '}#${p.id}</td>
+        <td>${esc(p.negocio)}</td>
+        <td>${new Date(p.fecha).toLocaleString('es-CO')}</td>
+        <td>${esc(p.remitente || '-')}</td>
+        <td>${p.items.map(i => `${i.cantidad} ${esc(i.producto)}`).join(', ')}</td>
+        <td>${new Intl.NumberFormat('es-CO').format(p.total)}</td>
+        <td><span class="est ${p.estado}">${ETIQ[p.estado] || p.estado}</span></td>
+      </tr>`).join('');
+    document.getElementById('filas').innerHTML = filas || '<tr><td colspan="7" style="text-align:center;color:#666;padding:2rem">Sin pedidos con ese filtro.</td></tr>';
+  }
+
+  setInterval(() => { document.getElementById('hora').textContent = new Date().toLocaleTimeString('es-CO'); }, 1000);
+  cargarTodo();
+  setInterval(cargarTodo, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "puerto": 5000,
+  "password": "",
+  "nombre": "Panel Global Soluciona Inteligencia Artificial Comercial",
+  "descripcion": "Vista multi-negocio (read-only) con delegación de escritura a cada dashboard de negocio"
+}

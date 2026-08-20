@@ -1,0 +1,113 @@
+{
+  "negocio": "Cafetería El Ejemplo",
+  "segmento": "comidas",
+  "ciiu": "5611",
+  "moneda": "$",
+  "hora_reporte": "21:00",
+  "puerto": 3000,
+  "numero_dueno": "573000000000",
+  "ubicacion_negocio": {
+    "lat": 6.217,
+    "lng": -75.567,
+    "nota": "GPS del local (lat/lng) para calcular el costo de domicilio por distancia"
+  },
+  "domicilios": {
+    "faixas": [
+      { "hasta_km": 3, "tipo": "gratis", "valor": 0, "nota": "Hasta 3 km: envío gratis" },
+      { "hasta_km": 8, "tipo": "fijo", "valor": 5000, "nota": "Hasta 8 km: $5.000" },
+      { "hasta_km": 15, "tipo": "por_km", "valor": 800, "minimo": 5000, "nota": "Hasta 15 km: $800/km (mín $5.000)" },
+      { "hasta_km": 25, "tipo": "fijo", "valor": 20000, "pedido_minimo": 50000, "nota": "Hasta 25 km: $20.000 (pedido mín $50.000)" }
+    ],
+    "radio_max_entrega_km": 25,
+    "gratis_si_total_sobre": 80000,
+    "nota": "Faixas en orden ascendente de km. Se aplica la primera faixa donde distancia <= hasta_km. Tipos: gratis, fijo, por_km."
+  },
+  "llm": {
+    "proveedor": "nvidia",
+    "base_url": "https://integrate.api.nvidia.com/v1",
+    "modelo": "meta/llama-3.1-8b-instruct",
+    "api_key": "TU_KEY_CHATBOT",
+    "limite_diario": 200,
+    "limite_mensual": 5000,
+    "nota": "KEY 1 (chatbot WhatsApp, la que más se usa): genera una API key por CADA función en build.nvidia.com/settings. Cada key tiene su propio límite, así el chat nunca satura a los asistentes. limite_diario/mensual = cuota del negocio (0 = sin límite). Ver core/consumo.js"
+  },
+  "asistentes_ia": {
+    "modelo": "meta/llama-3.3-70b-instruct",
+    "api_key": "TU_KEY_ASISTENTES",
+    "limite_diario": 50,
+    "limite_mensual": 1000,
+    "nota": "KEY 2 (sección Asistentes IA del panel): clave separada para no gastar la del chat"
+  },
+  "vision": {
+    "modelo": "meta/llama-3.2-11b-vision-instruct",
+    "api_key": "TU_KEY_VISION",
+    "limite_diario": 30,
+    "limite_mensual": 500,
+    "nota": "KEY 3 (foto de menú): modelo de visión para extraer productos de una imagen"
+  },
+  "agencias_categorias": [
+    "marketing",
+    "paid-media",
+    "product",
+    "sales",
+    "strategy",
+    "support",
+    "project-management",
+    "design"
+  ],
+  "panel_password": "",
+  "pregunta_direccion": "📍 Mándame tu UBICACIÓN por GPS (botón 📎 → Ubicación). Si pasas por el local escribe RECOGER. No se aceptan otros textos.",
+  "max_unidades_confirmar": 50,
+  "mensaje_bienvenida": "¡Bienvenido! ☕ Para pedir escribe los productos y cantidades (ej: 2 cafés con leche, 1 sándwich de jamón). Te confirmamos el pedido y el total.",
+  "productos": [
+    {
+      "nombre": "Café con leche",
+      "alias": [
+        "cafe con leche",
+        "cafe"
+      ],
+      "precio": 3000,
+      "ingredientes": "Café, leche"
+    },
+    {
+      "nombre": "Sándwich de jamón",
+      "alias": [
+        "sandwich de jamon",
+        "sandwich"
+      ],
+      "precio": 8000,
+      "ingredientes": "Pan, jamón, queso, lechuga, tomate"
+    },
+    {
+      "nombre": "Jugo natural",
+      "alias": [
+        "jugo natural",
+        "jugo"
+      ],
+      "precio": 5000,
+      "ingredientes": "Fruta de temporada, agua, azúcar"
+    }
+  ],
+  "integracion": {
+    "tipo": "kds",
+    "nota": "Formas de conectar el POS: kds (este panel), webhook (URL propia), archivo (JSONL), telegram, siigo, alegra. Ver docs/INTEGRACION.md"
+  },
+  "facturacion": {
+    "proveedor": "",
+    "nota": "Facturación electrónica DIAN. Proveedores: alegra, siigo, factus, alanube. Ver core/facturacion.js y docs/INTEGRACION.md"
+  },
+  "alertas": {
+    "telegram": {
+      "token": "TU_TOKEN_DE_BOT_TELEGRAM",
+      "chat_id": "TU_CHAT_ID"
+    },
+    "nota": "Alerta al dueño (Telegram) cuando el bot se desconecta o la sesión se cierra"
+  },
+  "mensaje_fallback": "Disculpa, en este momento no pude procesar bien tu mensaje. ¿Quieres ver el menú o hacer un pedido? Escribe los productos y cantidades (ej: 2 cafés, 1 sándwich) y te confirmo el total.",
+  "menu": {
+    "url": "",
+    "imagenes": [],
+    "color": "#1f9d55",
+    "logo": ""
+  }
+}
