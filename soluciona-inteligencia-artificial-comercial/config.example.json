@@ -96,6 +96,29 @@
     "proveedor": "",
     "nota": "Facturación electrónica DIAN. Proveedores: alegra, siigo, factus, alanube. Ver core/facturacion.js y docs/INTEGRACION.md"
   },
+  "planes_ia": {
+    "basico": {
+      "nombre": "Plan Básico",
+      "limite_diario": 100,
+      "limite_mensual": 2000,
+      "precio_mensual": 50000,
+      "descripcion": "Hasta 100 consultas IA al día, ideal para negocios con pocos pedidos"
+    },
+    "pro": {
+      "nombre": "Plan Pro",
+      "limite_diario": 500,
+      "limite_mensual": 10000,
+      "precio_mensual": 150000,
+      "descripcion": "Hasta 500 consultas IA al día, para negocios con flujo constante"
+    },
+    "empresa": {
+      "nombre": "Plan Empresa",
+      "limite_diario": 2000,
+      "limite_mensual": 50000,
+      "precio_mensual": 500000,
+      "descripcion": "Hasta 2000 consultas IA al día, para negocios con alto volumen"
+    }
+  },
   "alertas": {
     "telegram": {
       "token": "TU_TOKEN_DE_BOT_TELEGRAM",

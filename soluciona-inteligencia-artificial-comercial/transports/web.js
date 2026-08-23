@@ -163,6 +163,7 @@ function resumenConfiguracion() {
       numero_dueno_formateado: formatearTel(config.numero_dueno),
       dataDir: config.dataDir
     },
+    auto_start: config.auto_start === false || config.auto_start === 'false' || config.auto_start === '0' ? false : true,
     menu: {
       total_productos: productoCount,
       categorias,
@@ -335,6 +336,13 @@ function guardarConfiguracion(campos) {
     if (typeof f.email_cliente === 'string') { cfg.facturacion.email_cliente = texto(f.email_cliente); config.facturacion.email_cliente = texto(f.email_cliente); actualizados.push('facturacion.email_cliente'); }
   }
 
+  if (typeof campos.auto_start !== 'undefined') {
+    const v = bool(campos.auto_start);
+    cfg.auto_start = v;
+    config.auto_start = v;
+    actualizados.push('auto_start');
+  }
+
   if (actualizados.length) fs.writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + '\n');
   return { ok: true, actualizados };
 }
@@ -426,15 +434,91 @@ function tokenValido(req) {
 }
 
 function paginaLogin(error) {
-  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Acceso ${esc(config.negocio)}</title>
-<style>body{font-family:Arial,Segoe UI,sans-serif;background:#075e54;color:#fff;display:flex;height:100vh;align-items:center;justify-content:center}
-form{background:#fff;color:#333;padding:2rem 2.5rem;border-radius:10px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.3)}
-h2{margin-top:0;color:#075e54}input{padding:.6rem;width:220px;margin:.6rem 0;border:1px solid #ccc;border-radius:6px;font-size:1rem}
-button{background:#25D366;color:#fff;border:none;padding:.6rem 1.4rem;border-radius:6px;cursor:pointer;font-weight:700;font-size:1rem}
-.msg{color:#c00;margin-top:.4rem;font-size:.9rem}</style></head>
-<body><form method="post" action="/login"><h2>Acceso al panel</h2>
-<input name="password" type="password" placeholder="Contraseña del panel" autofocus><br>
-<button type="submit">Entrar</button>${error ? `<div class="msg">${esc(error)}</div>` : ''}</form></body></html>`;
+  const negocio = esc(config.negocio || 'Soluciona');
+  const errHtml = error ? esc(error) : '';
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acceso ${negocio}</title>
+<style>
+  :root{--g1:#075e54;--g2:#128c7e;--g3:#25D366;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',system-ui,Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(1200px 600px at 15% -10%,#0e2a26 0%,transparent 60%),radial-gradient(1000px 500px at 115% 120%,#0c3b2e 0%,transparent 55%),linear-gradient(135deg,#075e54,#0b2f2a);
+    color:#e9f5f1;padding:20px}
+  .card{width:100%;max-width:400px;background:rgba(255,255,255,.06);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:38px 32px;box-shadow:0 20px 60px rgba(0,0,0,.45);animation:rise .5s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .logo{width:64px;height:64px;margin:0 auto 14px;border-radius:18px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--g3),var(--g2));box-shadow:0 8px 24px rgba(37,211,102,.4)}
+  .logo svg{width:34px;height:34px;fill:#fff}
+  h1{margin:0 0 2px;font-size:1.45rem;text-align:center;font-weight:800}
+  .sub{text-align:center;color:#9fc7bd;font-size:.9rem;margin-bottom:26px}
+  .field{position:relative;margin-bottom:14px}
+  .field svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;fill:#7faea3;opacity:.8}
+  input[type=text],input[type=password]{width:100%;padding:14px 14px 14px 44px;border:1px solid rgba(255,255,255,.16);
+    border-radius:12px;background:rgba(255,255,255,.05);color:#fff;font-size:1rem;outline:none;transition:.2s}
+  input:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(37,211,102,.18)}
+  input::placeholder{color:#8fb3aa}
+  .toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;color:#9fc7bd;font-size:.8rem}
+  .row{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 20px;font-size:.85rem;gap:10px}
+  .remember{display:flex;align-items:center;gap:8px;color:#cfe9e1;cursor:pointer;user-select:none}
+  .remember input{width:16px;height:16px;accent-color:var(--g3)}
+  .forgot{color:#7fd1a8;text-decoration:none;white-space:nowrap}
+  .forgot:hover{text-decoration:underline}
+  button.enter{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--g3),var(--g2));
+    color:#04231b;font-weight:800;font-size:1.02rem;cursor:pointer;transition:.2s;box-shadow:0 8px 20px rgba(37,211,102,.35)}
+  button.enter:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(37,211,102,.5)}
+  button.enter:active{transform:translateY(0)}
+  .msg{background:rgba(244,67,54,.15);border:1px solid rgba(244,67,54,.4);color:#ffb4ab;padding:10px 12px;border-radius:10px;
+    font-size:.85rem;margin-bottom:14px;text-align:center;display:${error ? 'block' : 'none'}}
+  .foot{text-align:center;margin-top:18px;font-size:.75rem;color:#6f968c}
+  @media(max-width:420px){.card{padding:30px 22px}}
+</style></head>
+<body>
+  <form class="card" method="post" action="/login" id="loginForm" autocomplete="on">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5.1-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-3-.2-.3A8 8 0 1 1 12 20zm4.3-6c-.2-.1-1.3-.7-1.5-.7-.2 0-.4 0-.5.1-.1.1-.5.5-.6.6-.1.1-.2.1-.4 0-.2-.1-.8-.3-1.5-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3 0-.4 0-.1.1-.2.2-.4.3-.2.4-.5.6-.8.1-.3.1-.6 0-.8-.1-.2-.4-1.3-.6-1.7-.2-.5-.4-.4-.5-.4h-.4c-.1 0-.4 0-.6.3-.2.3-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.3 2 3.2 2.8 1.9.8 2.3.7 2.7.6.4-.1 1.3-.5 1.5-1 .2-.5.2-1 .1-1.1 0-.1-.2-.2-.4-.3z"/></svg></div>
+    <h1>Acceso al panel</h1>
+    <div class="sub">${negocio}</div>
+    <div class="msg" id="msg">${errHtml}</div>
+    <div class="field">
+      <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+      <input name="usuario" id="usuario" type="text" placeholder="Usuario" autocomplete="username">
+    </div>
+    <div class="field">
+      <svg viewBox="0 0 24 24"><path d="M18 8h-1V6a5 5 0 0 0-10 0h2a3 3 0 1 1 6 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zm0 12H6V10h12z"/></svg>
+      <input name="password" id="password" type="password" placeholder="Contraseña" autocomplete="current-password">
+      <button type="button" class="toggle" id="togglePass" onclick="togglePass()">Mostrar</button>
+    </div>
+    <div class="row">
+      <label class="remember"><input type="checkbox" id="recuerdame" name="recuerdame"> Recuérdame</label>
+      <a class="forgot" href="#" onclick="return false" title="Contacta al administrador">¿Olvidaste tu contraseña?</a>
+    </div>
+    <button class="enter" type="submit">Entrar</button>
+    <div class="foot">Soluciona Inteligencia Artificial</div>
+  </form>
+  <script>
+    (function(){
+      var U='usuario',P='password',R='recuerdame';
+      function fill(){
+        try{
+          var d=JSON.parse(localStorage.getItem('soluciona_cred')||'{}');
+          if(d.u)document.getElementById(U).value=d.u;
+          if(d.p)document.getElementById(P).value=d.p;
+          if(d.r)document.getElementById(R).checked=true;
+        }catch(e){}
+      }
+      window.togglePass=function(){var p=document.getElementById(P),b=document.getElementById('togglePass');
+        if(p.type==='password'){p.type='text';b.textContent='Ocultar';}else{p.type='password';b.textContent='Mostrar';}};
+      document.getElementById('loginForm').addEventListener('submit',function(){
+        var r=document.getElementById(R).checked;
+        var u=document.getElementById(U).value,p=document.getElementById(P).value;
+        if(r){try{localStorage.setItem('soluciona_cred',JSON.stringify({u:u,p:p,r:true}));}catch(e){}}
+        else{try{localStorage.removeItem('soluciona_cred');}catch(e){}}
+      });
+      fill();
+    })();
+  </script>
+</body></html>`;
 }
 
 function iniciarWeb() {
@@ -519,10 +603,13 @@ function iniciarWeb() {
         req.on('end', () => {
           try {
             const params = new URLSearchParams(body);
+            const usuario = params.get('usuario') || '';
             if (params.get('password') === pw) {
               const t = crypto.randomBytes(16).toString('hex');
               SESIONES.add(t);
-              res.writeHead(302, { 'Set-Cookie': `panel_token=${t}; HttpOnly; Path=/; SameSite=Lax`, 'Location': '/' });
+              const recuerdame = params.get('recuerdame') === 'on' || params.get('recuerdame') === 'true';
+              const cookie = `panel_token=${t}; HttpOnly; Path=/; SameSite=Lax` + (recuerdame ? '; Max-Age=2592000' : '');
+              res.writeHead(302, { 'Set-Cookie': cookie, 'Location': '/' });
               res.end();
             } else {
               res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });

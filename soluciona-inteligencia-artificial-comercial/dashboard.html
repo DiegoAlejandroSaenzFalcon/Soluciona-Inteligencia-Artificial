@@ -92,6 +92,13 @@
     .cfg-item .val.warn{color:#c77700}
     .cfg-item .val.err{color:#c00}
     .cfg-item .val.sub{color:#666;font-weight:500}
+    /* ===== Toggle switch (inicio automático) ===== */
+    .switch{position:relative;display:inline-block;width:48px;height:26px;vertical-align:middle}
+    .switch input{opacity:0;width:0;height:0}
+    .slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:26px;transition:.25s}
+    .slider:before{content:"";position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+    .switch input:checked + .slider{background:#25D366}
+    .switch input:checked + .slider:before{transform:translateX(22px)}
     .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;color:#fff}
     .badge.ok{background:#1f9d55}
     .badge.warn{background:#ff9800}
@@ -777,6 +784,19 @@ function fmtTel(t) {
           <button class="btn-guardar" onclick="guardarConfig({negocio:cfg('cfg-negocio'),moneda:cfg('cfg-moneda'),hora_reporte:cfg('cfg-hora'),numero_dueno:cfg('cfg-dueno')},'msg-negocio')">💾 Guardar negocio</button>
           ${msg('msg-negocio', '')}
         </div>
+      `);
+
+      // ----- Sistema: inicio automático -----
+      const autoChecked = d.auto_start ? 'checked' : '';
+      html += seccion('⚙️ Sistema', 'Comportamiento del servidor en este equipo.', `
+        ${item('Inicio automático del panel', `
+          <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem">
+            <label class="switch"><input type="checkbox" id="cfg-auto-start" ${autoChecked}><span class="slider"></span></label>
+            <span style="font-weight:600;color:#333">${d.auto_start ? 'Activado' : 'Desactivado'}</span>
+          </div>
+          <div class="sub">Cuando está activado, el panel se inicia solo al encender o al iniciar sesión en este equipo. Desactívalo para que el servidor no arranque automáticamente (podrás encenderlo manualmente cuando lo necesites).</div>
+          <div style="margin-top:.7rem"><button class="btn-guardar" onclick="guardarConfig({auto_start:document.getElementById('cfg-auto-start').checked},'msg-auto')">💾 Guardar</button>${msg('msg-auto', '')}</div>
+        `)}
       `);
 
       // ----- Domicilios / tarifas por distancia -----

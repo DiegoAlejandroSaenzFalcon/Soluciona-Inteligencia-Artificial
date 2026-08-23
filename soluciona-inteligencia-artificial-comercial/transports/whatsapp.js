@@ -3,11 +3,7 @@ const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const {
-  default: makeWASocket,
-  useMultiFileAuthState,
-  DisconnectReason
-} = require('@whiskeysockets/baileys');
+let makeWASocket, useMultiFileAuthState, DisconnectReason;
 
 const {
   config, fechaDia, hoyInicio, numDeCelular
@@ -912,6 +908,7 @@ function buscarIngredientes(cuerpo) {
 }
 
 async function iniciarSesion() {
+  ({ default: makeWASocket, useMultiFileAuthState, DisconnectReason } = await import('@whiskeysockets/baileys'));
   const { state, saveCreds } = await useMultiFileAuthState(config.authDir);
   // Versión de baileys local (sin fetch a internet en cada arranque => arranque rápido)
   const version = require('@whiskeysockets/baileys/lib/Defaults/baileys-version.json').version;
