@@ -120,8 +120,9 @@ npm run db:init
 ## Usuario admin por defecto
 
 - Email: `admin@localhost`
-- Password: `admin123`
-- **¡Cambiar en primer login!**
+- Password: **sin valor por defecto**. Se toma de la variable de entorno `ADMIN_PASSWORD`; si no está definida, en la primera creación se genera una contraseña aleatoria fuerte que se imprime en consola (guárdala).
+- Definir siempre `ADMIN_PASSWORD` en producción antes del primer arranque.
+- **Cambiar en primer login.**
 
 ## Drizzle Studio (GUI)
 

@@ -204,7 +204,7 @@
 - **Instalado y corriendo PostgreSQL 16.4** en `C:\Program Files\PostgreSQL\16` (servicio `postgresql-x64-16`, auto-start). Base: `soluciona_inteligencia_artificial_comercial`.
 - Schema Drizzle completo en `src/db/schema.ts` (30 tablas): tenants, users, sessions, permissions, role_permissions, user_permissions, config_versions, config_secrets, categories, products, product_variants, stock, stock_movements, suppliers, purchase_orders(+items), purchase_receipts(+items), customers, invoices(+items), payments, credit_notes, payroll_employees/periods/details, accounts (PUC), journal_entries(+lines), audit_logs.
 - Conexión `src/db/index.ts` (drizzle+postgres-js) y `src/db/connection.js` (cliente raw CJS para runtime).
-- Seed `src/db/seed.ts` (idempotente): 39 permisos, 4 roles (admin='*'/operador/cocina/solo_lectura), tenant `default`, admin `admin@localhost` / `admin123`, plan PUC Colombia (132 cuentas, jerarquía 1-6).
+- Seed `src/db/seed.ts` (idempotente): 39 permisos, 4 roles (admin='*'/operador/cocina/solo_lectura), tenant `default`, admin `admin@localhost` (contraseña desde `ADMIN_PASSWORD` o generada aleatoriamente en primer arranque), plan PUC Colombia (132 cuentas, jerarquía 1-6).
 - Comandos: `npm run db:init` (crea tablas + seed), `npm run db:migrate` (aplica migraciones), `npm run db:studio` (GUI).
 - Migración aplicada manualmente: `drizzle/0000_abnormal_cerebro.sql`.
 

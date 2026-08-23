@@ -161,7 +161,8 @@ export async function initializeDatabase() {
     .where(eq(schema.users.email, 'admin@localhost'))
     .limit(1);
   if (!adminUser.length) {
-    const passwordHash = await bcrypt.hash('admin123', 12);
+    const adminPass = process.env.ADMIN_PASSWORD || crypto.randomBytes(12).toString('hex');
+    const passwordHash = await bcrypt.hash(adminPass, 12);
     await db.insert(schema.users).values({
       tenantId: 'default',
       email: 'admin@localhost',
@@ -170,7 +171,11 @@ export async function initializeDatabase() {
       role: 'admin',
       activo: true,
     });
-    console.log('[INIT] Usuario admin creado (admin@localhost / admin123)');
+    if (process.env.ADMIN_PASSWORD) {
+      console.log('[INIT] Usuario admin creado (admin@localhost) con contraseña de ADMIN_PASSWORD.');
+    } else {
+      console.log('[INIT] Usuario admin creado (admin@localhost). Contraseña generada (guárdala ahora): ' + adminPass);
+    }
   }
 
   console.log('[INIT] Verificando plan de cuentas básico (PUC Colombia)...');

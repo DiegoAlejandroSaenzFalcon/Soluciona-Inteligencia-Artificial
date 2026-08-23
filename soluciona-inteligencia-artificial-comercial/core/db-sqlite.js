@@ -356,11 +356,13 @@ function migrarLegacy() {
 migrarLegacy();
 
 // ---- Seed usuarios: admin inicial (evita import circular de src/auth) ----
-// Usuario: admin@localhost  |  Password: Admin123!
+// Usuario: admin@localhost. SIN contraseña por defecto conocida:
+// usa ADMIN_PASSWORD del entorno; si no está definida, se genera una
+// aleatoria fuerte y se muestra en consola SOLO en la creación inicial.
 const ADMIN_EMAIL = 'admin@localhost';
-const ADMIN_PASS = 'Admin123!';
 const adminExiste = db.prepare('SELECT id FROM users WHERE tenant_id=? AND email=?').get(tenantId, ADMIN_EMAIL);
 if (!adminExiste) {
+  const ADMIN_PASS = process.env.ADMIN_PASSWORD || require('crypto').randomBytes(12).toString('hex');
   let hash;
   try {
     hash = require('bcryptjs').hashSync(ADMIN_PASS, 12);
@@ -370,6 +372,11 @@ if (!adminExiste) {
   }
   db.prepare('INSERT INTO users (tenant_id, email, password_hash, nombre, role, activo) VALUES (?,?,?,?,?,1)')
     .run(tenantId, ADMIN_EMAIL, hash, 'Administrador', 'admin');
+  if (process.env.ADMIN_PASSWORD) {
+    console.log('[DB] Admin inicial creado con contraseña de ADMIN_PASSWORD.');
+  } else {
+    console.log('[DB] Admin inicial creado. Contraseña generada (guárdala ahora): ' + ADMIN_PASS);
+  }
 }
 
 // ---- Consumo IA (cuotas por rol: chatbot / asistentes / vision) ----
