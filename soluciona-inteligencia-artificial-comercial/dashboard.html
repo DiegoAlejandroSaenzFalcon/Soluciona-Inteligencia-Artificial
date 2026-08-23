@@ -975,14 +975,28 @@ function fmtTel(t) {
 
       // ----- Bot WhatsApp -----
       const bot = d.bot;
+      const qrHtml = bot.conectado ? '' : `
+        <div class="cfg-item" style="grid-column:1/-1">
+          <b>Vincula el WhatsApp del negocio</b>
+          <div class="sub" style="margin:.4rem 0">Abre el WhatsApp del negocio: <b>Ajustes › Dispositivos vinculados › Vincular dispositivo</b> y escanea el código.</div>
+          <div id="bot-qr-box" style="margin-top:.5rem"></div>
+          <div class="sub" style="margin-top:.4rem">El código se renueva solo. Si no aparece, recarga esta página (pestaña Configuración).</div>
+        </div>`;
       html += seccion('💬 Bot WhatsApp', 'Estado de conexión y datos del WhatsApp vinculado al negocio.', `
         ${item('Conexión', bot.conectado ? '<span class="badge ok">Conectado</span>' : '<span class="badge err">Desconectado</span>')}
         ${item('Número del WhatsApp (QR)', bot.numero_formateado || '<span class="badge warn">Solo visible al conectar</span>')}
         ${item('Nombre del WhatsApp', bot.nombre ? `<span class="val">${bot.nombre}</span>` : '<span class="badge warn">Por definir</span>')}
         ${item('Último cambio', bot.ultimoCambio ? new Date(bot.ultimoCambio).toLocaleString('es-CO') : '—')}
+        ${qrHtml}
       `);
 
       cont.innerHTML = html;
+      if (!bot.conectado) {
+        fetch('/api/qr', { credentials: 'same-origin' })
+          .then(r => r.ok ? r.json() : null)
+          .then(j => { if (j && j.qr) { const b = document.getElementById('bot-qr-box'); if (b) b.innerHTML = `<img src="${j.qr}" alt="QR WhatsApp" style="width:240px;height:240px;border-radius:12px;background:#fff;padding:8px">`; } })
+          .catch(() => {});
+      }
       window.renderProductosGlobal = renderProductos;
       renderProductos('');
       loadIAPool();

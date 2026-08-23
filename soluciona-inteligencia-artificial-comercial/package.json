@@ -25,6 +25,7 @@
     "node-forge": "^1.4.0",
     "pino": "^9.0.0",
     "postgres": "^3.4.4",
+    "qrcode": "^1.5.4",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.35.3",
     "socket.io": "^4.7.5",

@@ -21,6 +21,7 @@ const { handleInventoryRequest } = require('../src/inventory/routes');
 const { handleAccountingRequest } = require('../src/accounting/routes');
 
 const { initWebSockets, emitir, contarClientes } = require('../src/websockets');
+const QRCode = require('qrcode');
 
 const AGENTES = loadAgentesUtiles();
 const DASHBOARD = path.join(__dirname, '..', 'dashboard.html');
@@ -727,6 +728,24 @@ function iniciarWeb() {
     if (url === '/api/estado') {
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify(estadoBot()));
+      return;
+    }
+
+    if (url === '/api/qr') {
+      const qr = global.ultimoQR;
+      if (!qr) {
+        res.writeHead(204, { 'Content-Type': 'text/plain' });
+        res.end();
+        return;
+      }
+      try {
+        const png = await QRCode.toDataURL(qr, { width: 320, margin: 2, color: { dark: '#075e54', light: '#ffffff' } });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ qr: png }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
       return;
     }
 

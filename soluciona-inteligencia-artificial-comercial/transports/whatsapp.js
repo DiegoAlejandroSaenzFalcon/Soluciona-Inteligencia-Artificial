@@ -1037,11 +1037,13 @@ async function iniciarSesion() {
   s.ev.on('connection.update', (update) => {
     const { connection, lastDisconnect } = update;
     if (update.qr) {
+      global.ultimoQR = update.qr;
       logger.info('\n[!] Escanea este QR con el WhatsApp del NEGOCIO: Ajustes > Dispositivos vinculados > Vincular dispositivo\n');
       qrcode.generate(update.qr, { small: true });
     }
     if (connection === 'open') {
       global.reconectando = false;
+      global.ultimoQR = null;
       setSock(s);
       setConectado(true);
       logger.info(`[OK] ${config.nombreNegocio()} conectado. Escuchando pedidos...`);

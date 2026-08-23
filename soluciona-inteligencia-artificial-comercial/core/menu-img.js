@@ -38,6 +38,8 @@ function hashMenu() {
     h.update(p.nombre).update('|').update(String(p.precio)).update('|')
       .update(p.ingredientes || '').update('|').update(p.categoria || '');
   }
+  h.update('|color:' + ((config.menu && config.menu.color) || ''));
+  h.update('|logo:' + ((config.menu && config.menu.logo) || ''));
   return h.digest('hex').slice(0, 12);
 }
 
