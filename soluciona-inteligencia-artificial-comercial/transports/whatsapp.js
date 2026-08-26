@@ -91,6 +91,17 @@ function acquireLock() {
 }
 acquireLock();
 
+// ===== CONFIG RECONEXIÓN (exponencial + jitter ±20%, máx 5 min) =====
+const RECONNECT_BASE = 5000;       // 5s base
+const RECONNECT_MAX = 300000;      // 5 min máx
+const RECONNECT_JITTER_PCT = 0.2;  // ±20%
+
+function calcReconnectDelay(attempt) {
+  const base = RECONNECT_BASE * Math.pow(2, attempt - 1);
+  const jitter = base * RECONNECT_JITTER_PCT * (Math.random() * 2 - 1); // ±20%
+  return Math.min(Math.max(base + jitter, RECONNECT_BASE), RECONNECT_MAX);
+}
+
 // ==================== MESSAGE QUEUE + RATE LIMIT + DEDUP ====================
 const QUEUE_DIR = path.join(config.dataDir || 'data', 'queue');
 if (!fs.existsSync(QUEUE_DIR)) fs.mkdirSync(QUEUE_DIR, { recursive: true });
@@ -427,7 +438,7 @@ async function cargarContactos(s, reintento) {
   if (reintento < 3) setTimeout(() => cargarContactos(s, reintento + 1), 60000);
 }
 
-async function responder(s, jid, texto, m) {
+async function responder(s, jid, texto, m, opts = {}) {
   const phone = numDeCelular(jid);
   const traceId = getTraceId();
   const tenantId = getTenantId();
@@ -439,7 +450,7 @@ async function responder(s, jid, texto, m) {
       idsEnviados.add(res.key.id);
       saveSentIds(idsEnviados);
     }
-    registrar(phone, '', 'bot', texto);
+    if (!opts.noLog) registrar(phone, '', 'bot', texto);
     logger.debug(`Mensaje enviado a ${phone}`, {
       traceId,
       tenantId: phone,
@@ -925,6 +936,7 @@ async function iniciarSesion() {
   let lastMessageTs = Date.now();
   let lastSentTs = Date.now();
   const WATCHDOG_INTERVAL = 30000; // 30s
+  const STALE_THRESHOLD = 5 * 60 * 1000; // 5 min sin mensajes = stale
   // Ya NO se reinicia el socket por inactividad: un negocio real pasa horas
   // sin mensajes. El watchdog solo actúa si la conexión websocket está muerta
   // o la cola de envío quedó atascada.
@@ -957,7 +969,8 @@ async function iniciarSesion() {
         });
         if (sock) { try { sock.ws?.close(); } catch {} sock = null; }
         global.reconnectAttempts = 0;
-        setTimeout(() => { global.reconectando = false; iniciarSesion(); }, 2000);
+        const delay = calcReconnectDelay(1);
+        setTimeout(() => { global.reconectando = false; iniciarSesion(); }, delay);
       } else if (queueStuck) {
         recordMetric('watchdogTriggers');
         recordMetric('queueStuck');
@@ -1043,6 +1056,7 @@ async function iniciarSesion() {
     }
     if (connection === 'open') {
       global.reconectando = false;
+      global.reconnectAttempts = 0; // reset intentos en conexión exitosa
       global.ultimoQR = null;
       setSock(s);
       setConectado(true);
@@ -1056,7 +1070,7 @@ async function iniciarSesion() {
       cargarContactos(s, 0);
       resolverLidsPendientes(s);
       setTimeout(() => {
-        responder(s, DUENO_JID, `✅ El bot de ${config.nombreNegocio()} está ACTIVO. Escribe un pedido y lo registramos.`)
+        responder(s, DUENO_JID, `✅ El bot de ${config.nombreNegocio()} está ACTIVO. Escribe un pedido y lo registramos.`, null, { noLog: true })
           .then(() => logger.info('[OK] Mensaje de prueba enviado al dueño.'))
           .catch(e => logger.info('[!] No pude enviar mensaje de prueba:', e.message || e));
       }, 3000);
@@ -1070,13 +1084,11 @@ async function iniciarSesion() {
         logger.info('[!] La sesión fue cerrada desde el celular. Borra la carpeta "auth_info" y vuelve a abrir iniciar.bat para escanear de nuevo.');
         alertarDueno('❌ SESIÓN CERRADA desde el celular. El bot NO recibe pedidos hasta escanear el QR de nuevo.');
       } else {
-        // Reconexión exponencial con jitter: 5s, 10s, 20s, 40s, 80s, max 300s
-        const RECONNECT_BASE = 5000;
-        const RECONNECT_MAX = 300000;
+        // Reconexión exponencial con jitter ±20%, máx 5 min
         if (!global.reconnectAttempts) global.reconnectAttempts = 0;
         global.reconnectAttempts++;
         recordMetric('reconnections');
-        const delay = Math.min(RECONNECT_BASE * Math.pow(2, global.reconnectAttempts - 1) + Math.random() * 1000, RECONNECT_MAX);
+        const delay = calcReconnectDelay(global.reconnectAttempts);
         logger.warn('[RECONNECT] Conexión caída, reintentando', { attempt: global.reconnectAttempts, delayMs: delay });
         alertarDueno(`⚠️ Bot desconectado. Reintentando en ${Math.round(delay/1000)}s (intento ${global.reconnectAttempts})...`);
         global.reconectando = true;
@@ -1169,40 +1181,39 @@ async function iniciarSesion() {
   });
 }
 
-// ==================== BACKUP AUTOMÁTICO AUTH_INFO DIARIO ====================
+// ==================== BACKUP AUTOMÁTICO AUTH_INFO DIARIO (async, sin bloquear) ====================
 const BACKUP_DIR = path.join(config.dataDir || 'data', 'backups');
-if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
 const AUTH_DIR = config.authDir;
+let backupTimer = null;
 
-function backupAuthInfo() {
-  if (!fs.existsSync(AUTH_DIR)) {
-    logger.warn('[BACKUP] Directorio auth no existe', { AUTH_DIR });
-    return;
-  }
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const dest = path.join(BACKUP_DIR, `auth_${timestamp}`);
+async function backupAuthInfo() {
   try {
-    // Copia recursiva
-    fs.cpSync(AUTH_DIR, dest, { recursive: true });
-    // Limpia backups > 7 días
-    const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('auth_'));
-    const now = Date.now();
-    for (const f of files) {
-      const fpath = path.join(BACKUP_DIR, f);
-      const stat = fs.statSync(fpath);
-      if (now - stat.mtimeMs > 7 * 24 * 60 * 60 * 1000) {
-        fs.rmSync(fpath, { recursive: true, force: true });
-        logger.info('[BACKUP] Borrado backup antiguo', { file: f });
-      }
+    await fs.promises.mkdir(BACKUP_DIR, { recursive: true });
+    if (!(await fs.promises.stat(AUTH_DIR).catch(() => false))) {
+      logger.warn('[BACKUP] Directorio auth no existe', { AUTH_DIR });
+      return;
     }
-    logger.info('[BACKUP] auth_info respaldado', { dest, files: fs.readdirSync(BACKUP_DIR).length });
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const dest = path.join(BACKUP_DIR, `auth_${timestamp}`);
+    await fs.promises.cp(AUTH_DIR, dest, { recursive: true });
+    // Rotación: mantiene los 7 más recientes
+    const files = await fs.promises.readdir(BACKUP_DIR);
+    const authFiles = files
+      .filter(f => f.startsWith('auth_'))
+      .map(f => ({ name: f, path: path.join(BACKUP_DIR, f) }))
+      .sort((a, b) => b.name.localeCompare(a.name)); // más nuevo primero
+    for (const f of authFiles.slice(7)) {
+      await fs.promises.rm(f.path, { recursive: true, force: true });
+      logger.info('[BACKUP] Borrado backup antiguo', { file: f.name });
+    }
+    logger.info('[BACKUP] auth_info respaldado', { dest, total: authFiles.length });
   } catch (e) {
     logger.error('[BACKUP] Error', { error: e.message });
   }
 }
 
 function programarBackupDiario() {
-  // Ejecutar a las 03:00 AM todos los días
+  if (backupTimer) return; // ya programado
   const runAt3am = () => {
     const now = new Date();
     const target = new Date(now);
@@ -1211,8 +1222,7 @@ function programarBackupDiario() {
     const ms = target - now;
     setTimeout(() => {
       backupAuthInfo();
-      // Reprogramar para el siguiente día
-      setInterval(backupAuthInfo, 24 * 60 * 60 * 1000);
+      backupTimer = setInterval(backupAuthInfo, 24 * 60 * 60 * 1000);
     }, ms);
   };
   runAt3am();

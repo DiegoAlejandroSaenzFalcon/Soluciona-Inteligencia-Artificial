@@ -1,0 +1,11 @@
+{
+  "extends": "@soluciona/typescript-config/react-library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "declarationDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "include": ["src/**/*", "vitest.setup.ts"],
+  "exclude": ["node_modules", "dist", "build", "coverage", ".turbo", "storybook-static", "*.config.*", "*.stories.tsx"]
+}

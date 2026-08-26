@@ -1,36 +1,194 @@
-# Dependencias
+# Soluciona IA - Git Ignore
+
+# Dependencies
 node_modules/
-**/node_modules/
+.pnp
+.pnp.js
 
-# Datos de clientes (pedidos, conversaciones, GPS, teléfonos) — PRIVADO / PII
-data/
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
 
-# Archivos de datos DIAN generados (PDF convertido, grande)
-dian-middleware/resolucion_*.json
-dian-middleware/*.json
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.*.local
 
-# Sesiones de WhatsApp (auth_state) — PRIVADO
+# Config files (may contain secrets)
+config.json
+config.local.json
+config.*.json
+!config.example.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+# Auth info (WhatsApp session)
 auth_info/
 auth_info_*/
-.wwebjs_auth/
-.wwebjs_cache/
 
-# Lockfile regenerable (grande)
-package-lock.json
+# Backups
+backups/
+data/backups/
 
-# Configuraciones reales con claves API y datos del negocio — PRIVADO
-config.json
-panel-central.json
-clientes/
-
-# Claves sueltas
-.llm_key
-.env
-*.local
-
-# Backups internos
-backup-*/
+# Logs
+logs/
 *.log
 
-# Archivos de prueba generados
-*.jsonl
+# Cache
+.cache/
+.node_cache/
+.eslintcache
+
+# Build
+dist/
+build/
+*.tsbuildinfo
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Docker
+.docker/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.nyc_output/
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Vite/Build
+dist/
+build/
+
+# Database files
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+# Auth info
+auth_info/
+auth_info_*/
+
+# Backup directories
+data/backups/
+backups/
+
+# Log files
+logs/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependency directories
+node_modules/
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Docker
+.docker/
+Dockerfile.local
+
+# Misc
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*.backup
+
+# Compiled
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+# Estado local y secretos runtime
+server.pid
+data/

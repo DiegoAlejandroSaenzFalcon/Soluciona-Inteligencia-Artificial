@@ -299,28 +299,45 @@ function validateReferences(data, errors, warnings) {
 }
 
 /**
- * Valida XML UBL contra esquema XSD (si disponible)
+ * Valida XML UBL contra esquema XSD (si disponible) y reglas DIAN
  * @param {string} xml - XML a validar
  * @returns {Promise<Object>} Resultado validación
  */
 export async function validateXmlSchema(xml) {
   try {
-    // En producción: usar libxmljs o xmllint con esquemas XSD UBL 2.1 + DIAN
-    // Por ahora validación básica de estructura
     const parser = new DOMParser();
-    const doc = new DOMParser().parseFromString(xml, 'text/xml');
+    const doc = parser.parseFromString(xml, 'text/xml');
 
     const errors = [];
+    const warnings = [];
     const parseErrors = doc.getElementsByTagName('parsererror');
     if (parseErrors.length > 0) {
       for (const err of parseErrors) {
         errors.push(err.textContent);
       }
+      return { valid: false, errors, warnings };
     }
 
-    // Validar estructura mínima requerida
+    // 1. Validar namespaces requeridos
+    const root = doc.documentElement;
+    const requiredNamespaces = {
+      'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2': 'ubl',
+      'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2': 'cac',
+      'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2': 'cbc'
+    };
+    
+    for (const [ns, prefix] of Object.entries(requiredNamespaces)) {
+      const nsDecl = Array.from(root.attributes).find(a => a.name === `xmlns:${prefix}` || a.name === `xmlns` && a.value === ns);
+      if (!nsDecl) {
+        warnings.push(`Namespace ${prefix} (${ns}) no declarado explícitamente en root`);
+      }
+    }
+
+    // 2. Validar elementos obligatorios UBL 2.1 + DIAN
     const requiredElements = [
+      'cbc:UBLVersionID', 'cbc:CustomizationID', 'cbc:ProfileID',
       'cbc:ID', 'cbc:IssueDate', 'cbc:IssueTime', 'cbc:InvoiceTypeCode',
+      'cbc:DocumentCurrencyCode',
       'cac:AccountingSupplierParty', 'cac:AccountingCustomerParty',
       'cac:InvoiceLine', 'cac:LegalMonetaryTotal'
     ];
@@ -332,9 +349,101 @@ export async function validateXmlSchema(xml) {
       }
     }
 
-    return { valid: errors.length === 0, errors };
+    // 3. Validar valores específicos DIAN
+    // CustomizationID debe ser '10' para factura electrónica Colombia
+    const customizationId = xpath.select('string(//cbc:CustomizationID)', doc);
+    if (customizationId && customizationId !== '10') {
+      warnings.push(`CustomizationID debería ser '10' para Colombia, encontrado: ${customizationId}`);
+    }
+
+    // ProfileID debe ser FACTURA_VENTA, NOTA_CREDITO, NOTA_DEBITO, etc.
+    const profileId = xpath.select('string(//cbc:ProfileID)', doc);
+    const validProfiles = ['FACTURA_VENTA', 'NOTA_CREDITO', 'NOTA_DEBITO', 'DOCUMENTO_SOPORTE_ADQUISICIONES'];
+    if (profileId && !validProfiles.includes(profileId)) {
+      warnings.push(`ProfileID no estándar DIAN: ${profileId}`);
+    }
+
+    // InvoiceTypeCode válido
+    const invoiceTypeCode = xpath.select('string(//cbc:InvoiceTypeCode)', doc);
+    const validTypes = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'];
+    if (invoiceTypeCode && !validTypes.includes(invoiceTypeCode)) {
+      errors.push(`InvoiceTypeCode inválido: ${invoiceTypeCode}. Válidos: ${validTypes.join(', ')}`);
+    }
+
+    // Moneda COP
+    const currencyCode = xpath.select('string(//cbc:DocumentCurrencyCode)', doc);
+    if (currencyCode && currencyCode !== 'COP') {
+      errors.push(`DocumentCurrencyCode debe ser COP para Colombia, encontrado: ${currencyCode}`);
+    }
+
+    // 4. Validar estructura de partes (emisor y adquiriente)
+    const supplierId = xpath.select('string(//cac:AccountingSupplierParty//cac:PartyIdentification/cbc:ID)', doc);
+    if (!supplierId) errors.push('NIT emisor requerido en cac:AccountingSupplierParty');
+    
+    const customerId = xpath.select('string(//cac:AccountingCustomerParty//cac:PartyIdentification/cbc:ID)', doc);
+    if (!customerId) errors.push('Identificación adquiriente requerida en cac:AccountingCustomerParty');
+
+    // 5. Validar líneas de factura
+    const lines = xpath.select('//cac:InvoiceLine', doc);
+    if (lines.length === 0) {
+      errors.push('Debe haber al menos una cac:InvoiceLine');
+    } else {
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const lineId = xpath.select('string(cbc:ID)', line);
+        if (!lineId) errors.push(`Línea ${i+1}: cbc:ID requerido`);
+        
+        const qty = xpath.select('string(cbc:InvoicedQuantity)', lines[i]);
+        if (!qty) errors.push(`Línea ${i+1}: cbc:InvoicedQuantity requerido`);
+        
+        const lineExtAmount = xpath.select('string(cbc:LineExtensionAmount)', lines[i]);
+        if (!lineExtAmount) errors.push(`Línea ${i+1}: cbc:LineExtensionAmount requerido`);
+        
+        const taxTotal = xpath.select('cac:TaxTotal', lines[i]);
+        if (taxTotal.length === 0) {
+          warnings.push(`Línea ${i+1}: cac:TaxTotal recomendado`);
+        }
+      }
+    }
+
+    // 6. Validar totales monetarios
+    const lmt = xpath.select('//cac:LegalMonetaryTotal', doc)[0];
+    if (lmt) {
+      const requiredLMT = ['cbc:LineExtensionAmount', 'cbc:TaxExclusiveAmount', 'cbc:TaxInclusiveAmount', 'cbc:PayableAmount'];
+      for (const el of requiredLMT) {
+        if (!xpath.select(`string(${el})`, lmt)) {
+          warnings.push(`LegalMonetaryTotal: ${el} recomendado`);
+        }
+      }
+    }
+
+    // 7. Validar firma digital presente (si documento ya firmado)
+    const signatures = xpath.select('//ds:Signature', doc);
+    if (signatures.length === 0) {
+      warnings.push('No se encontró firma digital (ds:Signature) - documento sin firmar');
+    } else if (signatures.length > 1) {
+      warnings.push('Múltiples firmas detectadas');
+    }
+
+    // 8. Validación XSD completa opcional (requiere libxmljs)
+    // if (typeof libxmljs !== 'undefined') {
+    //   const xsdPath = './schemas/ubl/Invoice-2.1.xsd'; // Requiere esquemas DIAN
+    //   try {
+    //     const libxmljs = require('libxmljs');
+    //     const schema = libxmljs.parseXml(fs.readFileSync(xsdPath));
+    //     const docXml = libxmljs.parseXml(xml);
+    //     const valid = docXml.validate(schema);
+    //     if (!valid) {
+    //       errors.push(...docXml.validationErrors.map(e => e.message));
+    //     }
+    //   } catch (e) {
+    //     warnings.push(`Validación XSD no disponible: ${e.message}`);
+    //   }
+    // }
+
+    return { valid: errors.length === 0, errors, warnings };
   } catch (e) {
-    return { valid: false, errors: [`Error parseando XML: ${e.message}`] };
+    return { valid: false, errors: [`Error parseando XML: ${e.message}`], warnings: [] };
   }
 }
 

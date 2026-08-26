@@ -1,0 +1,105 @@
+{
+  "name": "@soluciona/design-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Design System de Soluciona IA - Tokens, Componentes, Patrones",
+  "main": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./tokens": {
+      "import": "./dist/tokens/index.js",
+      "types": "./dist/tokens/index.d.ts"
+    },
+    "./primitives": {
+      "import": "./dist/primitives/index.js",
+      "types": "./dist/primitives/index.d.ts"
+    },
+    "./atoms": {
+      "import": "./dist/atoms/index.js",
+      "types": "./dist/atoms/index.d.ts"
+    },
+    "./molecules": {
+      "import": "./dist/molecules/index.js",
+      "types": "./dist/molecules/index.d.ts"
+    },
+    "./organisms": {
+      "import": "./dist/organisms/index.js",
+      "types": "./dist/organisms/index.d.ts"
+    },
+    "./templates": {
+      "import": "./dist/templates/index.js",
+      "types": "./dist/templates/index.d.ts"
+    },
+    "./hooks": {
+      "import": "./dist/hooks/index.js",
+      "types": "./dist/hooks/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:types": "tsc --emitDeclarationOnly",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build",
+    "clean": "rm -rf dist node_modules .turbo coverage storybook-static"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-checkbox": "^1.1.0",
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-popover": "^1.1.1",
+    "@radix-ui/react-progress": "^1.1.0",
+    "@radix-ui/react-radio-group": "^1.2.0",
+    "@radix-ui/react-scroll-area": "^1.1.0",
+    "@radix-ui/react-select": "^2.1.1",
+    "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
+    "@radix-ui/react-tooltip": "^1.1.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.424.0",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@soluciona/eslint-config": "workspace:*",
+    "@soluciona/prettier-config": "workspace:*",
+    "@soluciona/typescript-config": "workspace:*",
+    "@soluciona/vitest-config": "workspace:*",
+    "@storybook/addon-a11y": "^8.2.0",
+    "@storybook/addon-essentials": "^8.2.0",
+    "@storybook/addon-interactions": "^8.2.0",
+    "@storybook/addon-links": "^8.2.0",
+    "@storybook/blocks": "^8.2.0",
+    "@storybook/react": "^8.2.0",
+    "@storybook/react-vite": "^8.2.0",
+    "@storybook/test": "^8.2.0",
+    "storybook": "^8.2.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.0"
+  }
+}

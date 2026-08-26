@@ -1,6 +1,9 @@
 'use strict';
+const QRCode = require('qrcode');
 const auth = require('./index');
 const { getClient } = require('../db/connection');
+const { getRateLimiter } = require('../utils/rateLimiter');
+const { config } = require('../../config');
 
 function leerCuerpo(req) {
   return new Promise((resolve) => {
@@ -46,10 +49,22 @@ async function currentUser(req) {
   }
 }
 
+// Rate limiter unificado
+const rateLimiter = getRateLimiter(config);
+
 /**
  * Maneja las rutas /api/auth/*. Devuelve true si consumió la petición.
  */
 async function handleAuthRequest(req, res, url) {
+  // Rate limiting para endpoints de auth (usando rate limiter unificado)
+  const ip = req.socket.remoteAddress;
+  if (['/api/auth/login', '/api/auth/verify-2fa', '/api/auth/refresh', '/api/auth/setup-2fa', '/api/auth/change-password'].includes(url) && req.method === 'POST') {
+    const rl = rateLimiter.check(ip, url);
+    if (!rl.allowed) {
+      return json(res, 429, { error: 'rate_limit', retryAfterMs: rl.retryAfterMs });
+    }
+  }
+
   // ---- LOGIN ----
   if (url === '/api/auth/login' && req.method === 'POST') {
     const body = await leerCuerpo(req);
@@ -67,6 +82,25 @@ async function handleAuthRequest(req, res, url) {
       return json(res, 200, { requiresTwoFactor: true, twoFactorToken: result.twoFactorToken });
     }
     return json(res, 200, result);
+  }
+
+  // ---- CAMBIO FORZADO DE CONTRASEÑA (primer inicio / obligatorio) ----
+  if (url === '/api/auth/change-password' && req.method === 'POST') {
+    const user = await currentUser(req);
+    if (!user) return json(res, 401, { error: 'no_autenticado' });
+    const body = await leerCuerpo(req);
+    if (!body || !body.currentPassword || !body.newPassword) {
+      return json(res, 400, { error: 'datos_incompletos' });
+    }
+    if (String(body.newPassword).length < 8) {
+      return json(res, 400, { error: 'password_corto', mensaje: 'La contraseña debe tener al menos 8 caracteres.' });
+    }
+    const ok = await auth.verifyPassword(body.currentPassword, user.password_hash);
+    if (!ok) return json(res, 401, { error: 'password_actual_incorrecta' });
+    const passwordHash = await auth.hashPassword(body.newPassword);
+    const c = getClient();
+    await c.unsafe('UPDATE users SET password_hash = $1, must_change_password = 0 WHERE id = $2', [passwordHash, user.id]);
+    return json(res, 200, { ok: true });
   }
 
   // ---- VERIFICAR 2FA ----
@@ -116,13 +150,24 @@ async function handleAuthRequest(req, res, url) {
     return json(res, 200, { permissions: perms });
   }
 
-  // ---- GENERAR SECRETO 2FA (requiere token) ----
+  // ---- GENERAR SECRETO 2FA (acepta twoFactorToken de login o sesión normal) ----
   if (url === '/api/auth/setup-2fa' && req.method === 'POST') {
-    const user = await currentUser(req);
-    if (!user) return json(res, 401, { error: 'no_autenticado' });
+    const token = bearer(req);
+    if (!token) return json(res, 401, { error: 'no_autenticado' });
+    const payload = auth.verifyToken(token);
+    const c = getClient();
+    let user = null;
+    if (payload && payload.purpose === '2fa') {
+      const rows = await c.unsafe('SELECT * FROM users WHERE id = $1 AND activo = true LIMIT 1', [Number(payload.sub)]);
+      user = rows[0] || null;
+    } else {
+      user = await currentUser(req);
+    }
+    if (!user) return json(res, 401, { error: 'token_invalido' });
     const secret = auth.generateTotpSecret();
     const uri = auth.totpUri(secret, user.email, configNombre());
-    return json(res, 200, { secret, uri, code: auth.currentTotp(secret) });
+    const qr = await QRCode.toDataURL(uri, { margin: 1, width: 220, errorCorrectionLevel: 'M' });
+    return json(res, 200, { secret, uri, qr, code: auth.currentTotp(secret) });
   }
 
   // ---- ACTIVAR 2FA (confirma con código) ----
@@ -182,9 +227,9 @@ async function handleAuthRequest(req, res, url) {
     const c = getClient();
     try {
       const rows = await c.unsafe(
-        `INSERT INTO users (tenant_id, email, password_hash, nombre, telefono, role, activo)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
-         RETURNING id, tenant_id, email, nombre, telefono, role, activo, two_factor_enabled`,
+        `INSERT INTO users (tenant_id, email, password_hash, nombre, telefono, role, activo, must_change_password)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, 1)
+         RETURNING id, tenant_id, email, nombre, telefono, role, activo, two_factor_enabled, must_change_password`,
         ['default', String(body.email).toLowerCase().trim(), passwordHash,
          body.nombre, body.telefono || null, body.role, body.activo !== false]
       );
@@ -225,9 +270,10 @@ async function handleAuthRequest(req, res, url) {
 function configNombre() {
   try {
     const { config } = require('../../config');
-    return config.negocio || 'Mi Negocio';
+    const APP = 'Soluciona IA';
+    return config.negocio ? `${APP} · ${config.negocio}` : APP;
   } catch {
-    return 'Mi Negocio';
+    return 'Soluciona IA';
   }
 }
 

@@ -1,43 +1,32 @@
-# Runbook: El correo no envía o no recibe (Office 365 / Gmail)
+# Runbook: Correo que no envía mensajes
 
-> Regla: ejecuta SOLO con el ticket aprobado y bajo el procedimiento de acceso (docs/03).
-> Haz backup/registro previo de lo que toques. Si algo pide credenciales del usuario, que las ponga el propio usuario.
+**Título**: Correo electrónico no envía mensajes desde hoy  
+**Prioridad**: P2 (afecta a varios usuarios, puede tener alternativa)  
+**Categoría**: correo  
+**Tipo**: L1 (resoluble con guía/KB)  
 
-## 1. Síntomas
-- Al enviar: mensaje queda en la Bandeja de salida / error "no se pudo enviar".
-- No llegan mensajes externos.
-- Error de autenticación de la cuenta.
+## Descripción del problema
+El cliente reporta que sus correos electrónicos no se envían desde la mañana del día actual. Los usuarios no reciben notificaciones automáticas.
 
-## 2. Causas comunes (por probabilidad)
-1. **Contraseña caducada o bloqueo de seguridad** (M365/Gmail pide verificar dispositivo).
-2. **Cuota llena** (correo rebota con "buzón lleno").
-3. **Cliente de correo con configuración desactualizada** (SMTP/IMAP o contraseña de aplicación).
-4. **Virus/corrupción de perfil** de Outlook (caso frecuente en Windows).
-5. **Servidor de correo propio**: DNS/MX roto o IP bloqueada (SPF/DKIM fallando).
-6. **Corte del ISP** (verificar otros servicios).
+## Pasos de diagnóstico
 
-## 3. Diagnóstico (en orden)
-1. `ping smtp.office365.com` (o el servidor que use el cliente) → ¿resuelve?
-2. En web (outlook.com/Gmail): ¿funciona el correo desde el navegador? → separa "problema de cuenta" vs "problema de app".
-3. Revisar cuota: Configuración → Cuenta → Almacenamiento (buzón >90%: avisa y limpia).
-4. Outlook en modo seguro: `outlook.exe /safe` → si funciona: complementos o perfil corrupto.
-5. Verificar contraseña de aplicación (Gmail con 2FA) o inicio de sesión de la cuenta.
-6. Si es servidor propio: `nslookup -type=MX dominio.com` y revisar SPF/DKIM con mxtoolbox (web).
+### 1. Verificar conectividad de red
+- [ ] Confirmar que el servidor tiene acceso a internet
+- [ ] Probar conexión SMTP: `telnet smtp.gmail.com 587`
+- [ ] Verificar que el puerto 587 esté abierto en el firewall
 
-## 4. Solución (cada paso requiere aprobación del titular y, si aplica, del cliente)
-1. Restablecer contraseña de la cuenta (o pedir al cliente que lo haga) y volver a configurar el cliente.
-2. Vaciar buzón: borrar elementos eliminados y correo grande; activar archivo automático.
-3. Perfil de Outlook: crear perfil nuevo (Panel de control → Correo → Perfiles).
-4. Actualizar configuración SMTP: saliente 587/TLS con autenticación (Office 365) o app password (Gmail).
-5. Si SPF/DKIM mal: corregir DNS del dominio (mismo día; propagación 24-48h).
-6. Prueba final: enviar correo a una cuenta de prueba y responder.
+### 2. Revisar configuración del servicio de correo
+- [ ] Validar credenciales de inicio de sesión (usuario/contraseña)
+- [ ] Verificar configuración del servidor SMTP (host, puerto, SSL/TLS)
+- [ ] Confirmar que la autenticación esté habilitada en el proveedor de correo
 
-## 5. Prevención
-- MFA + contraseña fuerte; política de rotación.
-- Monitorear cuota con alerta al 85%.
-- Regla de retención/archivo automático activada.
+### 3. Revisar logs del servicio
+- [ ] Revisar logs del servidor de correo para errores de envío
+- [ ] Buscar mensajes de error "auth failed", "connection timeout", "rate limited"
+- [ ] Verificar si hubo cambios recientes en la configuración
 
-## 6. Notas
-- Web oficial Microsoft: https://support.microsoft.com/outlook
-- MXToolbox: https://mxtoolbox.com/diagnostic.aspx
-- Evitar eliminar correos antes de respaldar el buzón (si es cuenta empresarial, consultar con el titular).
+## Runbook aplicado
+Si el problema persiste después de estos pasos, escalar a P3 y verificar con el proveedor de servicio de correo si hay outages reportados.
+
+**Fecha**: 2026-08  
+**Versión**: 1.0

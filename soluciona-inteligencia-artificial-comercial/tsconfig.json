@@ -1,29 +1,42 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "lib": ["ES2022"],
-    "outDir": "./dist",
-    "rootDir": ".",
+    "target": "ES2024",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2024"],
     "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": false,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+      "@soluciona/*": ["packages/*/src"],
+      "@soluciona/design-system": ["packages/design-system/src"],
+      "@soluciona/shared-types": ["packages/shared-types/src"],
+      "@soluciona/shared-utils": ["packages/shared-utils/src"],
+      "@soluciona/config": ["packages/config/src"],
+      "@soluciona/logger": ["packages/logger/src"],
+      "@soluciona/dian-sdk": ["packages/dian-sdk/src"],
+      "@soluciona/whatsapp-sdk": ["packages/whatsapp-sdk/src"],
+      "@soluciona/testing": ["packages/testing/src"]
+    }
   },
-  "include": [
-    "src/**/*",
-    "*.ts"
-  ],
-  "exclude": ["node_modules", "dist", "drizzle"]
+  "exclude": ["node_modules", "dist", "build", "coverage", ".turbo", "*.config.*"]
 }

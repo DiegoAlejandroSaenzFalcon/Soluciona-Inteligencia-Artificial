@@ -1,0 +1,91 @@
+# Dockerfile.sidecar - WhatsApp Cloud Calling Sidecar
+# Imagen con Node 22 + werift (WebRTC) + whisper.cpp + piper
+# Multi-stage para imagen final ligera
+
+# Stage 1: Builder con dependencias de compilación
+FROM node:22-alpine AS builder
+
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    sqlite-dev \
+    ffmpeg \
+    cmake \
+    git
+
+WORKDIR /app
+
+# Instalar dependencias Node
+COPY package*.json ./
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+
+# Compilar whisper.cpp (si no existe en models)
+ARG WHISPER_CPP_VERSION=v1.6.0
+RUN cd /tmp && \
+    git clone --branch ${WHISPER_CPP_VERSION} --depth 1 https://github.com/ggerganov/whisper.cpp && \
+    cd whisper.cpp && \
+    make -j$(nproc) && \
+    cp main /usr/local/bin/whisper-cli && \
+    echo "whisper.cpp compilado"
+
+# Instalar piper (TTS)
+ARG PIPER_VERSION=1.2.0
+RUN wget -q https://github.com/rhasspy/piper/releases/download/${PIPER_VERSION}/piper_${PIPER_VERSION}_linux_x86_64.tar.gz && \
+    tar -xzf piper_${PIPER_VERSION}_linux_x86_64.tar.gz && \
+    cp piper/piper /usr/local/bin/piper && \
+    cp piper/libpiper_phonemize.so /usr/local/lib/ && \
+    echo "piper instalado"
+
+# Stage 2: Runtime
+FROM node:22-alpine AS runtime
+
+# Dependencias de runtime
+RUN apk add --no-cache \
+    sqlite \
+    tzdata \
+    dumb-init \
+    ffmpeg \
+    libstdc++ \
+    libgcc \
+    alsa-lib \
+    libsndfile
+
+# Crear usuario no-root
+RUN addgroup -g 1001 -S soluciona && \
+    adduser -S -D -H -u 1001 -h /app -s /sbin/nologin -G soluciona -g soluciona soluciona
+
+WORKDIR /app
+
+# Copiar dependencias y binarios desde builder
+COPY --from=builder --chown=soluciona:soluciona /app/node_modules ./node_modules
+COPY --from=builder --chown=soluciona:soluciona /usr/local/bin/whisper-cli /usr/local/bin/whisper-cli
+COPY --from=builder --chown=soluciona:soluciona /usr/local/bin/piper /usr/local/bin/piper
+COPY --from=builder --chown=soluciona:soluciona /usr/local/lib/libpiper_phonemize.so /usr/local/lib/libpiper_phonemize.so
+
+# Copiar código del sidecar
+COPY --chown=soluciona:soluciona src/whatsapp/cloud/calling-sidecar.js ./calling-sidecar.js
+COPY --chown=soluciona:soluciona package*.json ./
+
+# Crear directorios
+RUN mkdir -p data logs models && chown -R soluciona:soluciona data logs models
+
+# Variables de entorno
+ENV NODE_ENV=production
+ENV TZ=America/Bogota
+
+# Puerto del sidecar
+EXPOSE 8081
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8081/health || exit 1
+
+# Usuario no-root
+USER soluciona
+
+# Entrypoint con dumb-init
+ENTRYPOINT ["dumb-init", "--"]
+
+# Comando de inicio
+CMD ["node", "calling-sidecar.js"]

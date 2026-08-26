@@ -9,9 +9,10 @@ const { getClient } = require('../db/connection');
 
 const ACCESS_TTL = '15m';
 const REFRESH_TTL_DAYS = 30;
-const TWO_FA_TTL = '5m';
-const JWT_ISSUER = 'soluciona-inteligencia-artificial-comercial';
-const JWT_AUDIENCE = 'dashboard';
+const TWO_FA_TTL = '10m'; // Aumentado de 5m a 10m para mejor UX
+const JWT_ISSUER = config.jwt_issuer || 'soluciona-inteligencia-artificial-comercial';
+const JWT_AUDIENCE = config.jwt_audience || 'dashboard';
+const REFRESH_PEPPER = process.env.REFRESH_PEPPER || crypto.randomBytes(32).toString('hex'); // Pepper para refresh tokens
 
 // ============================================================
 // SECRETO JWT (env → archivo persistente → auto-generado)
@@ -35,6 +36,111 @@ function getSecret() {
     fs.writeFileSync(file, secretCache, { mode: 0o600 });
   } catch (e) { /* sin permisos: se regenera cada arranque */ }
   return secretCache;
+}
+
+// ============================================================
+// JWT SECRET ROTATION (cada 30 días, invalida refresh tokens)
+// ============================================================
+const JWT_ROTATION_DAYS = 30;
+let secretVersions = []; // [{ version, secret, createdAt, active }]
+
+function loadSecretVersions() {
+  const file = path.join(config.dataDir, 'jwt_secrets.json');
+  if (fs.existsSync(file)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (Array.isArray(data) && data.length) secretVersions = data;
+    } catch (e) { /* ignore */ }
+  }
+  if (!secretVersions.length) {
+    // Usar getSecret() original (legacy) ANTES de que secretVersions exista
+    const legacySecret = (() => {
+      const env = process.env.JWT_SECRET;
+      if (env && env.length >= 16) return env;
+      const file = path.join(config.dataDir, 'jwt_secret');
+      if (fs.existsSync(file)) return fs.readFileSync(file, 'utf8').trim();
+      return crypto.randomBytes(48).toString('hex');
+    })();
+    secretVersions = [{ version: 1, secret: legacySecret, createdAt: Date.now(), active: true }];
+    saveSecretVersions();
+  }
+  // Asegurar al menos una activa
+  if (!secretVersions.some(v => v.active)) secretVersions[0].active = true;
+  return secretVersions;
+}
+
+function saveSecretVersions() {
+  const file = path.join(config.dataDir, 'jwt_secrets.json');
+  try {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(secretVersions, null, 2), { mode: 0o600 });
+  } catch (e) { /* ignore */ }
+}
+
+function getCurrentSecret() {
+  const active = secretVersions.find(v => v.active);
+  return active ? active.secret : secretVersions[0].secret;
+}
+
+function getAllSecrets() {
+  const now = Date.now();
+  return secretVersions
+    .filter(v => v.active || (v.expiresAt && now < v.expiresAt))
+    .map(v => v.secret);
+}
+
+// Rotar secreto: genera nuevo, marca anterior como en transición
+// Período de gracia: 24h donde ambos secretos son válidos para no forzar re-login inmediato
+async function rotateJwtSecret() {
+  const newSecret = crypto.randomBytes(48).toString('hex');
+  const version = (secretVersions[0]?.version || 0) + 1;
+  const now = Date.now();
+  // Marcar secreto actual como "en transición" - sigue válido por 24h más
+  secretVersions.forEach(v => { v.active = false; v.expiresAt = now + 24 * 60 * 60 * 1000; });
+  secretVersions.unshift({ version, secret: newSecret, createdAt: now, active: true, expiresAt: now + JWT_ROTATION_DAYS * 24 * 60 * 60 * 1000 });
+  // Mantener solo últimos 2 secretos (actual + anterior para transición)
+  if (secretVersions.length > 2) secretVersions = secretVersions.slice(0, 2);
+  saveSecretVersions();
+  secretCache = newSecret; // actualizar cache de getSecret()
+  // NO invalidar refresh tokens inmediatamente - expiran naturalmente
+  console.log('[JWT] Secreto rotado v' + version + '. Período de gracia 24h para transición suave.');
+  return version;
+}
+
+// Programar rotación cada 30 días
+let jwtRotationTimer = null;
+function scheduleJwtRotation() {
+  if (jwtRotationTimer) return;
+  const runAt = () => {
+    const now = new Date();
+    const target = new Date(now);
+    target.setHours(3, 0, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 1);
+    const ms = target - now;
+    setTimeout(() => {
+      rotateJwtSecret().catch(e => console.error('[JWT] Error rotando secreto:', e));
+      jwtRotationTimer = setInterval(() => rotateJwtSecret().catch(e => console.error('[JWT] Error rotando secreto:', e)), JWT_ROTATION_DAYS * 24 * 60 * 60 * 1000);
+    }, ms);
+  };
+  runAt();
+}
+
+// Cargar versiones al iniciar
+loadSecretVersions();
+scheduleJwtRotation();
+
+// verifyToken prueba el secreto actual y todas las versiones (transición suave).
+// NOTA: signAccessToken firma con getSecret(); si jwt_secret y jwt_secrets.json
+// divergen (regeneración/rotación), sin getSecret() aquí todo token nuevo daría 401.
+const _verifyToken = verifyToken;
+function verifyToken(token) {
+  const candidatos = [...new Set([getSecret(), ...getAllSecrets()])];
+  for (const secret of candidatos) {
+    try {
+      return jwt.verify(token, secret, { issuer: JWT_ISSUER, audience: JWT_AUDIENCE });
+    } catch (e) { /* probar siguiente */ }
+  }
+  return null;
 }
 
 // ============================================================
@@ -64,15 +170,11 @@ function signAccessToken(user, extra) {
   }, getSecret(), { expiresIn: ACCESS_TTL, issuer: JWT_ISSUER, audience: JWT_AUDIENCE });
 }
 
-function verifyToken(token) {
-  try {
-    return jwt.verify(token, getSecret(), { issuer: JWT_ISSUER, audience: JWT_AUDIENCE });
-  } catch { return null; }
-}
-
 async function createRefreshToken(user, meta) {
   const raw = crypto.randomBytes(48).toString('hex');
-  const hashed = crypto.createHash('sha256').update(raw).digest('hex');
+  // Añadir pepper para defensa en profundidad si BD se filtra
+  const peppered = crypto.createHmac('sha256', REFRESH_PEPPER).update(raw).digest('hex');
+  const hashed = crypto.createHash('sha256').update(peppered).digest('hex');
   const expiresAt = new Date(Date.now() + REFRESH_TTL_DAYS * 864e5);
   const c = await getClient();
   await c.unsafe(
@@ -84,13 +186,15 @@ async function createRefreshToken(user, meta) {
 }
 
 async function revokeRefreshToken(refreshToken) {
-  const hashed = crypto.createHash('sha256').update(refreshToken).digest('hex');
+  const peppered = crypto.createHmac('sha256', REFRESH_PEPPER).update(refreshToken).digest('hex');
+  const hashed = crypto.createHash('sha256').update(peppered).digest('hex');
   const c = getClient();
   await c.unsafe('DELETE FROM sessions WHERE id = $1', [hashed]);
 }
 
 async function findSession(refreshToken) {
-  const hashed = crypto.createHash('sha256').update(refreshToken).digest('hex');
+  const peppered = crypto.createHmac('sha256', REFRESH_PEPPER).update(refreshToken).digest('hex');
+  const hashed = crypto.createHash('sha256').update(peppered).digest('hex');
   const c = getClient();
   const rows = await c.unsafe(
     'SELECT * FROM sessions WHERE id = $1 AND expires_at > now()',
@@ -182,6 +286,7 @@ function toPublicUser(u) {
     role: u.role,
     tenantId: u.tenant_id,
     twoFactorEnabled: !!u.two_factor_enabled,
+    mustChangePassword: !!u.must_change_password,
   };
 }
 
@@ -305,4 +410,6 @@ module.exports = {
   toPublicUser,
   ACCESS_TTL,
   REFRESH_TTL_DAYS,
+  rotateJwtSecret,
+  scheduleJwtRotation,
 };

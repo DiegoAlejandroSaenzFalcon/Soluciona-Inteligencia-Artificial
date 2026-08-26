@@ -39,9 +39,18 @@ function autenticar(socket, next) {
 
 function initWebSockets(server) {
   if (io) return io;
+  const { config } = require('../../config');
+  // CORS restringido: OBLIGATORIO configurar ws_allowed_origin en producción
+  const isProduction = process.env.NODE_ENV === 'production';
+  const allowedOrigin = config.ws_allowed_origin || (isProduction ? '' : 'http://localhost:3000');
+  
+  if (isProduction && !config.ws_allowed_origin) {
+    throw new Error('CRÍTICO: ws_allowed_origin DEBE configurarse en config.json o variable de entorno WS_ALLOWED_ORIGIN en producción');
+  }
+  
   io = new Server(server, {
     path: '/socket.io',
-    cors: { origin: '*', methods: ['GET', 'POST'] },
+    cors: { origin: allowedOrigin, methods: ['GET', 'POST'], credentials: true },
     transports: ['websocket', 'polling'],
   });
 

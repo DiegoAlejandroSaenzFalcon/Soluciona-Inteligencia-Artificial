@@ -1,36 +1,54 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: pedidos-postgres
+  app:
+    build: .
+    container_name: soluciona-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: soluciona_inteligencia_artificial_comercial
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
+      - NODE_ENV=production
+      # - DISABLE_WHATSAPP=true   # descomentar para modo prueba sin WhatsApp
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      # Datos persistentes: BD SQLite, sesión de WhatsApp y backups
+      - ./data:/app/data
+      - ./auth_info:/app/auth_info
+      - ./config.json:/app/config.json
+      - ./.env:/app/.env:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      - calling-sidecar
 
-  redis:
-    image: redis:7-alpine
-    container_name: pedidos-redis
+  calling-sidecar:
+    build:
+      context: .
+      dockerfile: Dockerfile.sidecar
+    container_name: soluciona-calling-sidecar
+    restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "8081:8081"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - SIDECAR_PORT=8081
     volumes:
-      - redis_data:/data
+      - ./data:/app/data
+      - ./models:/models:ro
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8081/health').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
-  postgres_data:
-  redis_data:
+  data:
+  auth_info:
+  models:

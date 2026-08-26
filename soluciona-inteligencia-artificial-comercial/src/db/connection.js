@@ -10,6 +10,8 @@ function traducirSql(sql) {
   out = out.replace(/\$(\d+)/g, '?');
   // now() -> CURRENT_TIMESTAMP
   out = out.replace(/\bnow\(\)/gi, 'CURRENT_TIMESTAMP');
+  // Casts de Postgres (::text, ::int, ::numeric, ::int[]) -> se eliminan (SQLite es de tipado dinámico)
+  out = out.replace(/::[a-zA-Z_][\w]*(?:\[\])?/g, '');
   return out;
 }
 
@@ -30,6 +32,18 @@ const client = {
       return rows || [];
     }
     return stmt.all(...vals) || [];
+  },
+  // Transacción al estilo postgres.begin(fn): COMMIT si fn resuelve, ROLLBACK si lanza.
+  async begin(fn) {
+    db.exec('BEGIN');
+    try {
+      const out = await fn(client);
+      db.exec('COMMIT');
+      return out;
+    } catch (e) {
+      try { db.exec('ROLLBACK'); } catch (_) { /* ya cerrada */ }
+      throw e;
+    }
   },
   async end() {},
 };

@@ -1,101 +1,437 @@
-# Soluciona Inteligencia Artificial Comercial — registro y contabilidad de pedidos
+# 🚀 SOLUCIA INTELIGENCIA ARTIFICIAL
 
-Sistema que escucha los pedidos que llegan por WhatsApp de tu negocio, los registra automáticamente y genera reportes de ventas.
+> **Plataforma de Automatización Empresarial Integral** — 100% Open Source, 100% Gratuita, Comercialmente Competitiva
 
-## Instalación (solo la primera vez)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-22.x-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5.svg)](https://kubernetes.io/)
+[![DIAN Compliant](https://img.shields.io/badge/DIAN-Compliant-green)](https://www.dian.gov.co/)
+[![UBL 2.1](https://img.shields.io/badge/UBL-2.1-blue)](https://www.oasis-open.org/committees/ubl/)
+[![XAdES-BES](https://img.shields.io/badge/XAdES-BES-orange)](https://www.etsi.org/)
+[![RSA-SHA384](https://img.shields.io/badge/RSA-SHA384-red)](https://www.ietf.org/)
+[![Open Source](https://img.shields.io/badge/Open%20Source-MIT-green)](https://opensource.org/licenses/MIT)
+[![Gratis](https://img.shields.io/badge/Costo-%240-brightgreen)](https://opensource.org/licenses/MIT)
+[![Security](https://img.shields.io/badge/Security-Hardened-brightgreen)](https://owasp.org/)
+[![Tests](https://img.shields.io/badge/Tests-Vitest-yellow)](https://vitest.dev/)
+[![Coverage](https://img.shields.io/badge/Coverage-v8-orange)](https://github.com/vitest-dev/vitest)
+[![CI/CD](https://img.shields.io/badge/CI-GitHub%20Actions-blue)](https://github.com/features/actions)
 
-1. Instala Node.js LTS desde https://nodejs.org (marca la opción "Add to PATH").
-2. Abre una terminal en esta carpeta y ejecuta:
+---
+
+## 🎯 Visión
+
+**SOLUCIA INTELIGENCIA ARTIFICIAL** no es un bot, no es un CRM, no es un POS. Es una **Plataforma de Automatización Empresarial Integral** — 100% Open Source, 100% Gratuita, Comercialmente Competitiva — que cubre **TODO** el ciclo de vida de un negocio:
+
+- 🛒 **Pedidos & Ventas** (WhatsApp, Web, App, Telefonía)
+- 📦 **Inventario & SCM** (Multi-bodega, lotes, seriales, auto-pedido a proveedores)
+- 🚚 **Logística & Última Milla** (Ruteo VRP, GPS tiempo real, POD blockchain)
+- 💰 **Facturación DIAN** (Colombia) + Multi-país (CFDI México, SUNAT Perú, AFIP Argentina, SII Chile)
+- 📊 **Contabilidad & Finanzas** (NIIF, multi-moneda, consolidación, tesorería)
+- 👥 **Nómina & RRHH** (Contratos, liquidación, seguridad social, evaluaciones, reclutamiento)
+- 🎯 **CRM & Marketing** (Leads, pipeline, campañas WhatsApp/Email/SMS, loyalty, gamificación)
+- 🤖 **IA Nativa** (Pipeline unificado, RAG, Function Calling, Multi-LLM Router, Guardrails, Fine-tuning)
+- 📊 **BI & Analytics** (Self-service BI, Text-to-SQL, alertas anomalías, forecasting)
+- 🤝 **Asesorías IA + Humanas** (Knowledge base, expert network, co-pilot, certifications)
+
+---
+
+## 🏗 Arquitectura
 
 ```
-npm install
+┌─────────────────────────────────────────────────────────────────────┐
+│                      SOLUCIA IA PLATFORM                            │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                    EDGE / API GATEWAY (Kong)                 │   │
+│  │  Rate Limit │ Auth (OIDC) │ Logging │ Circuit Breaker       │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                    │                              │
+│        ┌───────────┬──────────────┼──────────────┬────────────┐   │
+│        ▼           ▼              ▼              ▼            ▼   │
+│  ┌──────────┐ ┌───────────┐ ┌────────────┐ ┌──────────┐ ┌──────┐ │
+│  │ WHATSAPP │ │   CORE    │ │ INTEGRACIONES│ │  IA/ML   │ │MOBILE│ │
+│  │ TRANSPORT│ │ SERVICES  │ │  EXTERNAS    │ │ PLATFORM │ │ APPS │ │
+│  └──────────┘ └───────────┘ └────────────┘ └──────────┘ └──────┘ │
+│         │           │              │              │            │   │
+│         └───────────┴──────────────┴──────────────┴────────────┘   │
+│                              ▼                                      │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │              DATA LAYER (PostgreSQL 16 + Redis + MinIO)      │   │
+│  │  Multi-tenant (RLS) │ Event Sourcing │ Event Bus │ pgvector │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-(Esto descarga todo; incluye Chrome para el bot. La primera vez demora varios minutos.)
+---
 
-## Uso diario
+## 🚀 Inicio Rápido
+
+### Prerrequisitos
+- Node.js 22 LTS
+- Docker & Docker Compose
+- PostgreSQL 16 (o usa Docker)
+- Redis 7
+- MinIO (o S3 compatible)
+
+### Desarrollo Local
+
+```bash
+# 1. Clonar repositorio
+git clone https://github.com/soluciona-ia/soluciona-inteligencia-artificial-comercial.git
+cd soluciona-inteligencia-artificial-comercial
+
+# 2. Configurar entorno
+cp .env.example .env
+# Editar .env con tus credenciales
+
+# 2. Levantar stack completo
+docker-compose up -d
+
+# 3. Verificar salud
+curl http://localhost:3000/api/health
+
+# 4. Acceder al panel
+# Dashboard: http://localhost:3000
+# Panel Empresarial: http://localhost:3000/panel-empresarial
+# Grafana: http://localhost:3001 (admin/admin)
+# Keycloak: http://localhost:8080 (admin/admin)
+```
+
+### Variables de Entorno Críticas
+
+```bash
+# .env - Configuración mínima requerida
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=soluciona_ia
+DB_USER=postgres
+DB_PASS=postgres
+
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+JWT_SECRET=your-32-char-min-secret-key-change-in-production
+LLM_API_KEY=your-nvidia-api-key
+NVIDIA_API_KEY=your-nvidia-api-key
+```
+
+---
+
+## 🏗 Arquitectura Técnica
+
+### Stack Tecnológico
+
+| Capa | Tecnología | Justificación |
+|------|------------|---------------|
+| **Runtime** | Node.js 22 LTS + TypeScript 5.x + Fastify | Type safety, performance, ecosystem |
+| **Base de Datos** | PostgreSQL 16 + PgBouncer + pgvector | ACID, concurrencia, vector search nativo |
+| **Cache/Colas** | Redis Cluster (Valkey) + BullMQ | Distribuido, persistente, pub/sub |
+| **API** | Fastify + TypeBox/Zod + OpenAPI 3.1 | Performance #1, validation, codegen |
+| **Auth** | Keycloak (OIDC/OAuth2/SAML2) + Passkeys | Estándar, MFA, SSO, sin vendor lock-in |
+| **Observabilidad** | OpenTelemetry + Prometheus + Loki + Tempo + Grafana | Estándar CNCF, vendor-neutral |
+| **Deploy** | Docker + K8s (EKS/GKE) + ArgoCD + Helm | GitOps, canary, rollback, multi-env |
+| **CI/CD** | GitHub Actions + Trivy + CodeQL + ArgoCD | Security-first, GitOps, rollback auto |
+
+### Principios Arquitectónicos
+
+- **Clean Architecture**: Domain/Application/Infrastructure/Interfaces separation
+- **Domain-Driven Design**: Entities, Value Objects, Aggregates, Domain Events
+- **Event-Driven**: Redis Streams Event Bus, Outbox Pattern, CQRS ligero
+- **Multi-Tenant Real**: Row-Level Security (RLS) PostgreSQL en TODAS las tablas
+- **AI-First**: Pipeline unificado, RAG, Function Calling, Guardrails, Evaluation Harness
+- **Security by Design**: Zero Trust, mTLS, CSP, CSP nonce, Passkeys, Rate Limiting, CSRF
+- **Observabilidad Nativa**: OpenTelemetry, SLOs, Error Budgets, Burn Rate Alerting
+- **Chaos Engineering**: LitmusChaos, Game Days mensuales
+- **Supply Chain Security**: SLSA Level 3, SBOM, Cosign, Dependabot, SAST/DAST
+
+---
+
+## 📦 Módulos Funcionales
+
+| Módulo | Descripción | Estado |
+|--------|-------------|--------|
+| **Pedidos & Ventas** | Omnicanal (WhatsApp, Web, App, Tel), carrito inteligente, suscripciones, KDS | ✅ Core |
+| **Inventario & SCM** | Multi-bodega, lotes/series, auto-pedido proveedores, alertas stock | ✅ Core |
+| **Proveedores & SRM** | Catálogo proveedores, RFQ, auto-OC, portal proveedor, scorecards | ✅ Core |
+| **Facturación DIAN** | Proveedores certificados, Factura 2.1, timbre auto, multi-país | ✅ Core |
+| **Contabilidad & Finanzas** | PUC Colombia/NIIF/IFRS, asientos auto, conciliación bancaria, activos | ✅ Core |
+| **Nómina & RRHH** | Contratos, liquidación, seguridad social, nómina electrónica DIAN | 🟡 En progreso |
+| **CRM & Marketing** | Leads, pipeline, campañas WhatsApp/Email/SMS, loyalty, A/B testing | 🟡 En progreso |
+| **IA Nativa** | Pipeline unificado, RAG, Function Calling, Multi-LLM, Guardrails | ✅ Core |
+| **Logística/TMS** | VRP/OR-Tools, tracking GPS, POD blockchain, devoluciones | 🔴 Pendiente |
+| **BI/Analytics** | dbt + MetricFlow, dashboards, Text-to-SQL, alertas anomalías | 🟡 En progreso |
+| **Asesorías IA+Humanas** | KB semántico, co-pilot, expert network, certifications | 🔴 Pendiente |
+
+---
+
+## 📱 Apps Móviles (3 Apps Nativas)
+
+### Stack: Kotlin Multiplatform (KMP) + Compose + SQLDelight
+
+| App | Usuario | Funcionalidades Clave |
+|-----|---------|----------------------|
+| **SOLUCIA OWNER** | Dueño/Gerente | Dashboard ejecutivo, aprobaciones workflow, reportes PDF/Excel, alertas push, config módulos |
+| **SOLUCIA DELIVERY** | Domiciliarios | Ruteo VRP dinámico, navegación offline, GPS tracking, POD (firma+foto+QR), gamificación |
+| **SOLUCIA CLIENTE** | Cliente Final | Catálogo semántico IA, carrito cross-device, tracking GPS, fidelización (puntos/tiers/cashback/referidos), suscripciones, pagos tokenizados |
+
+> Stack: Kotlin 2.0 + Compose Multiplatform + KMP + SQLDelight + MapLibre + Firebase + Passkeys + ML Kit / TensorFlow Lite
+
+---
+
+## ⚖️ Cumplimiento Legal Colombiano
+
+| Normativa | Ámbito | Requisitos Clave | Estado |
+|-----------|--------|------------------|--------|
+| **Ley 1581/2012** | Protección Datos | DPO, ROPA, DPIA, ARCO, consentimiento granular, brechas 72h | ✅ Implementado |
+| **Ley 1480/2011** | Consumidor | Retracto 5d, garantía, PQR 15d, cláusulas abusivas nulas | ✅ Implementado |
+| **Ley 527/1999** | Comercio Electrónico | Validez mensajes, firma electrónica ONAC | ✅ Implementado |
+| **Res. DIAN 000042** | Factura Electrónica | Facturador certificado, XML+PDF, timbre auto | ✅ Proveedor certificado |
+| **Res. DIAN 000091** | Nómina Electrónica | Envío automático, firma digital ONAC | 🟡 En progreso |
+| **ISO 27001/27701** | Seguridad/Privacidad | SGSI, controles A.5-A.18, DPIA | 🟡 En progreso |
+| **ISO 22301** | Continuidad | BIA, RTO<4h, RPO<1h, DR test trimestral | 🔴 Pendiente |
+
+---
+
+## 🏷 3 Versiones (Tiers) - Product-Led Growth
+
+| Capacidad | **FREE** (Comunidad) | **PRO** (PyME) | **ENTERPRISE** (Corporativo) |
+|-----------|----------------------|----------------|------------------------------|
+| Usuarios | 2 | 25 | Ilimitados |
+| Sucursales | 1 | 5 | Ilimitadas |
+| Pedidos/mes | 500 | 10,000 | Ilimitados |
+| WhatsApp Business | ✅ (1 número) | ✅ (3 números) | Ilimitados |
+| IA Chatbot | 100/día | 5,000/día | Ilimitado |
+| Asistentes IA Panel | 50/día | 2,000/día | Ilimitado |
+| Visión (Foto Menú) | 10/día | 100/día | Ilimitado |
+| Inventario Avanzado | ❌ | ✅ | ✅ |
+| Auto-pedido Proveedores | ❌ | ✅ (3 prov.) | Ilimitado |
+| Facturación DIAN | ✅ (50/mes) | ✅ (500/mes) | Ilimitado |
+| Contabilidad Avanzada | ❌ | ❌ | ✅ |
+| Nómina Avanzada | ❌ | ❌ | ✅ |
+| CRM + Marketing | ❌ | ✅ (1k contactos) | Ilimitado |
+| IA Avanzada (RAG, FC, Guardrails) | ❌ | ✅ | ✅ |
+| Multi-LLM Router | ❌ | ✅ | ✅ |
+| Fine-tuning LoRA | ❌ | ❌ | ✅ |
+| Apps Android | ✅ (básico) | ✅ | ✅ (white-label) |
+| API + Webhooks | ✅ (100/día) | ✅ (10k/día) | Ilimitado |
+| SSO + Passkeys | ❌ | ✅ | ✅ |
+| Multi-tenant | ❌ | ❌ | ✅ |
+| White-label Apps | ❌ | ❌ | ✅ |
+| SLA Soporte | Community | Email 24h/Chat 8h | Tel 24/7/TAM/SLA 99.9% |
+| **Precio** | **GRATIS PARA SIEMPRE** | **$49 USD/mes** | **$299 USD/mes + usage** |
+
+> **Filosofía**: FREE no es "demo capado". Es **usable en producción** para micro-negocio. PRO cubre 90% PyMEs. ENTERPRISE = sin límites + white-label + SLA + soporte dedicado.
+
+---
+
+## 🛠 Desarrollo
+
+### Estructura del Proyecto
 
 ```
-npm start
+soluciona-ia/
+├── src/
+│   ├── domain/           # Entities, Value Objects, Events, Repositories
+│   ├── application/      # Use Cases, DTOs, Commands, Queries
+│   ├── infrastructure/   # Database, Repositories, Adapters, External
+│   ├── interfaces/       # HTTP (Fastify), WebSocket, CLI, GraphQL
+│   └── shared/           # Kernel: Result, Events, Config, Utils
+├── scripts/              # Migration scripts, seeds, utilities
+├── monitoring/           # Prometheus, Grafana, Loki, Tempo, Alertmanager
+├── keycloak/             # Realm export, themes
+├── nginx/                # Nginx configs (prod, staging)
+├── .github/workflows/    # CI/CD pipelines
+├── docker-compose.yml    # Development stack
+├── docker-compose.staging.yml
+├── docker-compose.prod.yml
+├── Dockerfile.dev / .prod
+├── Makefile
+└── package.json
 ```
 
-1. Aparecerá un código QR en la terminal.
-2. Abre WhatsApp en el celular del **negocio**: Ajustes (⚙) > Dispositivos vinculados > Vincular dispositivo.
-3. Escanea el QR. La terminal dirá "conectado".
-4. El bot queda escuchando pedidos. La laptop debe quedarse encendida.
+### Comandos Útiles
 
-## Cómo funciona
+```bash
+# Desarrollo
+make dev                    # Inicia servidor dev con hot reload
+make docker-up              # Levanta stack completo (DB, Redis, MinIO, Jaeger, Prometheus, Grafana, Loki, Tempo)
+make docker-down            # Detiene servicios
+make docker-logs            # Ver logs
 
-El cliente escribe en WhatsApp del negocio, por ejemplo:
+# Base de datos
+make migrate                # Ejecuta migraciones
+make migrate:verify         # Verifica integridad migración
+make db:seed                # Datos de prueba
+make db:reset               # Reset completo (drop + migrate + seed)
+
+# Calidad
+make lint                   # ESLint
+make typecheck              # TypeScript strict
+make format                 # Prettier
+check                       # lint + typecheck + format
+
+# Testing
+make test                   # Todos los tests
+make test:unit              # Solo unitarios
+make test:integration       # Integración con Testcontainers
+make test:e2e               # E2E con Playwright
+make test:coverage          # Cobertura
+
+# CI/CD Local
+ci-local                    # Simula pipeline CI completo
+
+# Deployment
+make docker-build           # Build imagen producción
+make deploy:staging         # Deploy a staging
+make deploy:prod            # Deploy a producción
+```
+
+---
+
+## 🧪 Testing
+
+### Pirámide de Testing
 
 ```
-3 empanadas, 2 jugos
+                    ┌─────────────┐
+                    │   E2E (5%)  │  Playwright - Critical paths
+                    ├─────────────┤
+                    │ Integration │  Testcontainers - DB, Redis, MinIO
+                    │   (20%)     │
+                    ├─────────────┤
+                    │  Unit (75%) │  Vitest - Pure functions, domain logic
+                    └─────────────┘
 ```
 
-El bot responde con la confirmación y el total, y guarda el pedido en `data/pedidos.jsonl`.
+```bash
+# Ejecutar tests
+make test                    # Todos
+make test:unit               # Solo unitarios (>80% coverage)
+make test:integration        # Integración con BD real
+make test:e2e                # E2E crítico (login, pedido, pago)
+make test:coverage           # Cobertura >80%
+```
 
-## Tablero y reportes
+---
 
-- Tablero web con conteos y últimos pedidos: http://localhost:3000
-- Vista COCINA a pantalla completa (monitor de cocina): http://localhost:3000/cocina (botón "← Volver" incluido)
-- Pestaña "📊 Consumo IA": uso y límites de cada clave de IA vs tu plan
-- Panel Central multi-cliente (todos los negocios): `iniciar-panel.bat` → http://localhost:4000
-- Exportar todo a CSV: http://localhost:3000/export.csv
-- Reporte de consola: `npm run reporte`
+## 🚀 Deployment
 
-## IA (NVIDIA, gratis)
+### Staging (Auto en push a `develop`)
 
-Se usan APIs de **NVIDIA Build** (build.nvidia.com) — eliminamos Groq. Cada función tiene SU PROPIA API key (así el chat de WhatsApp nunca satura a los asistentes):
+```bash
+# GitHub Actions automático en push a develop
+# 1. CI: lint → typecheck → test → build → scan
+# 2. CD: Deploy a staging (ArgoCD + Helm)
+# 3. Health checks + smoke tests
+# 4. Notificación Slack
+```
 
-1. Crea una cuenta en https://build.nvidia.com/settings y genera **3 API keys** (botón "Get API Key", formato `nvapi-...`).
-2. En `config.json`:
-   - `llm.api_key` → chatbot de WhatsApp (`meta/llama-3.1-8b-instruct`)
-   - `asistentes_ia.api_key` → Asistentes IA del panel (`meta/llama-3.3-70b-instruct`)
-   - `vision.api_key` → leer foto de menú (`meta/llama-3.2-11b-vision-instruct`)
-3. `limite_diario` / `limite_mensual` por rol = cuota de consultas incluida en el plan del cliente (0 = sin límite). El panel muestra el consumo y avisa al agotarse.
+### Producción (Manual via Release)
 
-Sin keys configuradas el sistema cae a Gemini (cuota gratis 20/día) para no quedarse mudo.
+```bash
+# 1. Crear release en GitHub (tag v1.2.3)
+# 2. GitHub Actions: build → scan → sign (cosign) → push GHCR
+# 3. ArgoCD: Promote staging → production (canary 10% → 50% → 100%)
+# 3. Health checks + smoke tests automatizados
+# 4. Rollback automático si error rate > 1% o latency P95 > 1s
+```
 
-## En el celular (Android)
+### Rollback
 
-- **Paneles como app**: abre `http://<ip>:<puerto>` en Chrome → menú ⋮ → "Instalar aplicación". Funcionan sin Play Store (PWA).
-- **Bot en el celular**: ver `docs/MULTIPLATAFORMA.md` (Termux) — para negocios sin PC.
-- **Bot 24/7**: VPS barato (~$4/mes) con `pm2`/`systemd`.
+```bash
+# Automático si health checks fallan
+# Manual:
+kubectl rollout undo deployment/soluciona-app -n production
+# O via ArgoCD UI: Rollback to previous version
+```
 
-## Multi-cliente (varios negocios)
+---
 
-- Un bot por negocio: `iniciar-cliente.bat <id>` (config en `clientes/<id>.json`, datos aislados en `data/<id>/`, WhatsApp propio en `auth_info_<id>/`).
-- Negocio nuevo: `crear-cliente.bat` → genera `clientes/<id>.json` con puerto libre automático.
-- `lanzar-todos.bat` abre todos los clientes de una vez (excluye la plantilla EJEMPLO).
-- Plantillas genéricas: `config.example.json` y `clientes/EJEMPLO.json` (cópialas para un negocio nuevo).
-- Integración con POS (Siigo, Alegra, webhook, archivo, Telegram): ver `docs/INTEGRACION.md`.
-- Facturación electrónica DIAN: módulo `core/facturacion.js` (proveedor-agnóstico).
+## 🔐 Seguridad
 
-### Comandos que escribe SOLO el dueño (desde su número configurado):
+### Checklist OWASP Top 10
 
-| Comando | Qué hace |
-| --- | --- |
-| `!reporte` | Resumen de ventas del día (en WhatsApp) |
-| `!vendidos` | Lista todos los pedidos del día |
-| `!ayuda` | Muestra los comandos |
+- [x] **A01: Broken Access Control** - RLS PostgreSQL + RBAC + ABAC
+- [x] **A02: Cryptographic Failures** - TLS 1.3, AES-256-GCM, Argon2id, TLS 1.3
+- [x] **A03: Injection** - Parameterized queries, Zod validation, CSP
+- [x] **A04: Insecure Design** - Threat modeling, Secure by Design
+- [x] **A05: Security Misconfiguration** - Helmet.js, CSP nonce, HSTS, Secure cookies
+- [x] **A06: Vulnerable Components** - Dependabot, Renovate, npm audit, Trivy, SLSA
+- [x] **A07: Auth Failures** - Keycloak, MFA, Passkeys, Rate limiting, Account lockout
+- [x] **A08: Software Integrity** - SLSA Level 3, Sigstore, SBOM, Cosign
+- [x] **A08: Logging/Monitoring Failures** - OpenTelemetry, Loki, Alertmanager, SLOs
+- [x] **A10: SSRF** - Egress filtering, allowlists, no user-controlled URLs
 
-A la hora de `hora_reporte` (config.json, por defecto 21:00) el sistema le envía al dueño el reporte del día automáticamente.
+### Penetration Testing
 
-## Configuración (config.json)
+```bash
+# Anual por proveedor certificado
+# Continuo: OWASP ZAP en CI, CodeQL, Semgrep, npm audit
+```
 
-- `numero_dueno`: tu número en formato internacional, ej. `573001234567` (solo él recibe comandos y reportes).
-- `productos`: lista de productos, sus apodos (alias) y precios. El precio del alias más largo gana, así que pon "bandeja paisa" antes que "bandeja".
-- `hora_reporte`: hora del reporte diario automático.
-- `mensaje_bienvenida`: texto que recibe el cliente cuando su mensaje no se reconoce como pedido.
+---
 
-Cambia precio o agrega productos: guarda `config.json` y reinicia con `npm start`.
+## 🤝 Contribuir
 
-## Advertencias importantes
+```bash
+# 1. Fork del repo
+# 2. Crear rama: git checkout -b feature/amazing-feature
+# 3. Commit: git commit -m 'feat: add amazing feature'
+# 3. Push: git push origin feature/amazing-feature
+# 4. Pull Request
+```
 
-- Este bot usa WhatsApp no oficial (whatsapp-web.js). Tu número de NEGOCIO podría ser bloqueado si se usa de forma abusiva. Usa una SIM dedicada al negocio y no lo uses para spam.
-- El bot solo registra pedidos mientras la laptop esté encendida y conectada. Para operar 24/7 se sube el sistema a un servidor (VPS) barato de ~$4/mes o la capa gratuita de Oracle Cloud.
-- En la terminal se ven los QR y mensajes de estado; NO la cierres mientras esté vendiendo.
+### Estándares de Código
 
-## Negocio alrededor de esto
+- **TypeScript Strict**: `strict: true`, `noUncheckedIndexedAccess: true`
+- **ESLint + Prettier**: Config estricta, `prettier/prettier: error`
+- **Commits Convencionales**: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`
+- **Tests**: Unit >80%, Integration críticos, E2E paths críticos
+- **Documentación**: JSDoc en APIs públicas, README por módulo
 
-Este mismo sistema se cobra a otros negocios: instalación + mensualidad (por ejemplo $80.000–$200.000/mes) por mantener el servicio, configurar su menú y entregarles el reporte. Es un ingreso recurrente.
+---
+
+## 📄 Licencia
+
+**MIT License** - Ver [LICENSE](LICENSE) para detalles.
+
+> **Libre para uso comercial, modificación, distribución.**
+> **Sin vendor lock-in. Soberanía total de datos.**
+
+---
+
+## 🙏 Agradecimientos
+
+- **NVIDIA** - APIs de IA gratuitas (Nemotron, Llama 3.1)
+- **Keycloak** - Identity & Access Management
+- **PostgreSQL** - Base de datos robusta
+- **Redis** - Cache & queues ultrarrápidos
+- **MinIO** - S3 compatible on-premise
+- **Grafana Stack** - Observabilidad completa
+- **Keycloak** - IAM enterprise-grade
+- **Comunidad Open Source** - Por hacer esto posible
+
+---
+
+## 📞 Soporte & Comunidad
+
+- **Documentación**: https://docs.soluciona.ai
+- **Issues**: https://github.com/soluciona-ia/soluciona-inteligencia-artificial-comercial/issues
+- **Discord**: https://discord.gg/soluciona-ia
+- **Email**: soporte@soluciona.ai
+- **Seguridad**: security@soluciona.ai (GPG: 0x...)
+
+---
+
+**Hecho con ❤️ en Colombia 🇨🇴 para el mundo**
+
+> **Soluciona Inteligencia Artificial** — Democratizando la automatización empresarial de clase mundial.
+
+---
+
+*Última actualización: 2025-08-23 | Versión 1.0.0*

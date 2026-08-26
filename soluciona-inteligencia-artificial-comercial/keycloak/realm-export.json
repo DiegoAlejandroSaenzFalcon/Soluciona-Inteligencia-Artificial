@@ -1,0 +1,453 @@
+{
+  "realm": "soluciona",
+  "enabled": true,
+  "displayName": "Soluciona IA",
+  "displayNameHtml": "<div class=\"kc-logo\"><img src=\"/resources/soluciona/logo.png\" alt=\"Soluciona IA\"></div>",
+  "loginTheme": "soluciona",
+  "accountTheme": "soluciona",
+  "adminTheme": "soluciona",
+  "emailTheme": "soluciona",
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 30,
+  "permanentLockout": false,
+  "registrationAllowed": false,
+  "registrationEmailAsUsername": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "passwordPolicy": "length(8) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1)",
+  "requiredActions": [
+    "UPDATE_PASSWORD",
+    "UPDATE_PROFILE",
+    "CONFIGURE_TOTP",
+    "WEB_AUTHN_REGISTER"
+  ],
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA256",
+  "otpPolicyInitialCounter": 0,
+  "otpPolicyDigits": 6,
+  "otpPolicyLookAheadWindow": 1,
+  "otpPolicyPeriod": 30,
+  "otpPolicyType": "totp",
+  "webAuthnPolicyRpEntityName": "Soluciona IA",
+  "webAuthnPolicySignatureAlgorithms": ["ES256", "RS256"],
+  "webAuthnPolicyRpId": "localhost",
+  "webAuthnPolicyOrigin": "http://localhost:3000",
+  "webAuthnPolicyAttestationConveyancePreference": "direct",
+  "webAuthnPolicyAuthenticatorAttachment": "cross-platform",
+  "webAuthnPolicyRequireResidentKey": false,
+  "webAuthnPolicyUserVerificationRequirement": "preferred",
+  "webAuthnPolicyAvoidSameAuthenticatorRegister": true,
+  "webAuthnPolicyAcceptableAaguids": [],
+  "passwordPolicy": "hashIterations(27000) and hashAlgorithm(pbkdf2-sha256) and length(8) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notRecentlyUsed(5) and notUsername and forceExpiredPasswordChange(365)",
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 30,
+  "defaultRoles": ["offline_access", "uma_authorization"],
+  "requiredActions": ["UPDATE_PASSWORD", "CONFIGURE_TOTP", "WEB_AUTHN_REGISTER"],
+  "clients": [
+    {
+      "clientId": "soluciona-dashboard",
+      "name": "Soluciona Dashboard",
+      "description": "Panel empresarial Soluciona IA",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${CLIENT_SECRET}",
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "https://app.soluciona.ai/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "https://app.soluciona.ai"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "attributes": {
+        "access.token.lifespan": "900",
+        "client.secret.creation.time": "1700000000",
+        "backchannel.logout.session.required": "true",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "oidc.ciba.grant.enabled": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "User ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "id",
+            "claim.name": "sub",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "Tenant ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "tenantId",
+            "claim.name": "tenantId",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "Role",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "role",
+            "claim.name": "role",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "Permissions",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "permissions",
+            "claim.name": "permissions",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "soluciona-apps",
+      "name": "Soluciona Mobile Apps",
+      "description": "Apps móviles Soluciona IA",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${MOBILE_CLIENT_SECRET}",
+      "redirectUris": [
+        "soluciona-owner://callback",
+        "soluciona-delivery://callback",
+        "soluciona-cliente://callback",
+        "soluciona://callback"
+      ],
+      "webOrigins": [
+        "soluciona-owner://",
+        "soluciona-delivery://",
+        "soluciona-cliente://",
+        "soluciona://"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "publicClient": true,
+      "attributes": {
+        "access.token.lifespan": "900",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "oidc.ciba.grant.enabled": "false"
+      }
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "super_admin",
+        "description": "Super administrador de la plataforma",
+        "composite": true,
+        "composites": {
+          "client": {
+            "realm-management": [
+              "manage-users",
+              "manage-clients",
+              "manage-realm",
+              "view-users",
+              "view-clients",
+              "view-realm",
+              "manage-authorization",
+              "manage-identity-providers"
+            ]
+          }
+        }
+      },
+      {
+        "name": "admin",
+        "description": "Administrador del tenant",
+        "composite": true,
+        "composites": {
+          "client": {
+            "realm-management": [
+              "manage-users",
+              "view-users",
+              "manage-authorization"
+            ]
+          }
+        }
+      },
+      {
+        "name": "gerente",
+        "description": "Gerente del negocio",
+        "composite": true,
+        "composites": {
+          "client": {
+            "realm-management": [
+              "view-users",
+              "view-clients"
+            ]
+          }
+        }
+      },
+      {
+        "name": "operador",
+        "description": "Operador del panel",
+        "composite": true,
+        "composites": {}
+      },
+      {
+        "name": "cocina",
+        "description": "Personal de cocina",
+        "composite": true,
+        "composites": {}
+      },
+      {
+        "name": "domiciliario",
+        "description": "Domiciliario/repartidor",
+        "composite": true,
+        "composites": {}
+      },
+      {
+        "name": "contador",
+        "description": "Contador/Contabilidad",
+        "composite": true,
+        "composites": {}
+      },
+      {
+        "name": "asesor",
+        "description": "Asesor comercial",
+        "composite": true,
+        "composites": {}
+      },
+      {
+        "name": "solo_lectura",
+        "description": "Solo lectura",
+        "composite": true,
+        "composites": {}
+      }
+    ]
+  },
+  "groups": [],
+  "identityProviders": [],
+  "authenticationFlows": [
+    {
+      "id": "browser",
+      "alias": "browser",
+      "description": "Browser based authentication",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": true,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "requirement": "ALTERNATIVE",
+          "priority": 10
+        },
+        {
+          "authenticator": "auth-username-password-form",
+          "requirement": "REQUIRED",
+          "priority": 20
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "requirement": "ALTERNATIVE",
+          "priority": 30
+        },
+        {
+          "authenticator": "webauthn-authenticator",
+          "requirement": "ALTERNATIVE",
+          "priority": 40
+        }
+      ]
+    },
+    {
+      "id": "first-broker-login",
+      "alias": "first-broker-login",
+      "description": "First broker login flow",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": true,
+      "authenticationExecutions": [
+        {
+          "authenticator": "idp-review-profile",
+          "requirement": "REQUIRED",
+          "priority": 10
+        },
+        {
+          "authenticator": "auth-username-password-form",
+          "requirement": "REQUIRED",
+          "priority": 20
+        }
+      ]
+    }
+  ],
+  "requiredActions": [
+    {
+      "providerId": "UPDATE_PASSWORD",
+      "name": "UPDATE_PASSWORD",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 10
+    },
+    {
+      "providerId": "UPDATE_PROFILE",
+      "name": "UPDATE_PROFILE",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 20
+    },
+    {
+      "providerId": "CONFIGURE_TOTP",
+      "name": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 30
+    },
+    {
+      "providerId": "WEB_AUTHN_REGISTER",
+      "name": "WEB_AUTHN_REGISTER",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 40
+    }
+  ],
+  "scopes": [
+    {
+      "name": "openid",
+      "description": "OpenID Connect scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "profile",
+      "description": "Profile scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "email",
+      "description": "Email scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "offline_access",
+      "description": "Offline access scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "roles",
+      "description": "Roles scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      }
+    }
+  ],
+  "defaultDefaultClientScopes": [
+    "openid",
+    "profile",
+    "email",
+    "roles",
+    "offline_access"
+  ],
+  "optionalClientScopes": [
+    "roles"
+  ],
+  "defaultGroups": [],
+  "clientScopes": [
+    {
+      "name": "roles",
+      "description": "User roles",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false",
+        "gui.order": "1"
+      },
+      "protocolMappers": [
+        {
+          "name": "Realm Roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "multivalued": "true",
+            "user.attribute": "realmRoles",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "Client Roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "config": {
+            "multivalued": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "defaultLocale": "es",
+  "supportedLocales": ["es", "en", "pt", "fr"],
+  "internationalizationEnabled": true,
+  "browserSecurityHeaders": {
+    "xFrameOptions": "DENY",
+    "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.soluciona.ai wss://api.soluciona.ai; frame-ancestors 'self';",
+    "strictTransportSecurity": "max-age=31536000; includeSubDomains; preload",
+    "contentSecurityPolicyReportOnly": "",
+    "referrerPolicy": "strict-origin-when-cross-origin",
+    "xContentTypeOptions": "nosniff",
+    "xFrameOptions": "DENY"
+  }
+}

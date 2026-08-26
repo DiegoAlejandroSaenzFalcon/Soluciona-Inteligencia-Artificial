@@ -1,0 +1,66 @@
+server:
+  http_listen_port: 3200
+  grpc_listen_port: 9095
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+
+ingester:
+  trace_idle_period: 10s
+  max_block_duration: 5m
+  max_block_bytes: 1_000_000
+  complete_block_timeout: 15m
+
+compactor:
+  compaction:
+    block_retention: 1h
+    compacted_block_retention: 1h
+    retention_delay: 30m
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /tmp/tempo/traces
+
+compactor:
+  compaction:
+    block_retention: 1h
+
+querier:
+  frontend_workers: 4
+
+overrides:
+  defaults:
+    ingestion_rate_limit_mb: 10
+    ingestion_burst_size_mb: 20
+    max_traces_per_user: 100000
+
+limits:
+  ingestion_rate_limit_mb: 10
+  ingestion_burst_size_mb: 20
+  max_traces_per_user: 100000
+
+metrics_generator:
+  registry:
+    external_labels:
+      source: tempo
+      cluster: soluciona
+  storage:
+    path: /tmp/tempo/metrics
+    remote_write:
+      - url: http://prometheus:9090/api/v1/write
+        send_exemplars: true
+
+server:
+  http_listen_port: 3200
+  grpc_listen_port: 9095
+
+usage_report:
+  reporting_enabled: false

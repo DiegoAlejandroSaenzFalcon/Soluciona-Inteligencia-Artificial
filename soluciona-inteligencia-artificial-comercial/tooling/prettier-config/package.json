@@ -1,0 +1,10 @@
+{
+  "name": "@soluciona/prettier-config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "files": ["index.js"],
+  "peerDependencies": {
+    "prettier": "^3.0.0"
+  }
+}

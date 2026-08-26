@@ -1,0 +1,16 @@
+{
+  "name": "@soluciona/vitest-config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "files": ["index.js", "base.js", "react.js", "node.js"],
+  "peerDependencies": {
+    "vitest": "^2.0.0"
+  },
+  "dependencies": {
+    "@vitest/coverage-v8": "^2.0.5",
+    "@testing-library/jest-dom": "^6.4.8",
+    "happy-dom": "^15.7.0",
+    "msw": "^2.3.5"
+  }
+}

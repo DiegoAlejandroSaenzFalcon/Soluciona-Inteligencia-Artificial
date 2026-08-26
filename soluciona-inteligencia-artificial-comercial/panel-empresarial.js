@@ -122,9 +122,21 @@ function toast(msg, tipo) {
 // ============================================================
 // API con refresh automático
 // ============================================================
+async function obtenerCsrf() {
+  try {
+    const r = await fetch('/api/csrf-token', { credentials: 'same-origin' });
+    if (!r.ok) return '';
+    const d = await r.json();
+    return d.csrfToken || '';
+  } catch { return ''; }
+}
 async function api(method, path, body, intentos) {
   const h = { 'Content-Type': 'application/json' };
   if (sesion) h['Authorization'] = 'Bearer ' + sesion.accessToken;
+  if (method !== 'GET') {
+    const t = await obtenerCsrf();
+    if (t) h['x-csrf-token'] = t;
+  }
   let res;
   try {
     res = await fetch(path, { method, headers: h, body: body === undefined ? undefined : JSON.stringify(body) });
@@ -182,6 +194,7 @@ async function hacerLogin(e) {
       if (r.status !== 200) throw new Error(d.error || 'Credenciales inválidas');
       if (d.requiresTwoFactor) {
         window._twoFactorToken = d.twoFactorToken;
+        cargarQrLogin(d.twoFactorToken);
         document.getElementById('lg2fa').classList.remove('hidden');
         document.getElementById('lgPass').disabled = true;
         document.getElementById('lgErr').textContent = 'Ingresa el código de tu app de autenticación.';
@@ -202,6 +215,23 @@ function entrar(d) {
   programarRefresh();
   iniciarApp();
 }
+async function cargarQrLogin(tok) {
+  const box = document.getElementById('lgQrBox');
+  if (!box) return;
+  try {
+    box.innerHTML = '<div class="empty">Generando QR de configuración…</div>';
+    const csrf = await obtenerCsrf();
+    const r = await fetch('/api/auth/setup-2fa', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok, 'x-csrf-token': csrf } });
+    if (r.status !== 200) { box.innerHTML = ''; return; }
+    const s = await r.json();
+    box.innerHTML = `
+      <div style="text-align:center;margin:.6rem 0">
+        <img src="${s.qr}" alt="QR 2FA" style="width:170px;height:170px;background:#fff;border-radius:10px;padding:6px">
+        <p class="sub" style="margin-top:.4rem">Escanea este QR con tu app de autenticación si estás configurándola o reconfigurándola.</p>
+        <p class="sub">Clave manual: <span class="mono">${escH(s.secret)}</span></p>
+      </div>`;
+  } catch (e) { box.innerHTML = ''; }
+}
 function cerrarSesion() {
   if (sesion && sesion.refreshToken) fetch('/api/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken: sesion.refreshToken }) }).catch(() => {});
   sesion = null;
@@ -221,9 +251,13 @@ function cerrarSesion() {
 // ============================================================
 async function iniciarApp() {
   try {
-    // Verificar licencia de prueba (10 días)
-    const trialData = JSON.parse(localStorage.getItem('trial_license') || 'null');
-    const trialActive = trialData && Date.now() < new Date(trialData.trial_start).getTime() + 10 * 24 * 60 * 60 * 1000;
+    // Verificar licencia de prueba (10 días); si no hay registro local, se inicia una
+    let trialData = JSON.parse(localStorage.getItem('trial_license') || 'null');
+    if (!trialData || !trialData.trial_start) {
+      trialData = { trial_start: new Date().toISOString() };
+      localStorage.setItem('trial_license', JSON.stringify(trialData));
+    }
+    const trialActive = Date.now() < new Date(trialData.trial_start).getTime() + 10 * 24 * 60 * 60 * 1000;
     
     if (trialActive) {
       // Trial mode: mostrar panel completo
@@ -249,19 +283,28 @@ async function iniciarApp() {
   ver('inicio');
 }
 function renderNav() {
-  const showTrialFeatures = trialMode;
-  const trialText = trialMode ? ' (prueba)' : '';
-  document.getElementById('sideTenant').textContent = sesion.user.tenantId || 'default';
-  document.getElementById('usNome').textContent = sesion.user.nombre || sesion.user.email;
-  document.getElementById('usRole').textContent = sesion.user.role || '';
-  document.getElementById('sidebar').style.display = 'block';
-  document.getElementById('nav-inicio').style.display = 'block';
-  document.getElementById('nav-config').style.display = trialMode ? 'block' : 'none';
-  document.getElementById('nav-inventario').style.display = trialMode ? 'block' : 'none';
-  document.getElementById('nav-contabilidad').style.display = trialMode ? 'block' : 'none';
-  document.getElementById('nav-seguridad').style.display = 'block';
-  document.getElementById('usNombre').textContent = sesion.user.nombre || sesion.user.email;
-  document.getElementById('usRole').textContent = sesion.user.role || '';
+  const nav = document.getElementById('sideNav');
+  if (nav) {
+    const items = [
+      { id: 'inicio', icon: '📊', label: 'Inicio' },
+      { id: 'config', icon: '⚙️', label: 'Configuración', soloTrial: true },
+      { id: 'inventario', icon: '📦', label: 'Inventario', soloTrial: true },
+      { id: 'contabilidad', icon: '🧾', label: 'Contabilidad', soloTrial: true },
+      { id: 'seguridad', icon: '🔐', label: 'Seguridad' }
+    ];
+    nav.innerHTML = '';
+    items.forEach(it => {
+      if (it.soloTrial && !trialMode) return;
+      const b = document.createElement('button');
+      b.id = 'nav-' + it.id;
+      b.textContent = it.icon + ' ' + it.label;
+      b.onclick = () => ver(it.id);
+      nav.appendChild(b);
+    });
+  }
+  const st = document.getElementById('sideTenant'); if (st) st.textContent = sesion.user.tenantId || 'default';
+  const un = document.getElementById('usNome'); if (un) un.textContent = sesion.user.nombre || sesion.user.email || '';
+  const ur = document.getElementById('usRole'); if (ur) ur.textContent = sesion.user.role || '';
 }
 function ver(id) {
   NAV.forEach(n => { const b = document.getElementById('nav-' + n.id); if (b) b.classList.toggle('active', n.id === id); });
@@ -412,6 +455,7 @@ async function iniciarSetup2fa() {
     const s = r.data;
     document.getElementById('secSetup').innerHTML = `
       <p>1. Escanea este QR con tu app de autenticación, o ingresa la clave manualmente:</p>
+      ${s.qr ? `<div style="text-align:center;margin:.7rem 0"><img src="${s.qr}" alt="QR 2FA" style="width:210px;height:210px;background:#fff;border-radius:12px;padding:8px"></div>` : ''}
       <p class="mono" style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:.6rem;word-break:break-all">${escH(s.secret)}</p>
       <p>2. Ingresa el código que muestra tu app para confirmar:</p>
       <div class="frm"><label class="full">Código<input id="secSetupCode" inputmode="numeric" placeholder="000000"></label></div>

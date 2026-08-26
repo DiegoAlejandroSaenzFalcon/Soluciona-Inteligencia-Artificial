@@ -3,6 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { config, esc, csvCell, hoyInicio, normalizar } = require('../config');
+
+// Unified Rate Limiter
+const { getRateLimiter } = require('../src/utils/rateLimiter');
+const rateLimiter = getRateLimiter(config);
+
 const { leerPedidos, resumenDe, cambiarEstado } = require('../core/orders');
 const { listarClientes, obtenerCliente, resolverLid } = require('../core/db');
 const { notificar, estadoBot } = require('../core/notify');
@@ -23,12 +28,94 @@ const { handleAccountingRequest } = require('../src/accounting/routes');
 const { initWebSockets, emitir, contarClientes } = require('../src/websockets');
 const QRCode = require('qrcode');
 
+// Responde al error de un handler sin dejar la conexión colgada.
+// Respeta e.status (p.ej. 403 de CSRF); si no trae status, asume 500.
+function fail(res, e) {
+  if (res.headersSent) return;
+  const status = e && Number(e.status) >= 400 && Number(e.status) < 600 ? Number(e.status) : 500;
+  if (status >= 500) console.error('[API] Error no controlado:', e && e.stack || e);
+  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+  res.end(JSON.stringify({
+    error: status >= 500 ? 'error_interno' : 'solicitud_rechazada',
+    message: String((e && e.message) || e),
+  }));
+}
+
 const AGENTES = loadAgentesUtiles();
 const DASHBOARD = path.join(__dirname, '..', 'dashboard.html');
 const KDS = path.join(__dirname, '..', 'kds.html');
 const MANIFEST = path.join(__dirname, '..', 'manifest.webmanifest');
 const SW = path.join(__dirname, '..', 'sw.js');
-const SESIONES = new Set();
+
+// ===== SESIONES LEGACY (cookie panel_token) con TTL 30d + limpieza =====
+const SESION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
+const SESIONES = new Map(); // token -> createdAt
+
+function sesionesAdd(token) {
+  SESIONES.set(token, Date.now());
+}
+
+function sesionesHas(token) {
+  const ts = SESIONES.get(token);
+  if (!ts) return false;
+  if (Date.now() - ts > SESION_TTL_MS) {
+    SESIONES.delete(token);
+    return false;
+  }
+  return true;
+}
+
+// Limpieza periódica (cada hora)
+setInterval(() => {
+  const now = Date.now();
+  for (const [token, ts] of SESIONES.entries()) {
+    if (now - ts > SESION_TTL_MS) SESIONES.delete(token);
+  }
+}, 60 * 60 * 1000);
+
+// ===== CSRF PROTECTION =====
+const CSRF_TOKEN_HEADER = 'x-csrf-token';
+const CSRF_COOKIE_NAME = 'csrf_token';
+const csrfTokens = new Map(); // token -> { ip, createdAt }
+
+function generateCsrfToken() {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+function issueCsrfToken(ip) {
+  const token = generateCsrfToken();
+  csrfTokens.set(token, { ip, createdAt: Date.now() });
+  // Limpieza tokens viejos (cada 100 emisiones)
+  if (csrfTokens.size > 5000) {
+    const now = Date.now();
+    for (const [t, v] of csrfTokens.entries()) {
+      if (now - v.createdAt > 24 * 60 * 60 * 1000) csrfTokens.delete(t);
+    }
+  }
+  return token;
+}
+
+function validateCsrfToken(req, token) {
+  if (!token) return false;
+  const entry = csrfTokens.get(token);
+  if (!entry) return false;
+  // Token válido 24h y ligado a IP
+  if (Date.now() - entry.createdAt > 24 * 60 * 60 * 1000) {
+    csrfTokens.delete(token);
+    return false;
+  }
+  const clientIp = req.socket.remoteAddress || req.headers['x-forwarded-for'] || 'unknown';
+  return entry.ip === clientIp;
+}
+
+function consumeCsrfToken(token) {
+  csrfTokens.delete(token);
+}
+
+// Helper para obtener IP del cliente
+function getClientIp(req) {
+  return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+}
 
 // Campos que NUNCA se exponen en el panel (solo se indica si están configurados)
 const CAMPOS_SENSIBLES = ['api_key', 'access_key', 'token', 'password', 'secret_key', 'cert_pass', 'pin_software', 'codigo_software', 'panel_password'];
@@ -431,7 +518,7 @@ function estadoHtml(p) {
 function tokenValido(req) {
   const c = req.headers.cookie || '';
   const m = c.match(/(?:^|;\s*)panel_token=([^;]+)/);
-  return m && SESIONES.has(m[1]);
+  return m && sesionesHas(m[1]);
 }
 
 function paginaLogin(error) {
@@ -523,6 +610,26 @@ function paginaLogin(error) {
 }
 
 function iniciarWeb() {
+  // Endurecer dashboard legado: si no hay panel_password, el panel quedaba
+  // totalmente abierto. Genera una aleatoria, persiste y la muestra una vez.
+  if (!config.panel_password) {
+    try {
+      const pwNueva = crypto.randomBytes(6).toString('hex');
+      const cfgPath = path.join(__dirname, '..', 'config.json');
+      const cfgDisco = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+      cfgDisco.panel_password = pwNueva;
+      const tmp = cfgPath + '.tmp';
+      fs.writeFileSync(tmp, JSON.stringify(cfgDisco, null, 2) + '\n');
+      fs.renameSync(tmp, cfgPath);
+      config.panel_password = pwNueva;
+      console.log('══════════════════════════════════════════════');
+      console.log('  Panel legado sin contraseña configurada.');
+      console.log('  Se generó una automática (guárdala): ' + pwNueva);
+      console.log('══════════════════════════════════════════════');
+    } catch (e) {
+      console.error('No se pudo generar panel_password:', e.message);
+    }
+  }
   const server = http.createServer(async (req, res) => {
     const url = req.url.split('?')[0];
 
@@ -562,71 +669,150 @@ function iniciarWeb() {
 
     // ===== AUTH / RBAC (Sprint 1) =====
     if (url.startsWith('/api/auth/') || url === '/api/users') {
-      const atendida = await handleAuthRequest(req, res, url);
-      if (atendida) return;
+      // Rate limit por IP (unified rate limiter)
+      const clientIp = getClientIp(req);
+      const rl = rateLimiter.check(clientIp, url);
+      res.setHeader('X-RateLimit-Limit', String(rateLimiter._getConfig(url).max));
+      res.setHeader('X-RateLimit-Remaining', String(Math.max(0, rl.remaining)));
+      res.setHeader('X-RateLimit-Reset', String(Math.ceil(rl.reset / 1000)));
+      if (!rl.allowed) {
+        res.setHeader('Retry-After', String(rl.retryAfter));
+        return fail(res, { status: 429, message: 'Demasiadas peticiones, intente más tarde' });
+      }
+
+      // CSRF en endpoints mutantes (excepto login/refresh/verify-2fa/me/permissions)
+      const mutatingAuth = ['POST', 'PUT', 'DELETE'].includes(req.method) &&
+        !['/api/auth/login', '/api/auth/refresh', '/api/auth/verify-2fa', '/api/auth/me', '/api/auth/permissions'].includes(url);
+      if (mutatingAuth) {
+        const csrfToken = req.headers[CSRF_TOKEN_HEADER] || req.headers['x-xsrf-token'];
+        if (!validateCsrfToken(req, csrfToken)) {
+          return fail(res, { status: 403, message: 'CSRF token inválido o expirado' });
+        }
+        consumeCsrfToken(csrfToken);
+      }
+
+      try { const atendida = await handleAuthRequest(req, res, url); if (atendida) return; }
+      catch (e) { return fail(res, e); }
+    }
+
+    // ===== CSRF TOKEN ENDPOINT =====
+    if (url === '/api/csrf-token' && req.method === 'GET') {
+      const clientIp = getClientIp(req);
+      const token = issueCsrfToken(clientIp);
+      // Enviar como cookie HttpOnly + header para SPA
+      const isSecure = req.socket.encrypted || req.headers['x-forwarded-proto'] === 'https';
+      const cookie = `${CSRF_COOKIE_NAME}=${token}; HttpOnly; Path=/; SameSite=Lax${isSecure ? '; Secure' : ''}`;
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Set-Cookie': cookie });
+      res.end(JSON.stringify({ csrfToken: token }));
+      return;
     }
 
     // ===== CONFIG V2 (Sprint 1) =====
     if (url.startsWith('/api/configv2/') || url === '/api/audit') {
-      const atendida = await handleConfigRequest(req, res, url);
-      if (atendida) return;
+      try { const atendida = await handleConfigRequest(req, res, url); if (atendida) return; }
+      catch (e) { return fail(res, e); }
     }
 
     // ===== INVENTARIO / COMPRAS (Sprint 1) =====
     if (url.startsWith('/api/inventory/')) {
-      const atendida = await handleInventoryRequest(req, res, url);
-      if (atendida) {
-        if (req.method === 'POST' && url.includes('/recibir')) emitir('default', 'stock:cambio', { metodo: req.method, url });
-        if (req.method === 'PUT' && url.includes('/stock')) emitir('default', 'stock:cambio', { metodo: req.method, url });
-        if (req.method === 'POST' && url.includes('/stock/traslado')) emitir('default', 'stock:cambio', { metodo: req.method, url });
-        if (req.method === 'POST' && url.includes('/purchase-orders') && !url.includes('/estado') && !url.includes('/recibir')) {
-          emitir('default', 'compras:cambio', { metodo: req.method, url });
+      // CSRF para endpoints mutantes de inventario
+      if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+        const csrfToken = req.headers[CSRF_TOKEN_HEADER] || req.headers['x-xsrf-token'];
+        if (!validateCsrfToken(req, csrfToken)) {
+          return fail(res, { status: 403, message: 'CSRF token inválido o expirado' });
         }
-        return;
+        consumeCsrfToken(csrfToken);
       }
+      try {
+        const atendida = await handleInventoryRequest(req, res, url);
+        if (atendida) {
+          if (req.method === 'POST' && url.includes('/recibir')) emitir('default', 'stock:cambio', { metodo: req.method, url });
+          if (req.method === 'PUT' && url.includes('/stock')) emitir('default', 'stock:cambio', { metodo: req.method, url });
+          if (req.method === 'POST' && url.includes('/stock/traslado')) emitir('default', 'stock:cambio', { metodo: req.method, url });
+          if (req.method === 'POST' && url.includes('/purchase-orders') && !url.includes('/estado') && !url.includes('/recibir')) {
+            emitir('default', 'compras:cambio', { metodo: req.method, url });
+          }
+          return;
+        }
+      } catch (e) { return fail(res, e); }
     }
 
     // ===== CXC / CXP + CONTABILIDAD (Sprint 1) =====
     if (url.startsWith('/api/accounting/')) {
-      const atendida = await handleAccountingRequest(req, res, url);
-      if (atendida) {
-        if (req.method === 'POST' && url.endsWith('/invoices')) emitir('default', 'venta:nueva', { metodo: req.method, url });
-        if (req.method === 'POST' && url.endsWith('/payments')) emitir('default', 'pago:nuevo', { metodo: req.method, url });
-        return;
+      // CSRF para endpoints mutantes de contabilidad
+      if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+        const csrfToken = req.headers[CSRF_TOKEN_HEADER] || req.headers['x-xsrf-token'];
+        if (!validateCsrfToken(req, csrfToken)) {
+          return fail(res, { status: 403, message: 'CSRF token inválido o expirado' });
+        }
+        consumeCsrfToken(csrfToken);
       }
+      try {
+        const atendida = await handleAccountingRequest(req, res, url);
+        if (atendida) {
+          if (req.method === 'POST' && url.endsWith('/invoices')) emitir('default', 'venta:nueva', { metodo: req.method, url });
+          if (req.method === 'POST' && url.endsWith('/payments')) emitir('default', 'pago:nuevo', { metodo: req.method, url });
+          return;
+        }
+      } catch (e) { return fail(res, e); }
     }
 
-    const pw = config.panel_password || '';
-    if (pw) {
-      if (url === '/login' && req.method === 'POST') {
-        let body = '';
-        req.on('data', c => { body += c; });
-        req.on('end', () => {
-          try {
-            const params = new URLSearchParams(body);
-            const usuario = params.get('usuario') || '';
-            if (params.get('password') === pw) {
-              const t = crypto.randomBytes(16).toString('hex');
-              SESIONES.add(t);
-              const recuerdame = params.get('recuerdame') === 'on' || params.get('recuerdame') === 'true';
-              const cookie = `panel_token=${t}; HttpOnly; Path=/; SameSite=Lax` + (recuerdame ? '; Max-Age=2592000' : '');
-              res.writeHead(302, { 'Set-Cookie': cookie, 'Location': '/' });
-              res.end();
-            } else {
-              res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });
-              res.end(paginaLogin('Contraseña incorrecta'));
-            }
-          } catch {
-            res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
-            res.end(paginaLogin('Solicitud inválida'));
+    // Health check público (sin auth) - ANTES del auth
+    if (url === '/api/health') {
+      // will be handled below
+    } else if (
+      // Panel empresarial: tiene su propia auth JWT + 2FA (no usa la cookie legado)
+      url === '/panel-empresarial.html' ||
+      url === '/panel-empresarial.js' ||
+      url === '/panel-config.js' ||
+      url === '/panel-inventario.js' ||
+      url === '/panel-contabilidad.js' ||
+      url.startsWith('/api/auth/') ||
+      // Dashboard legado necesita este endpoint para cargar su vista
+      url === '/api/configuracion'
+    ) {
+      // servir sin el guard de cookie legado
+    } else {
+      const pw = config.panel_password || '';
+      if (pw) {
+        if (url === '/login' && req.method === 'POST') {
+          // Rate limiting - unified rate limiter
+          const ip = req.socket.remoteAddress;
+          const rl = rateLimiter.check(ip, '/login');
+          if (!rl.allowed) {
+            res.writeHead(429, { 'Content-Type': 'text/html; charset=utf-8', 'Retry-After': rl.retryAfter });
+            return res.end(paginaLogin('Demasiados intentos. Intente de nuevo en ' + rl.retryAfter + ' min.'));
           }
-        });
-        return;
-      }
-      if (!tokenValido(req)) {
-        res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(paginaLogin());
-        return;
+          let body = '';
+          req.on('data', c => { body += c; });
+          req.on('end', () => {
+            try {
+              const params = new URLSearchParams(body);
+              const usuario = params.get('usuario') || '';
+              if (params.get('password') === pw) {
+                const t = crypto.randomBytes(16).toString('hex');
+                sesionesAdd(t);
+                const recuerdame = params.get('recuerdame') === 'on' || params.get('recuerdame') === 'true';
+                const isSecure = req.socket.encrypted || req.headers['x-forwarded-proto'] === 'https';
+                const cookie = `panel_token=${t}; HttpOnly; Path=/; SameSite=Lax${isSecure ? '; Secure' : ''}` + (recuerdame ? '; Max-Age=2592000' : '');
+                res.writeHead(302, { 'Set-Cookie': cookie, 'Location': '/' });
+                res.end();
+              } else {
+                res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });
+                res.end(paginaLogin('Contraseña incorrecta'));
+              }
+            } catch {
+              res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
+              res.end(paginaLogin('Solicitud inválida'));
+            }
+          });
+          return;
+        }
+        if (!tokenValido(req)) {
+          res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });
+          res.end(paginaLogin());
+          return;
+        }
       }
     }
 
@@ -753,9 +939,83 @@ function iniciarWeb() {
       const waHealth = global.whatsappHealth ? global.whatsappHealth() : { connected: false, error: 'health not available' };
       const waMetrics = global.whatsappMetrics ? global.whatsappMetrics() : { error: 'metrics not available' };
       const dbHealth = { ok: await require('../core/db').ping() };
-      const healthy = waHealth.connected && dbHealth.ok;
-      res.writeHead(healthy ? 200 : 503, { 'Content-Type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify({ healthy, timestamp: new Date().toISOString(), whatsapp: waHealth, metrics: waMetrics, database: dbHealth }));
+      
+      // Disco
+      let diskHealth = { ok: true, freeGB: 0, usedPct: 0 };
+      try {
+        const { execSync } = require('child_process');
+        const out = execSync('df -B1 /', { encoding: 'utf8', timeout: 2000 });
+        const lines = out.trim().split('\n');
+        const parts = lines[1].split(/\s+/);
+        const total = parseInt(parts[1], 10);
+        const used = parseInt(parts[2], 10);
+        const free = total - used;
+        diskHealth = { ok: free > 1024 * 1024 * 1024, freeGB: (free / 1e9).toFixed(2), usedPct: ((used / total) * 100).toFixed(1) };
+      } catch {}
+      
+      // Memoria
+      const mem = process.memoryUsage();
+      const memHealth = { ok: mem.heapUsed < 512 * 1024 * 1024, heapUsedMB: (mem.heapUsed / 1e6).toFixed(1), heapTotalMB: (mem.heapTotal / 1e6).toFixed(1), rssMB: (mem.rss / 1e6).toFixed(1) };
+      
+      // Backups
+      let backupHealth = { ok: true, count: 0, lastBackup: null };
+      try {
+        const fs = require('fs');
+        const backupDir = path.join(config.dataDir || 'data', 'backups');
+        if (fs.existsSync(backupDir)) {
+          const files = fs.readdirSync(backupDir).filter(f => f.startsWith('auth_'));
+          backupHealth.count = files.length;
+          if (files.length) {
+            const latest = files.sort().reverse()[0];
+            const stat = fs.statSync(path.join(backupDir, latest));
+            backupHealth.lastBackup = stat.mtime.toISOString();
+          }
+        }
+      } catch {}
+      
+      // IA Pool
+      let iaPoolHealth = { ok: true, keys: 0, healthy: 0 };
+      try {
+        const poolMod = require('../core/ia-pool');
+        const pool = poolMod.resumenPool();
+        iaPoolHealth.keys = pool.total || 0;
+        iaPoolHealth.healthy = pool.healthy || 0;
+        iaPoolHealth.ok = iaPoolHealth.healthy > 0;
+      } catch {}
+      
+      // Colas (pedidos/fallidos)
+      let queueHealth = { ok: true, pending: 0, failed: 0 };
+      try {
+        const fs = require('fs');
+        const qDir = path.join(config.dataDir || 'data', 'queue');
+        if (fs.existsSync(qDir)) {
+          const pending = fs.readdirSync(qDir).filter(f => f.endsWith('.json')).length;
+          queueHealth.pending = pending;
+        }
+        const failedFile = path.join(config.dataDir || 'data', 'queue', 'failed_ids.json');
+        if (fs.existsSync(failedFile)) {
+          const failed = JSON.parse(fs.readFileSync(failedFile, 'utf8'));
+          queueHealth.failed = Array.isArray(failed) ? failed.length : 0;
+        }
+        queueHealth.ok = queueHealth.failed < 100;
+      } catch {}
+      
+      const allOk = waHealth.connected && dbHealth.ok && diskHealth.ok && memHealth.ok && backupHealth.ok && iaPoolHealth.ok && queueHealth.ok;
+      
+      res.writeHead(allOk ? 200 : 503, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ 
+        healthy: allOk, 
+        timestamp: new Date().toISOString(), 
+        whatsapp: waHealth, 
+        metrics: waMetrics, 
+        database: dbHealth,
+        disk: diskHealth,
+        memory: memHealth,
+        backups: backupHealth,
+        iaPool: iaPoolHealth,
+        queues: queueHealth,
+        uptimeSec: Math.round(process.uptime())
+      }));
       return;
     }
 
@@ -766,6 +1026,12 @@ function iniciarWeb() {
     }
 
     if (url === '/api/configuracion' && req.method === 'POST') {
+      // CSRF protection for legacy endpoint
+      const csrfToken = req.headers[CSRF_TOKEN_HEADER] || req.headers['x-xsrf-token'];
+      if (!validateCsrfToken(req, csrfToken)) {
+        return fail(res, { status: 403, message: 'CSRF token inválido o expirado' });
+      }
+      consumeCsrfToken(csrfToken);
       let body = '';
       req.on('data', c => { body += c; });
       req.on('end', () => {
@@ -791,6 +1057,12 @@ function iniciarWeb() {
     }
 
     if (url === '/api/ia-pool' && req.method === 'POST') {
+      // CSRF protection for legacy endpoint
+      const csrfToken = req.headers[CSRF_TOKEN_HEADER] || req.headers['x-xsrf-token'];
+      if (!validateCsrfToken(req, csrfToken)) {
+        return fail(res, { status: 403, message: 'CSRF token inválido o expirado' });
+      }
+      consumeCsrfToken(csrfToken);
       let body = '';
       req.on('data', c => { body += c; });
       req.on('end', () => {
@@ -997,6 +1269,8 @@ function iniciarWeb() {
       return;
     }
 
+
+
     const pedidos = leerPedidos();
     const r = resumenDe(pedidos, hoyInicio());
     const totalHistorico = resumenDe(pedidos).total;
@@ -1023,8 +1297,8 @@ function iniciarWeb() {
 
   initWebSockets(server);
 
-  server.listen(config.puerto, () => {
-    console.log(`[OK] Tablero web: http://localhost:${config.puerto}`);
+  server.listen(config.puerto, '0.0.0.0', () => {
+    console.log(`[OK] Tablero web: http://localhost:${config.puerto} (red: http://0.0.0.0:${config.puerto})`);
   }).on('error', (e) => {
     if (e.code === 'EADDRINUSE') {
       console.log('[!] Ya hay OTRO bot de pedidos corriendo en esta laptop. Cierra TODAS las ventanas negras y abre SOLO UNA vez iniciar.bat.');

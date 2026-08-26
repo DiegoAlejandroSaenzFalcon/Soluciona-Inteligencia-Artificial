@@ -5,6 +5,37 @@ const pool = require('./ia-pool');
 
 const AGENTES = loadAgentesUtiles();
 
+// ===== CACHÉ DE HISTORIAL CON LÍMITES (LRU + TTL) =====
+const HISTORIAL_MAX_JIDS = 5000;
+const HISTORIAL_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+const historialCliente = new Map();
+function historialGet(jid) {
+  const entry = historialCliente.get(jid);
+  if (!entry) return null;
+  if (Date.now() - entry.ts > HISTORIAL_TTL_MS) {
+    historialCliente.delete(jid);
+    return null;
+  }
+  entry.ts = Date.now(); // renovar TTL al acceder
+  return entry.msgs;
+}
+function historialSet(jid, msgs) {
+  if (historialCliente.size >= HISTORIAL_MAX_JIDS) {
+    // Eliminar el más antiguo (primer entrada del Map)
+    const firstKey = historialCliente.keys().next().value;
+    if (firstKey !== undefined) historialCliente.delete(firstKey);
+  }
+  historialCliente.set(jid, { msgs, ts: Date.now() });
+}
+
+// Limpieza periódica de entradas expiradas (cada hora)
+setInterval(() => {
+  const now = Date.now();
+  for (const [jid, entry] of historialCliente.entries()) {
+    if (now - entry.ts > HISTORIAL_TTL_MS) historialCliente.delete(jid);
+  }
+}, 60 * 60 * 1000);
+
 const AGENTE_ATENCION = {
   name: `Atención ${config.nombreNegocio()}`,
   emoji: '🤝',
@@ -91,7 +122,7 @@ async function atenderClienteIA(jid, cuerpo, ordenInfo) {
   if (esFueraDeTema(cuerpo)) {
     return mensajeFueraDeTema();
   }
-  let hist = historialCliente.get(jid) || [];
+  let hist = historialGet(jid) || [];
   let system = AGENTE_ATENCION.systemPrompt;
   if (ordenInfo) {
     system += `\n\nPEDIDO DETECTADO EN ESTE MOMENTO:\n${ordenInfo}\nConfírmalo, muestra el TOTAL y pide la ubicación por GPS (o RECOGER). No repitas la lista si ya la diste antes.`;
@@ -105,7 +136,7 @@ async function atenderClienteIA(jid, cuerpo, ordenInfo) {
   hist.push({ role: 'user', content: cuerpo });
   hist.push({ role: 'assistant', content: reply });
   if (hist.length > 12) hist = hist.slice(hist.length - 12);
-  historialCliente.set(jid, hist);
+  historialSet(jid, hist);
   return reply;
 }
 

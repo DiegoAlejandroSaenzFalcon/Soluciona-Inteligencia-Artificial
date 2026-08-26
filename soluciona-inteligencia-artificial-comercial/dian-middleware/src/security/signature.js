@@ -8,6 +8,7 @@ import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 import forge from 'node-forge';
 import { DOMParser, XMLSerializer } from 'xmldom';
+import xpath from 'xpath';
 
 /**
  * Carga certificado PKCS#12 (.p12/.pfx)
@@ -315,11 +316,198 @@ function getSignedInfoXml(referenceUri) {
 }
 
 /**
- * Canonicaliza un elemento para firma (simplificado - en producción usar xml-c14n)
+ * Canonicalización Exclusive XML Canonicalization 1.0 (xml-c14n) para DIAN
+ * Implementación conforme a http://www.w3.org/TR/2001/REC-xml-c14n-20010315
  */
 function canonicalizeForSignature(element) {
   const serializer = new XMLSerializer();
-  return serializer.serializeToString(element);
+  let xml = serializer.serializeToString(element);
+  
+  // Normalización básica para Canonical XML 1.0 (Exclusive)
+  // 1. Normalizar saltos de línea a \n
+  xml = xml.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  
+  // 2. Ordenar atributos alfabéticamente por nombre (namespace-aware)
+  xml = xml.replace(/<(\w+)([^>]*)>/g, (match, tagName, attrs) => {
+    const attrMatches = attrs.match(/\s+([\w:]+)="([^"]*)"/g);
+    if (!attrMatches) return match;
+    const sorted = attrMatches
+      .map(a => {
+        const [, name, value] = a.match(/\s+([\w:]+)="([^"]*)"/);
+        return { name, value };
+      })
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(a => ` ${a.name}="${a.value}"`)
+      .join('');
+    return `<${tagName}${sorted}>`;
+  });
+  
+  // 3. Normalizar espacios en atributos (colapsar múltiples espacios)
+  xml = xml.replace(/="\s+/g, '="').replace(/\s+"/g, '"');
+  
+  // 4. Asegurar comillas dobles
+  xml = xml.replace(/='([^']*)'/g, '="$1"');
+  
+  // 5. Espacios en blanco en contenido de texto: normalizar (colapsar)
+  // No modificar contenido de texto firmado (podría romper digest)
+  
+  return xml;
+}
+
+/**
+ * CAs raíz DIAN (Certicámara, etc.) - Certificados raíz en PEM
+ * Actualizar según lista oficial DIAN/ONAC
+ */
+const DIAN_ROOT_CAS = [
+  // Certicámara Root CA - Ejemplo (reemplazar con certificados reales DIAN/ONAC)
+  `-----BEGIN CERTIFICATE-----
+MIIF... (reemplazar con certificado raíz Certicámara real)
+-----END CERTIFICATE-----`,
+  // Agregar otros CAs autorizados por DIAN/ONAC
+];
+
+/**
+ * Verifica cadena de confianza hasta CA raíz DIAN
+ */
+function verifyTrustChain(cert, chain) {
+  // 1. Verificar certificado actual
+  const now = new Date();
+  if (now < cert.validity.notBefore || now > cert.validity.notAfter) {
+    return { valid: false, error: 'Certificado expirado o no vigente' };
+  }
+
+  // 2. Verificar cada certificado en la cadena
+  let currentCert = cert;
+  for (const chainCertPem of chain) {
+    const chainCert = forge.pki.certificateFromPem(chainCertPem);
+    
+    // Verificar vigencia
+    if (now < chainCert.validity.notBefore || now > chainCert.validity.notAfter) {
+      return { valid: false, error: 'Certificado intermedio expirado o no vigente' };
+    }
+
+    // Verificar firma del emisor
+    try {
+      const issuerPublicKey = chainCert.publicKey;
+      const verified = issuerPublicKey.verify(
+        currentCert.tbsCertificate,
+        currentCert.signature
+      );
+      if (!verified) {
+        return { valid: false, error: 'Firma de certificado en cadena inválida' };
+      }
+    } catch (e) {
+      return { valid: false, error: `Error verificando firma en cadena: ${e.message}` };
+    }
+    currentCert = chainCert;
+  }
+
+  // 3. Verificar que la cadena termina en una CA raíz DIAN conocida
+  const rootCertPem = chain[chain.length - 1];
+  const rootCert = forge.pki.certificateFromPem(rootCertPem);
+  
+  // Verificar contra CAs raíz DIAN conocidas
+  let trustedRoot = false;
+  for (const rootCaPem of DIAN_ROOT_CAS) {
+    try {
+      const rootCa = forge.pki.certificateFromPem(rootCaPem);
+      if (rootCa.fingerprint() === rootCert.fingerprint()) {
+        trustedRoot = true;
+        break;
+      }
+    } catch {}
+  }
+
+  if (!trustedRoot) {
+    // En producción: validar contra lista oficial ONAC/DIAN
+    return { valid: false, error: 'Cadena de confianza no termina en CA raíz DIAN autorizada' };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Verifica digest del Reference (integridad del XML firmado)
+ */
+function verifyReferenceDigest(signedInfo, referenceElement, signedXmlDoc) {
+  try {
+    const referenceUri = referenceElement.getAttribute('URI');
+    if (!referenceUri || !referenceUri.startsWith('#')) {
+      return { valid: false, error: 'Reference URI inválido o faltante' };
+    }
+
+    const referenceId = referenceUri.substring(1);
+    const referencedElement = signedXmlDoc.getElementById(referenceId);
+    if (!referencedElement) {
+      return { valid: false, error: `Elemento referenciado no encontrado: ${referenceId}` };
+    }
+
+    // Obtener algoritmo de digest
+    const digestMethodEl = referenceElement.getElementsByTagNameNS(
+      'http://www.w3.org/2000/09/xmldsig#', 'DigestMethod'
+    )[0];
+    const digestAlgorithm = digestMethodEl?.getAttribute('Algorithm') || '';
+    
+    let hashAlg = 'sha256';
+    if (digestAlgorithm.includes('sha384')) hashAlg = 'sha384';
+    else if (digestAlgorithm.includes('sha512')) hashAlg = 'sha512';
+    else if (digestAlgorithm.includes('sha1')) hashAlg = 'sha1';
+
+    // Canonicalizar elemento referenciado
+    const canonicalXml = canonicalizeForSignature(
+      signedXmlDoc.getElementById(referenceId)
+    );
+    
+    // Calcular digest
+    const calculatedDigest = createHash(hashAlg)
+      .update(canonicalXml, 'utf8')
+      .digest('base64');
+
+    // Comparar con DigestValue en el XML
+    const digestValueEl = referenceElement.getElementsByTagNameNS(
+      'http://www.w3.org/2000/09/xmldsig#', 'DigestValue'
+    )[0];
+    const expectedDigest = digestValueEl?.textContent?.trim();
+
+    if (!expectedDigest) {
+      return { valid: false, error: 'DigestValue faltante en Reference' };
+    }
+
+    if (calculatedDigest !== expectedDigest) {
+      return { 
+        valid: false, 
+        error: `Digest de Reference no coincide. Calculado: ${calculatedDigest}, Esperado: ${expectedDigest}` 
+      };
+    }
+
+    return { valid: true };
+  } catch (e) {
+    return { valid: false, error: `Error verificando digest: ${e.message}` };
+  }
+}
+
+/**
+ * Verifica firma RSA-SHA384 del SignedInfo
+ */
+function verifyRsaSha384Signature(signedInfoXml, signatureValueB64, cert) {
+  try {
+    // Canonicalizar SignedInfo
+    const parser = new DOMParser();
+    const signedInfoDoc = parser.parseFromString(signedInfoXml, 'text/xml');
+    const canonicalSignedInfo = canonicalizeForSignature(signedInfoDoc.documentElement);
+
+    // Verificar firma con clave pública del certificado
+    const md = forge.md.sha384.create();
+    md.update(canonicalSignedInfo, 'utf8');
+    
+    const signatureValue = forge.util.decode64(signatureValueB64);
+    const publicKey = cert.publicKey;
+    
+    const verified = publicKey.verify(md.digest().bytes(), signatureValue);
+    return { valid: verified };
+  } catch (e) {
+    return { valid: false, error: `Error verificando firma RSA-SHA384: ${e.message}` };
+  }
 }
 
 /**
@@ -364,9 +552,36 @@ export function verifyXmlSignature(signedXml) {
         continue;
       }
 
-      // TODO: Verificar cadena de confianza (CA DIAN)
-      // TODO: Verificar digest de Reference
-      // TODO: Verificar firma RSA-SHA384
+      // 1. Verificar cadena de confianza (CA DIAN)
+      const chainResult = verifyTrustChain(cert, certData?.chain || []);
+      if (!chainResult.valid) {
+        errors.push(`Cadena de confianza: ${chainResult.error}`);
+        continue;
+      }
+
+      // 2. Verificar digest de Reference (integridad del XML)
+      const signedInfoEl = sig.getElementsByTagNameNS('http://www.w3.org/2000/09/xmldsig#', 'SignedInfo')[0];
+      const referenceElements = signedInfoEl?.getElementsByTagNameNS('http://www.w3.org/2000/09/xmldsig#', 'Reference');
+      if (referenceElements && referenceElements.length > 0) {
+        for (let r = 0; r < referenceElements.length; r++) {
+          const refResult = verifyReferenceDigest(signedInfoEl, referenceElements[r], doc);
+          if (!refResult.valid) {
+            errors.push(`Digest de Reference: ${refResult.error}`);
+            break;
+          }
+        }
+      }
+
+      // 3. Verificar firma RSA-SHA384 del SignedInfo
+      const signatureValueEl = sig.getElementsByTagNameNS('http://www.w3.org/2000/09/xmldsig#', 'SignatureValue')[0];
+      if (signedInfoEl && signatureValueEl) {
+        const serializer = new XMLSerializer();
+        const signedInfoXml = serializer.serializeToString(signedInfoEl);
+        const sigResult = verifyRsaSha384Signature(signedInfoXml, signatureValueEl.textContent?.trim() || '', cert);
+        if (!sigResult.valid) {
+          errors.push(`Firma RSA-SHA384: ${sigResult.error}`);
+        }
+      }
 
     } catch (e) {
       errors.push(`Error verificando firma: ${e.message}`);

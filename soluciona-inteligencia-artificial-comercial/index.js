@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * index.js - Punto de entrada único y modular
- * SOLUCIONA INTELIGENCIA ARTIFICIAL - Sistema de pedidos por WhatsApp
+ * SOLUCIA INTELIGENCIA ARTIFICIAL - Sistema de pedidos por WhatsApp
  *
  * Uso:
  *   node index.js                     -> usa config.json (negocio por defecto, puerto 3000)
@@ -23,6 +23,9 @@ console.error = (...args) => {
 const path = require('path');
 process.chdir(path.resolve(__dirname));
 
+// Rotación de logs (diario, 7 días, 10MB max)
+require('./kernel/src/common/logger/file-transport');
+
 // El bot NUNCA debe morir por un error puntual de red/WhatsApp:
 // se registra y se sigue escuchando (baileys se reconecta solo).
 process.on('unhandledRejection', (e) => {
@@ -34,7 +37,7 @@ process.on('uncaughtException', (e) => {
 
 
 console.log('\n==========================================');
-console.log('  SOLUCIONA INTELIGENCIA ARTIFICIAL');
+console.log('  SOLUCIA INTELIGENCIA ARTIFICIAL');
 console.log('  Sistema de Pedidos por WhatsApp');
 console.log('==========================================\n');
 
@@ -56,11 +59,41 @@ try {
 }
 
 console.log('[INIT] Iniciando WhatsApp...');
-try {
-  const { iniciarWhatsApp } = require('./transports/whatsapp');
-  iniciarWhatsApp().catch(e => console.error('[ERROR] WhatsApp:', e.message));
-} catch (e) {
-  console.warn('[WARN] Error iniciando WhatsApp:', e.message);
+if (!process.env.DISABLE_WHATSAPP) {
+  if (process.env.WHATSAPP_TRANSPORT === 'cloud') {
+    try {
+      const { createTransport } = require('./src/whatsapp/cloud/transport');
+      const transportConfig = {
+        phoneId: process.env.WHATSAPP_CLOUD_PHONE_ID,
+        accessToken: process.env.WHATSAPP_CLOUD_TOKEN,
+        wabaId: process.env.WHATSAPP_BUSINESS_ACCOUNT_ID,
+        appSecret: process.env.WHATSAPP_APP_SECRET,
+        webhookVerifyToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN
+      };
+
+      const transport = createTransport(transportConfig);
+
+      transport.initialize().then(() => {
+        console.log('[INIT] WhatsApp Cloud API conectado');
+        global.whatsappTransport = transport;
+      }).catch(e => {
+        console.error('[ERROR] WhatsApp Cloud API:', e.message);
+        process.exit(1);
+      });
+    } catch (e) {
+      console.warn('[WARN] Error iniciando WhatsApp Cloud:', e.message);
+    }
+  } else {
+    // Modo estándar (Baileys): flujo original con QR en el panel
+    try {
+      const { iniciarWhatsApp } = require('./transports/whatsapp');
+      iniciarWhatsApp().catch(e => console.error('[ERROR] WhatsApp:', e.message));
+    } catch (e) {
+      console.warn('[WARN] Error iniciando WhatsApp:', e.message);
+    }
+  }
+} else {
+  console.log('[INIT] WhatsApp deshabilitado (DISABLE_WHATSAPP=true)');
 }
 
 console.log('[INIT] Iniciando Web...');
@@ -75,6 +108,15 @@ try {
 } catch (e) {
   console.error('[ERROR] Error iniciando Web:', e.message);
   process.exit(1);
+}
+
+// Iniciar limpieza automática de sesiones expiradas (legacy + Cloud API)
+try {
+  const { iniciarLimpiezaSesiones } = require('./core/db-sqlite');
+  const cleanupInterval = iniciarLimpiezaSesiones();
+  console.log('[INIT] Limpieza de sesiones expiradas programada (cada hora)');
+} catch (e) {
+  console.warn('[WARN] No se pudo iniciar limpieza de sesiones:', e.message);
 }
 
 const { config } = require('./config');

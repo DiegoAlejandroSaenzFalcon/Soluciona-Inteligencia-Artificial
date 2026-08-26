@@ -1,0 +1,54 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: "15s"
+      queryTimeout: "60s"
+      httpMethod: "POST"
+
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: false
+    jsonData:
+      derivedFields:
+        - name: traceID
+          matcherRegex: "trace_id=(\\w+)"
+          name: "Trace ID"
+          url: "$${__value.raw}"
+          urlLinkLabel: "View Trace"
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    url: http://tempo:3200
+    editable: false
+    jsonData:
+      tracesToLogs:
+        datasourceUid: "Loki"
+        tags: ["service.name", "service.namespace"]
+        spanStartTimeShift: "1h"
+        spanEndTimeShift: "-1h"
+      serviceMap:
+        datasourceUid: "Prometheus"
+      nodeGraph:
+        enabled: true
+
+  - name: Alertmanager
+    type: alertmanager
+    access: proxy
+    url: http://alertmanager:9093
+    editable: false
+
+  - name: Pyroscope
+    type: pyroscope
+    access: proxy
+    url: http://pyroscope:4040
+    editable: false
