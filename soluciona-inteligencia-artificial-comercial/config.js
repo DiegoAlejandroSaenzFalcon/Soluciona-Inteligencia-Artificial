@@ -214,6 +214,32 @@ config.facturacion.emision_automatica = envBool('FACTURACION_EMISION_AUTO', conf
 config.facturacion.estado_dispara = env('FACTURACION_ESTADO_DISPARA', config.facturacion.estado_dispara || 'pagado');
 config.facturacion.enviar_mail = envBool('FACTURACION_ENVIAR_MAIL', config.facturacion.enviar_mail !== false);
 
+// DIAN Software Propio (vars genéricas, sin prefijo DIAN_ para evitar colisión)
+config.facturacion.dian_propio = config.facturacion.dian_propio || {};
+config.facturacion.dian_propio.ambiente          = env('FC_DIAN_AMBIENTE',        config.facturacion.dian_propio.ambiente || 'habilitacion');
+config.facturacion.dian_propio.nit               = env('FC_DIAN_NIT',             config.facturacion.dian_propio.nit || '');
+config.facturacion.dian_propio.dv                = env('FC_DIAN_DV',              config.facturacion.dian_propio.dv || '');
+config.facturacion.dian_propio.razonSocial       = env('FC_DIAN_RAZON_SOCIAL',    config.facturacion.dian_propio.razonSocial || '');
+config.facturacion.dian_propio.direccion         = env('FC_DIAN_DIRECCION',       config.facturacion.dian_propio.direccion || '');
+config.facturacion.dian_propio.municipio         = env('FC_DIAN_MUNICIPIO',       config.facturacion.dian_propio.municipio || '11001');
+config.facturacion.dian_propio.departamento      = env('FC_DIAN_DEPARTAMENTO',    config.facturacion.dian_propio.departamento || '11');
+config.facturacion.dian_propio.codigoPostal      = env('FC_DIAN_CODIGO_POSTAL',   config.facturacion.dian_propio.codigoPostal || '110111');
+config.facturacion.dian_propio.telefono          = env('FC_DIAN_TELEFONO',        config.facturacion.dian_propio.telefono || '');
+config.facturacion.dian_propio.email             = env('FC_DIAN_EMAIL',           config.facturacion.dian_propio.email || '');
+config.facturacion.dian_propio.responsabilidadFiscal = env('FC_DIAN_RESPONSABILIDAD', config.facturacion.dian_propio.responsabilidadFiscal || 'O-13').split(',').map(s => s.trim()).filter(Boolean);
+config.facturacion.dian_propio.regimenFiscal     = env('FC_DIAN_REGIMEN',         config.facturacion.dian_propio.regimenFiscal || 'Regimen Comun');
+config.facturacion.dian_propio.codigoSoftware    = env('FC_DIAN_CODIGO_SOFTWARE', config.facturacion.dian_propio.codigoSoftware || '');
+config.facturacion.dian_propio.pinSoftware       = env('FC_DIAN_PIN_SOFTWARE',    config.facturacion.dian_propio.pinSoftware || '');
+config.facturacion.dian_propio.testSetId         = env('FC_DIAN_TESTSET_ID',      config.facturacion.dian_propio.testSetId || '');
+config.facturacion.dian_propio.certPath          = env('FC_DIAN_CERT_PATH',       config.facturacion.dian_propio.certPath || '');
+config.facturacion.dian_propio.certPass          = env('FC_DIAN_CERT_PASS',       config.facturacion.dian_propio.certPass || '');
+config.facturacion.dian_propio.prefijo           = env('FC_DIAN_PREFIJO',         config.facturacion.dian_propio.prefijo || 'SETP');
+config.facturacion.dian_propio.resolucionNumero  = env('FC_DIAN_RESOLUCION_NUMERO', config.facturacion.dian_propio.resolucionNumero || '');
+config.facturacion.dian_propio.resolucionFecha   = env('FC_DIAN_RESOLUCION_FECHA',  config.facturacion.dian_propio.resolucionFecha || '');
+config.facturacion.dian_propio.resolucionPrefijo = env('FC_DIAN_RESOLUCION_PREFIJO', config.facturacion.dian_propio.resolucionPrefijo || '');
+config.facturacion.dian_propio.resolucionDesde   = env('FC_DIAN_RESOLUCION_DESDE',  config.facturacion.dian_propio.resolucionDesde || '');
+config.facturacion.dian_propio.resolucionHasta   = env('FC_DIAN_RESOLUCION_HASTA',  config.facturacion.dian_propio.resolucionHasta || '');
+
 // Alertas Telegram (bot caído)
 config.alertas = config.alertas || {};
 config.alertas.telegram = config.alertas.telegram || {};

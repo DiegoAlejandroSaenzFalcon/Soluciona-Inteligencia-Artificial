@@ -17,6 +17,8 @@ const { loadAgentesUtiles } = require('../agents-loader');
 const { ASISTENTES, catalogoExpertos, preguntarAsistente } = require('../core/asistentes');
 const { extraerMenu } = require('../core/vision');
 const { handleAuthRequest } = require('../src/auth/routes');
+const auth = require('../src/auth/index');
+const { getClient } = require('../src/db/connection');
 
 const { handleConfigRequest } = require('../src/config/routes');
 
@@ -298,7 +300,8 @@ function resumenConfiguracion() {
       estado_dispara: facturacion.estado_dispara || 'pagado',
       enviar_mail: facturacion.enviar_mail !== false,
       email_remitente: facturacion.email_remitente || '',
-      email_cliente: facturacion.email_cliente || ''
+      email_cliente: facturacion.email_cliente || '',
+      dian_propio: facturacion.dian_propio || {}
     },
     bot: {
       conectado: estadoBotDatos.conectado,
@@ -422,6 +425,19 @@ function guardarConfiguracion(campos) {
     if (typeof f.enviar_mail !== 'undefined') { cfg.facturacion.enviar_mail = bool(f.enviar_mail); config.facturacion.enviar_mail = bool(f.enviar_mail); actualizados.push('facturacion.enviar_mail'); }
     if (typeof f.email_remitente === 'string') { cfg.facturacion.email_remitente = texto(f.email_remitente); config.facturacion.email_remitente = texto(f.email_remitente); actualizados.push('facturacion.email_remitente'); }
     if (typeof f.email_cliente === 'string') { cfg.facturacion.email_cliente = texto(f.email_cliente); config.facturacion.email_cliente = texto(f.email_cliente); actualizados.push('facturacion.email_cliente'); }
+    if (f.dian_propio && typeof f.dian_propio === 'object') {
+      cfg.facturacion.dian_propio = cfg.facturacion.dian_propio || {};
+      config.facturacion.dian_propio = config.facturacion.dian_propio || {};
+      const dp = f.dian_propio;
+      const fields = ['ambiente','nit','dv','razonSocial','direccion','municipio','departamento','codigoPostal','telefono','email','responsabilidadFiscal','regimenFiscal','codigoSoftware','pinSoftware','testSetId','certPath','certPass','prefijo','resolucionNumero','resolucionFecha','resolucionPrefijo','resolucionDesde','resolucionHasta'];
+      for (const k of fields) {
+        if (typeof dp[k] !== 'undefined' && dp[k] !== null && dp[k] !== '') {
+          cfg.facturacion.dian_propio[k] = (k === 'responsabilidadFiscal' && Array.isArray(dp[k])) ? dp[k] : texto(dp[k]);
+          config.facturacion.dian_propio[k] = (k === 'responsabilidadFiscal' && Array.isArray(dp[k])) ? dp[k] : texto(dp[k]);
+          actualizados.push('facturacion.dian_propio.' + k);
+        }
+      }
+    }
   }
 
   if (typeof campos.auto_start !== 'undefined') {
@@ -521,92 +537,19 @@ function tokenValido(req) {
   return m && sesionesHas(m[1]);
 }
 
+async function validarLogin(usuario, password) {
+  const em = String(usuario || '').toLowerCase().trim();
+  if (!em || !password) return null;
+  const c = getClient();
+  const rows = await c.unsafe('SELECT * FROM users WHERE email = $1 AND activo = 1 LIMIT 1', [em]);
+  if (!rows.length) return null;
+  const ok = await auth.verifyPassword(password, rows[0].password_hash);
+  return ok ? rows[0] : null;
+}
+
+const { paginaLogin: _paginaLogin } = require('./login-page');
 function paginaLogin(error) {
-  const negocio = esc(config.negocio || 'Soluciona');
-  const errHtml = error ? esc(error) : '';
-  return `<!doctype html><html lang="es"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Acceso ${negocio}</title>
-<style>
-  :root{--g1:#075e54;--g2:#128c7e;--g3:#25D366;}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:'Segoe UI',system-ui,Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(1200px 600px at 15% -10%,#0e2a26 0%,transparent 60%),radial-gradient(1000px 500px at 115% 120%,#0c3b2e 0%,transparent 55%),linear-gradient(135deg,#075e54,#0b2f2a);
-    color:#e9f5f1;padding:20px}
-  .card{width:100%;max-width:400px;background:rgba(255,255,255,.06);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:38px 32px;box-shadow:0 20px 60px rgba(0,0,0,.45);animation:rise .5s ease both}
-  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-  .logo{width:64px;height:64px;margin:0 auto 14px;border-radius:18px;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,var(--g3),var(--g2));box-shadow:0 8px 24px rgba(37,211,102,.4)}
-  .logo svg{width:34px;height:34px;fill:#fff}
-  h1{margin:0 0 2px;font-size:1.45rem;text-align:center;font-weight:800}
-  .sub{text-align:center;color:#9fc7bd;font-size:.9rem;margin-bottom:26px}
-  .field{position:relative;margin-bottom:14px}
-  .field svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;fill:#7faea3;opacity:.8}
-  input[type=text],input[type=password]{width:100%;padding:14px 14px 14px 44px;border:1px solid rgba(255,255,255,.16);
-    border-radius:12px;background:rgba(255,255,255,.05);color:#fff;font-size:1rem;outline:none;transition:.2s}
-  input:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(37,211,102,.18)}
-  input::placeholder{color:#8fb3aa}
-  .toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;color:#9fc7bd;font-size:.8rem}
-  .row{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 20px;font-size:.85rem;gap:10px}
-  .remember{display:flex;align-items:center;gap:8px;color:#cfe9e1;cursor:pointer;user-select:none}
-  .remember input{width:16px;height:16px;accent-color:var(--g3)}
-  .forgot{color:#7fd1a8;text-decoration:none;white-space:nowrap}
-  .forgot:hover{text-decoration:underline}
-  button.enter{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--g3),var(--g2));
-    color:#04231b;font-weight:800;font-size:1.02rem;cursor:pointer;transition:.2s;box-shadow:0 8px 20px rgba(37,211,102,.35)}
-  button.enter:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(37,211,102,.5)}
-  button.enter:active{transform:translateY(0)}
-  .msg{background:rgba(244,67,54,.15);border:1px solid rgba(244,67,54,.4);color:#ffb4ab;padding:10px 12px;border-radius:10px;
-    font-size:.85rem;margin-bottom:14px;text-align:center;display:${error ? 'block' : 'none'}}
-  .foot{text-align:center;margin-top:18px;font-size:.75rem;color:#6f968c}
-  @media(max-width:420px){.card{padding:30px 22px}}
-</style></head>
-<body>
-  <form class="card" method="post" action="/login" id="loginForm" autocomplete="on">
-    <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5.1-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-3-.2-.3A8 8 0 1 1 12 20zm4.3-6c-.2-.1-1.3-.7-1.5-.7-.2 0-.4 0-.5.1-.1.1-.5.5-.6.6-.1.1-.2.1-.4 0-.2-.1-.8-.3-1.5-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3 0-.4 0-.1.1-.2.2-.4.3-.2.4-.5.6-.8.1-.3.1-.6 0-.8-.1-.2-.4-1.3-.6-1.7-.2-.5-.4-.4-.5-.4h-.4c-.1 0-.4 0-.6.3-.2.3-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.3 2 3.2 2.8 1.9.8 2.3.7 2.7.6.4-.1 1.3-.5 1.5-1 .2-.5.2-1 .1-1.1 0-.1-.2-.2-.4-.3z"/></svg></div>
-    <h1>Acceso al panel</h1>
-    <div class="sub">${negocio}</div>
-    <div class="msg" id="msg">${errHtml}</div>
-    <div class="field">
-      <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
-      <input name="usuario" id="usuario" type="text" placeholder="Usuario" autocomplete="username">
-    </div>
-    <div class="field">
-      <svg viewBox="0 0 24 24"><path d="M18 8h-1V6a5 5 0 0 0-10 0h2a3 3 0 1 1 6 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zm0 12H6V10h12z"/></svg>
-      <input name="password" id="password" type="password" placeholder="Contraseña" autocomplete="current-password">
-      <button type="button" class="toggle" id="togglePass" onclick="togglePass()">Mostrar</button>
-    </div>
-    <div class="row">
-      <label class="remember"><input type="checkbox" id="recuerdame" name="recuerdame"> Recuérdame</label>
-      <a class="forgot" href="#" onclick="return false" title="Contacta al administrador">¿Olvidaste tu contraseña?</a>
-    </div>
-    <button class="enter" type="submit">Entrar</button>
-    <div class="foot">Soluciona Inteligencia Artificial</div>
-  </form>
-  <script>
-    (function(){
-      var U='usuario',P='password',R='recuerdame';
-      function fill(){
-        try{
-          var d=JSON.parse(localStorage.getItem('soluciona_cred')||'{}');
-          if(d.u)document.getElementById(U).value=d.u;
-          if(d.p)document.getElementById(P).value=d.p;
-          if(d.r)document.getElementById(R).checked=true;
-        }catch(e){}
-      }
-      window.togglePass=function(){var p=document.getElementById(P),b=document.getElementById('togglePass');
-        if(p.type==='password'){p.type='text';b.textContent='Ocultar';}else{p.type='password';b.textContent='Mostrar';}};
-      document.getElementById('loginForm').addEventListener('submit',function(){
-        var r=document.getElementById(R).checked;
-        var u=document.getElementById(U).value,p=document.getElementById(P).value;
-        if(r){try{localStorage.setItem('soluciona_cred',JSON.stringify({u:u,p:p,r:true}));}catch(e){}}
-        else{try{localStorage.removeItem('soluciona_cred');}catch(e){}}
-      });
-      fill();
-    })();
-  </script>
-</body></html>`;
+  return _paginaLogin(esc, config.negocio || 'Soluciona', error);
 }
 
 function iniciarWeb() {
@@ -655,6 +598,28 @@ function iniciarWeb() {
       return;
     }
 
+    // Font Awesome local (iconos SVG/fuente autocontenidos, sin CDN ni dependencia de emojis del SO)
+    if (url.startsWith('/fontawesome/')) {
+      const filePath = path.join(__dirname, '..', 'public', url.slice(1));
+      if (!filePath.startsWith(path.join(__dirname, '..', 'public'))) {
+        res.writeHead(403); return res.end('Forbidden');
+      }
+      try {
+        const ext = path.extname(url);
+        const types = {
+          '.css': 'text/css; charset=utf-8',
+          '.woff2': 'font/woff2',
+          '.woff': 'font/woff',
+          '.ttf': 'font/ttf',
+        };
+        res.writeHead(200, { 'Content-Type': types[ext] || 'application/octet-stream', 'Cache-Control': 'public, max-age=86400' });
+        res.end(fs.readFileSync(filePath));
+      } catch (e) {
+        res.writeHead(404); res.end('Not found');
+      }
+      return;
+    }
+
     // ===== Panel Empresarial (Sprint 1): página propia fuera del SPA legacy =====
     if (url === '/panel-empresarial') {
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -680,9 +645,10 @@ function iniciarWeb() {
         return fail(res, { status: 429, message: 'Demasiadas peticiones, intente más tarde' });
       }
 
-      // CSRF en endpoints mutantes (excepto login/refresh/verify-2fa/me/permissions)
+      // CSRF en endpoints mutantes (excepto login/refresh/verify-2fa/me/permissions/register/forgot/reset)
       const mutatingAuth = ['POST', 'PUT', 'DELETE'].includes(req.method) &&
-        !['/api/auth/login', '/api/auth/refresh', '/api/auth/verify-2fa', '/api/auth/me', '/api/auth/permissions'].includes(url);
+        !['/api/auth/login', '/api/auth/refresh', '/api/auth/verify-2fa', '/api/auth/me', '/api/auth/permissions',
+          '/api/auth/register', '/api/auth/forgot-password', '/api/auth/reset-password'].includes(url);
       if (mutatingAuth) {
         const csrfToken = req.headers[CSRF_TOKEN_HEADER] || req.headers['x-xsrf-token'];
         if (!validateCsrfToken(req, csrfToken)) {
@@ -773,46 +739,64 @@ function iniciarWeb() {
     ) {
       // servir sin el guard de cookie legado
     } else {
-      const pw = config.panel_password || '';
-      if (pw) {
-        if (url === '/login' && req.method === 'POST') {
-          // Rate limiting - unified rate limiter
-          const ip = req.socket.remoteAddress;
-          const rl = rateLimiter.check(ip, '/login');
-          if (!rl.allowed) {
-            res.writeHead(429, { 'Content-Type': 'text/html; charset=utf-8', 'Retry-After': rl.retryAfter });
-            return res.end(paginaLogin('Demasiados intentos. Intente de nuevo en ' + rl.retryAfter + ' min.'));
-          }
-          let body = '';
-          req.on('data', c => { body += c; });
-          req.on('end', () => {
+      // Gate de acceso: login con usuarios reales (tabla users) + master legacy (panel_password)
+      if (url === '/login' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        return res.end(paginaLogin());
+      }
+      if (url === '/login' && req.method === 'POST') {
+        // Rate limiting - unified rate limiter
+        const ip = req.socket.remoteAddress;
+        const rl = rateLimiter.check(ip, '/login');
+        if (!rl.allowed) {
+          res.writeHead(429, { 'Content-Type': 'text/html; charset=utf-8', 'Retry-After': rl.retryAfter });
+          return res.end(paginaLogin('Demasiados intentos. Intente de nuevo en ' + rl.retryAfter + ' min.'));
+        }
+        let body = '';
+        req.on('data', c => { body += c; });
+        req.on('end', async () => {
+          try {
+            const params = new URLSearchParams(body);
+            const usuario = params.get('usuario') || '';
+            const password = params.get('password') || '';
+            let ok = false;
             try {
-              const params = new URLSearchParams(body);
-              const usuario = params.get('usuario') || '';
-              if (params.get('password') === pw) {
-                const t = crypto.randomBytes(16).toString('hex');
-                sesionesAdd(t);
-                const recuerdame = params.get('recuerdame') === 'on' || params.get('recuerdame') === 'true';
-                const isSecure = req.socket.encrypted || req.headers['x-forwarded-proto'] === 'https';
-                const cookie = `panel_token=${t}; HttpOnly; Path=/; SameSite=Lax${isSecure ? '; Secure' : ''}` + (recuerdame ? '; Max-Age=2592000' : '');
-                res.writeHead(302, { 'Set-Cookie': cookie, 'Location': '/' });
-                res.end();
-              } else {
-                res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end(paginaLogin('Contraseña incorrecta'));
-              }
-            } catch {
-              res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
-              res.end(paginaLogin('Solicitud inválida'));
+              const user = await validarLogin(usuario, password);
+              if (user) ok = true;
+            } catch (e) { /* si la BD falla, cae al master legacy */ }
+            // Master legacy (panel_password): se mantiene por compatibilidad
+            const pw = config.panel_password || '';
+            if (!ok && pw && password === pw) ok = true;
+            if (ok) {
+              const t = crypto.randomBytes(16).toString('hex');
+              sesionesAdd(t);
+              const recuerdame = params.get('recuerdame') === 'on' || params.get('recuerdame') === 'true';
+              const isSecure = req.socket.encrypted || req.headers['x-forwarded-proto'] === 'https';
+              const cookie = `panel_token=${t}; HttpOnly; Path=/; SameSite=Lax${isSecure ? '; Secure' : ''}` + (recuerdame ? '; Max-Age=2592000' : '');
+              res.writeHead(302, { 'Set-Cookie': cookie, 'Location': '/' });
+              return res.end();
+            } else {
+              res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });
+              return res.end(paginaLogin('Usuario o contraseña incorrectos'));
             }
-          });
-          return;
-        }
-        if (!tokenValido(req)) {
-          res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });
-          res.end(paginaLogin());
-          return;
-        }
+          } catch {
+            res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
+            return res.end(paginaLogin('Solicitud inválida'));
+          }
+        });
+        return;
+      }
+      if (url === '/logout' && (req.method === 'POST' || req.method === 'GET')) {
+        const c = req.headers.cookie || '';
+        const m = c.match(/(?:^|;\s*)panel_token=([^;]+)/);
+        if (m) SESIONES.delete(m[1]);
+        res.writeHead(302, { 'Set-Cookie': 'panel_token=; Max-Age=0; Path=/; SameSite=Lax', 'Location': '/login' });
+        return res.end();
+      }
+      if (!tokenValido(req)) {
+        res.writeHead(401, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(paginaLogin());
+        return;
       }
     }
 

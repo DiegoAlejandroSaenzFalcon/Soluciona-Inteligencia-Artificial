@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#075e54">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" type="image/png" href="/icon-192.png">
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css">
   <title>{{negocio}}</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -19,6 +20,7 @@
     nav{display:flex;flex-wrap:wrap;justify-content:center;gap:0.5rem;width:100%}
     nav button{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.6rem 1.2rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.95rem;transition:background 0.2s,transform 0.1s;flex:1 1 auto;min-width:130px;max-width:220px}
     nav button.active, nav button:hover{background:#25d366;border-color:#25d366;color:#fff;transform:translateY(-1px)}
+    nav button i{margin-right:0.4rem}
     /* ===== CONTENEDOR CENTRADO ===== */
     .container{width:100%;max-width:1200px;margin:0 auto;padding:1.5rem 1rem;flex:1}
     .tab-content{display:none}
@@ -366,39 +368,39 @@ function switchTab(tab, evt) {
   // Configuración de tabs por segmento DIAN
   const TABS_POR_SEGMENTO = {
     comidas: [
-      { id: 'pedidos', label: '📦 Pedidos y Ventas', onclick: "switchTab('pedidos', event)" },
-      { id: 'cocina', label: '🍳 Cocina', onclick: "window.open('/cocina','_blank')" },
-      { id: 'clientes', label: '👥 Clientes', onclick: "switchTab('clientes', event)" },
-      { id: 'conversaciones', label: '💬 Conversaciones', onclick: "switchTab('conversaciones', event)" },
-      { id: 'asistentes', label: '🤖 Asistentes IA', onclick: "switchTab('asistentes', event)" },
-      { id: 'configuracion', label: '⚙️ Configuración', onclick: "switchTab('configuracion', event)" }
+      { id: 'pedidos', label: '<i class="fa-solid fa-boxes-stacked"></i> Pedidos y Ventas', onclick: "switchTab('pedidos', event)" },
+      { id: 'cocina', label: '<i class="fa-solid fa-fire-burner"></i> Cocina', onclick: "window.open('/cocina','_blank')" },
+      { id: 'clientes', label: '<i class="fa-solid fa-users"></i> Clientes', onclick: "switchTab('clientes', event)" },
+      { id: 'conversaciones', label: '<i class="fa-solid fa-comments"></i> Conversaciones', onclick: "switchTab('conversaciones', event)" },
+      { id: 'asistentes', label: '<i class="fa-solid fa-robot"></i> Asistentes IA', onclick: "switchTab('asistentes', event)" },
+      { id: 'configuracion', label: '<i class="fa-solid fa-gear"></i> Configuración', onclick: "switchTab('configuracion', event)" }
     ],
     salud: [
-      { id: 'citas', label: '📅 Citas', onclick: "switchTab('citas', event)" },
-      { id: 'historial_citas', label: '📋 Historial Citas', onclick: "switchTab('historial_citas', event)" },
-      { id: 'pacientes', label: '👥 Pacientes', onclick: "switchTab('pacientes', event)" },
-      { id: 'conversaciones', label: '💬 Conversaciones', onclick: "switchTab('conversaciones', event)" },
-      { id: 'asistentes', label: '🤖 Asistentes IA', onclick: "switchTab('asistentes', event)" },
-      { id: 'configuracion', label: '⚙️ Configuración', onclick: "switchTab('configuracion', event)" }
+      { id: 'citas', label: '<i class="fa-solid fa-calendar-days"></i> Citas', onclick: "switchTab('citas', event)" },
+      { id: 'historial_citas', label: '<i class="fa-solid fa-clipboard-list"></i> Historial Citas', onclick: "switchTab('historial_citas', event)" },
+      { id: 'pacientes', label: '<i class="fa-solid fa-users"></i> Pacientes', onclick: "switchTab('pacientes', event)" },
+      { id: 'conversaciones', label: '<i class="fa-solid fa-comments"></i> Conversaciones', onclick: "switchTab('conversaciones', event)" },
+      { id: 'asistentes', label: '<i class="fa-solid fa-robot"></i> Asistentes IA', onclick: "switchTab('asistentes', event)" },
+      { id: 'configuracion', label: '<i class="fa-solid fa-gear"></i> Configuración', onclick: "switchTab('configuracion', event)" }
     ],
     retail: [
-      { id: 'pedidos', label: '📦 Pedidos y Ventas', onclick: "switchTab('pedidos', event)" },
-      { id: 'inventario', label: '📦 Inventario', onclick: "switchTab('inventario', event)" },
-      { id: 'clientes', label: '👥 Clientes', onclick: "switchTab('clientes', event)" },
-      { id: 'conversaciones', label: '💬 Conversaciones', onclick: "switchTab('conversaciones', event)" },
-      { id: 'asistentes', label: '🤖 Asistentes IA', onclick: "switchTab('asistentes', event)" },
-      { id: 'configuracion', label: '⚙️ Configuración', onclick: "switchTab('configuracion', event)" }
+      { id: 'pedidos', label: '<i class="fa-solid fa-boxes-stacked"></i> Pedidos y Ventas', onclick: "switchTab('pedidos', event)" },
+      { id: 'inventario', label: '<i class="fa-solid fa-boxes-stacked"></i> Inventario', onclick: "switchTab('inventario', event)" },
+      { id: 'clientes', label: '<i class="fa-solid fa-users"></i> Clientes', onclick: "switchTab('clientes', event)" },
+      { id: 'conversaciones', label: '<i class="fa-solid fa-comments"></i> Conversaciones', onclick: "switchTab('conversaciones', event)" },
+      { id: 'asistentes', label: '<i class="fa-solid fa-robot"></i> Asistentes IA', onclick: "switchTab('asistentes', event)" },
+      { id: 'configuracion', label: '<i class="fa-solid fa-gear"></i> Configuración', onclick: "switchTab('configuracion', event)" }
     ],
     belleza: [
-      { id: 'citas', label: '📅 Citas', onclick: "switchTab('citas', event)" },
-      { id: 'historial_citas', label: '📋 Historial Citas', onclick: "switchTab('historial_citas', event)" },
-      { id: 'clientes', label: '👥 Clientes', onclick: "switchTab('clientes', event)" },
-      { id: 'recursos', label: '🪑 Recursos (Sillas/Camillas)', onclick: "switchTab('recursos', event)" },
-      { id: 'profesionales', label: '👨‍🎨 Profesionales', onclick: "switchTab('profesionales', event)" },
-      { id: 'paquetes', label: '📦 Paquetes', onclick: "switchTab('paquetes', event)" },
-      { id: 'conversaciones', label: '💬 Conversaciones', onclick: "switchTab('conversaciones', event)" },
-      { id: 'asistentes', label: '🤖 Asistentes IA', onclick: "switchTab('asistentes', event)" },
-      { id: 'configuracion', label: '⚙️ Configuración', onclick: "switchTab('configuracion', event)" }
+      { id: 'citas', label: '<i class="fa-solid fa-calendar-days"></i> Citas', onclick: "switchTab('citas', event)" },
+      { id: 'historial_citas', label: '<i class="fa-solid fa-clipboard-list"></i> Historial Citas', onclick: "switchTab('historial_citas', event)" },
+      { id: 'clientes', label: '<i class="fa-solid fa-users"></i> Clientes', onclick: "switchTab('clientes', event)" },
+      { id: 'recursos', label: '<i class="fa-solid fa-chair"></i> Recursos (Sillas/Camillas)', onclick: "switchTab('recursos', event)" },
+      { id: 'profesionales', label: '<i class="fa-solid fa-palette"></i> Profesionales', onclick: "switchTab('profesionales', event)" },
+      { id: 'paquetes', label: '<i class="fa-solid fa-boxes-stacked"></i> Paquetes', onclick: "switchTab('paquetes', event)" },
+      { id: 'conversaciones', label: '<i class="fa-solid fa-comments"></i> Conversaciones', onclick: "switchTab('conversaciones', event)" },
+      { id: 'asistentes', label: '<i class="fa-solid fa-robot"></i> Asistentes IA', onclick: "switchTab('asistentes', event)" },
+      { id: 'configuracion', label: '<i class="fa-solid fa-gear"></i> Configuración', onclick: "switchTab('configuracion', event)" }
     ]
   };
 
@@ -944,10 +946,11 @@ function fmtTel(t) {
 
       // ----- Facturación -----
       const fc = d.facturacion;
-      const provOpts = ['', 'pos-propio', 'alegra', 'siigo', 'factus', 'alanube', 'opendata', 'dian-gratuito'].map(p =>
+      const provOpts = ['', 'pos-propio', 'alegra', 'siigo', 'factus', 'alanube', 'opendata', 'dian-gratuito', 'dian-propio'].map(p =>
         `<option value="${p}" ${fc.proveedor === p ? 'selected' : ''}>${p || '— Sin proveedor —'}</option>`).join('');
+      const isDianPropio = fc.proveedor === 'dian-propio';
       html += seccion('🧾 Facturación Electrónica (DIAN)', 'Emisión de facturas desde cada pedido confirmado. Configura el envío por correo y los parámetros de emisión.', `
-        ${item('Proveedor', `<select class="cfg-select" id="cfg-fc-prov">${provOpts}</select>`)}
+        ${item('Proveedor', `<select class="cfg-select" id="cfg-fc-prov" onchange="toggleDianPropio(this.value)">${provOpts}</select>`)}
         ${item('Emisión automática', `
           <select class="cfg-select" id="cfg-fc-auto">
             <option value="true" ${fc.emision_automatica ? 'selected' : ''}>Sí, al confirmar el pago</option>
@@ -969,7 +972,47 @@ function fmtTel(t) {
         <div class="cfg-item" style="grid-column:1/-1">
           <button class="btn-guardar" onclick="guardarFacturacion()">💾 Guardar facturación</button>
           ${msg('msg-facturacion', '')}
-          <div class="sub" style="margin-top:.5rem">Parámetros legales (NIT, resolución, ambiente DIAN, certificado) se configuran en el middleware de facturación. Más información en ESTADO_PROYECTO.md.</div>
+        </div>
+      `);
+
+      // ----- DIAN Propio (Software Propio) -----
+      const dp = fc.dian_propio || {};
+      html += seccion('🏛️ DIAN Software Propio', 'Configuración nativa para emitir facturas directamente a la DIAN sin intermediarios. Requiere certificado digital .p12, llaves del portal DIAN y numeración autorizada.', `
+        ${isDianPropio ? '' : '<div class="sub" style="grid-column:1/-1;text-align:center;padding:1rem;color:#888">Selecciona <b>dian-propio</b> como proveedor arriba para configurar los parámetros.</div>'}
+        ${isDianPropio ? item('Ambiente DIAN', `
+          <select class="cfg-select" id="cfg-dp-amb">
+            <option value="habilitacion" ${dp.ambiente === 'habilitacion' ? 'selected' : ''}>Habilitación (Sandbox)</option>
+            <option value="produccion" ${dp.ambiente === 'produccion' ? 'selected' : ''}>Producción</option>
+          </select>`) : ''}
+        ${isDianPropio ? item('NIT del facturador', `<input class="cfg-input" id="cfg-dp-nit" placeholder="900123456" value="${escH(dp.nit)}">`) : ''}
+        ${isDianPropio ? item('DV', `<input class="cfg-input" id="cfg-dp-dv" placeholder="7" value="${escH(dp.dv)}">`) : ''}
+        ${isDianPropio ? item('Razón Social', `<input class="cfg-input" id="cfg-dp-rs" placeholder="Mi Empresa SAS" value="${escH(dp.razonSocial)}">`) : ''}
+        ${isDianPropio ? item('Dirección', `<input class="cfg-input" id="cfg-dp-dir" placeholder="Calle 123 #45-67" value="${escH(dp.direccion)}">`) : ''}
+        ${isDianPropio ? item('Municipio (código DANE)', `<input class="cfg-input" id="cfg-dp-mun" placeholder="11001" value="${escH(dp.municipio)}">`) : ''}
+        ${isDianPropio ? item('Departamento (código DANE)', `<input class="cfg-input" id="cfg-dp-dep" placeholder="11" value="${escH(dp.departamento)}">`) : ''}
+        ${isDianPropio ? item('Código Postal', `<input class="cfg-input" id="cfg-dp-cp" placeholder="110111" value="${escH(dp.codigoPostal)}">`) : ''}
+        ${isDianPropio ? item('Teléfono', `<input class="cfg-input" id="cfg-dp-tel" placeholder="6012345678" value="${escH(dp.telefono)}">`) : ''}
+        ${isDianPropio ? item('Email', `<input class="cfg-input" id="cfg-dp-email" type="email" placeholder="facturacion@miempresa.com" value="${escH(dp.email)}">`) : ''}
+        ${isDianPropio ? item('Responsabilidades fiscales', `<input class="cfg-input" id="cfg-dp-resp" placeholder="O-13,O-14,O-15" value="${escH((dp.responsabilidadFiscal || ['O-13']).join(','))}">`) : ''}
+        ${isDianPropio ? item('Régimen fiscal', `<input class="cfg-input" id="cfg-dp-reg" placeholder="Régimen Común" value="${escH(dp.regimenFiscal || 'Régimen Común')}">`) : ''}
+        ${isDianPropio ? `<div class="cfg-item" style="grid-column:1/-1"><b>Credenciales del portal DIAN (Software Propio)</b></div>` : ''}
+        ${isDianPropio ? item('Código Software / Llave Técnica', `<input class="cfg-input" id="cfg-dp-software" placeholder="REEMPLAZAR-CON-LLAVE-TECNICA-DEL-PORTAL" value="${escH(dp.codigoSoftware)}">`) : ''}
+        ${isDianPropio ? item('PIN Software (5 dígitos)', `<input class="cfg-input" id="cfg-dp-pin" placeholder="12345" value="${escH(dp.pinSoftware)}">`) : ''}
+        ${isDianPropio ? item('TestSetID (Sandbox)', `<input class="cfg-input" id="cfg-dp-testset" placeholder="REEMPLAZAR-CON-TESTSET-ID-DEL-PORTAL" value="${escH(dp.testSetId)}">`) : ''}
+        ${isDianPropio ? `<div class="cfg-item" style="grid-column:1/-1"><b>Certificado Digital (.p12 / .pfx)</b></div>` : ''}
+        ${isDianPropio ? item('Ruta del certificado', `<input class="cfg-input" id="cfg-dp-cert" placeholder="./certs/firma.p12" value="${escH(dp.certPath || './certs/firma.p12')}">`) : ''}
+        ${isDianPropio ? item('Clave del certificado', `<input class="cfg-input" id="cfg-dp-certpass" type="password" placeholder="test1234" value="${escH(dp.certPass)}">`) : ''}
+        ${isDianPropio ? `<div class="cfg-item" style="grid-column:1/-1"><b>Numeración Autorizada (Resolución DIAN)</b></div>` : ''}
+        ${isDianPropio ? item('Prefijo', `<input class="cfg-input" id="cfg-dp-pref" placeholder="SETP" value="${escH(dp.prefijo || 'SETP')}">`) : ''}
+        ${isDianPropio ? item('Resolución Número', `<input class="cfg-input" id="cfg-dp-resnum" placeholder="18760000001" value="${escH(dp.resolucionNumero)}">`) : ''}
+        ${isDianPropio ? item('Resolución Fecha', `<input class="cfg-input" id="cfg-dp-resfecha" type="date" value="${escH(dp.resolucionFecha)}">`) : ''}
+        ${isDianPropio ? item('Resolución Prefijo', `<input class="cfg-input" id="cfg-dp-respref" placeholder="1" value="${escH(dp.resolucionPrefijo)}">`) : ''}
+        ${isDianPropio ? item('Desde', `<input class="cfg-input" id="cfg-dp-desde" type="number" placeholder="1" value="${escH(dp.resolucionDesde)}">`) : ''}
+        ${isDianPropio ? item('Hasta', `<input class="cfg-input" id="cfg-dp-hasta" type="number" placeholder="5000000" value="${escH(dp.resolucionHasta)}">`) : ''}
+        <div class="cfg-item" style="grid-column:1/-1">
+          <button class="btn-guardar" onclick="guardarDianPropio()">💾 Guardar DIAN Propio</button>
+          ${msg('msg-dian-propio', '')}
+          <div class="sub" style="margin-top:.5rem">📄 <a href="dian-middleware/GUIA_DIAN_TU_PARTE.md" target="_blank">Guía paso a paso: cómo obtener TestSetID, Llave Técnica y PIN en el portal DIAN</a></div>
         </div>
       `);
 
@@ -1059,6 +1102,46 @@ function fmtTel(t) {
         email_cliente: cfg('cfg-fc-cliente')
       }
     }, 'msg-facturacion');
+  }
+  function toggleDianPropio(valor) {
+    loadConfiguracion(); // recarga toda la sección para mostrar/ocultar dian-propio
+  }
+  async function guardarDianPropio() {
+    await guardarConfig({
+      facturacion: {
+        ...(cfg('cfg-fc-prov') ? { proveedor: cfg('cfg-fc-prov') } : {}),
+        ...(cfg('cfg-fc-auto') ? { emision_automatica: cfg('cfg-fc-auto') === 'true' } : {}),
+        ...(cfg('cfg-fc-estado') ? { estado_dispara: cfg('cfg-fc-estado') } : {}),
+        ...(cfg('cfg-fc-mail') ? { enviar_mail: cfg('cfg-fc-mail') === 'true' } : {}),
+        ...(cfg('cfg-fc-email') ? { email_remitente: cfg('cfg-fc-email') } : {}),
+        ...(cfg('cfg-fc-cliente') ? { email_cliente: cfg('cfg-fc-cliente') } : {}),
+        dian_propio: {
+          ambiente: cfg('cfg-dp-amb'),
+          nit: cfg('cfg-dp-nit'),
+          dv: cfg('cfg-dp-dv'),
+          razonSocial: cfg('cfg-dp-rs'),
+          direccion: cfg('cfg-dp-dir'),
+          municipio: cfg('cfg-dp-mun'),
+          departamento: cfg('cfg-dp-dep'),
+          codigoPostal: cfg('cfg-dp-cp'),
+          telefono: cfg('cfg-dp-tel'),
+          email: cfg('cfg-dp-email'),
+          responsabilidadFiscal: cfg('cfg-dp-resp').split(',').map(s => s.trim()).filter(Boolean),
+          regimenFiscal: cfg('cfg-dp-reg'),
+          codigoSoftware: cfg('cfg-dp-software'),
+          pinSoftware: cfg('cfg-dp-pin'),
+          testSetId: cfg('cfg-dp-testset'),
+          certPath: cfg('cfg-dp-cert'),
+          certPass: cfg('cfg-dp-certpass'),
+          prefijo: cfg('cfg-dp-pref'),
+          resolucionNumero: cfg('cfg-dp-resnum'),
+          resolucionFecha: cfg('cfg-dp-resfecha'),
+          resolucionPrefijo: cfg('cfg-dp-respref'),
+          resolucionDesde: cfg('cfg-dp-desde'),
+          resolucionHasta: cfg('cfg-dp-hasta')
+        }
+      }
+    }, 'msg-dian-propio');
   }
   async function guardarDomicilios(tipo) {
     if (tipo === 'ubicacion') {
