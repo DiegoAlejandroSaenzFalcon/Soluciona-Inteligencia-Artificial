@@ -3,13 +3,13 @@ import { z } from 'zod';
 
 // Test schemas for input validation (using zod as used in the project)
 const ProductSchema = z.object({
-  nombre: z.string().min(1, 'Nombre requerido').max(100),
+  nombre: z.string({ required_error: 'Nombre requerido' }).min(1, 'Nombre requerido').max(100),
   precio: z.number().positive('Precio debe ser positivo'),
   stockMinimo: z.number().min(0).default(0),
   stockMaximo: z.number().min(0).optional(),
   codigo: z.string().optional(),
   taxId: z.string().regex(/^(01|03|04)$/, 'Código impuesto inválido').default('01'),
-  taxRate: z.number().min(0).max(100).default(19)
+  taxRate: z.number().min(0).max(100, 'taxRate debe estar entre 0 y 100').default(19)
 });
 
 const InventoryItemSchema = z.object({

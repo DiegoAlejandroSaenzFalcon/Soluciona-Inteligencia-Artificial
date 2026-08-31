@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCufe, extractCufeParams } from '../dian-middleware/src/security/signature.js';
+import { generateCufe, extractCufeParams } from '../../dian-middleware/src/security/signature.js';
 
 describe('DIAN - CUFE Generation', () => {
   it('should generate valid CUFE (96 chars hex)', () => {
@@ -56,7 +56,7 @@ describe('DIAN - CUFE Generation', () => {
       fecFac: '20240115',
       // missing required params
     };
-    expect(() => generateCufe(params)).toThrow('Parámetro obligatorio para CUFE faltante');
+    expect(() => generateCufe(params)).toThrow('Parametro obligatorio para CUFE faltante');
   });
 });
 
@@ -83,12 +83,12 @@ describe('DIAN - CUFE Params Extraction', () => {
     };
     const params = extractCufeParams(invoiceData);
     expect(params.numFac).toBe('SETP789');
-    expect(params.fecFac).toBe('20240310');
-    expect(params.horFac).toBe('153000');
-    expect(params.valFac).toBe('20000000');
+    expect(params.fecFac).toBe('2024-03-10');
+    expect(params.horFac).toBe('15:30:00');
+    expect(params.valFac).toBe(200000);
     expect(params.codImp1).toBe('01');
-    expect(params.valImp1).toBe('3800000');
-    expect(params.valTot).toBe('23800000');
+    expect(params.valImp1).toBe(38000);
+    expect(params.valTot).toBe(238000);
     expect(params.nitOfe).toBe('900123456');
     expect(params.numAdq).toBe('800123456');
     expect(params.tipoAmbiente).toBe('2');

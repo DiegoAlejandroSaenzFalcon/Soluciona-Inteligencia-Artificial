@@ -4,8 +4,7 @@
  * Conforme a Resolucion 000042 Anexo Tecnico v1.7 - Seccion 11
  */
 
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { createHash } from 'crypto';
 import soap from 'soap';
 import { loadPkcs12 } from '../security/signature.js';
 import { config, getWsdlUrl, getEndpointUrl, isHabilitacion } from '../config/dian.config.js';
@@ -57,13 +56,66 @@ export class DianSoapClient {
   }
 
   /**
-   * Construye el header SOAP 1.2 con WS-Security para DIAN
+   * Construye el header SOAP 1.2 con WS-Security completo para DIAN
+   * Incluye: UsernameToken (PasswordDigest) + BinarySecurityToken + Timestamp + wsse:Signature
    */
-  buildSoapHeader(action) {
+  buildSoapHeader(action, testSetId = null) {
     const certB64 = this.certData.certPem
       .replace('-----BEGIN CERTIFICATE-----', '')
       .replace('-----END CERTIFICATE-----', '')
       .replace(/\n/g, '');
+
+    // UsernameToken con PasswordDigest (requerido por DIAN)
+    const created = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+    const expires = new Date(Date.now() + 5 * 60 * 1000).toISOString().replace(/\.\d{3}Z$/, 'Z');
+    const nonce = createHash('sha1').update(Math.random().toString()).digest('base64');
+    
+    // PasswordDigest = SHA1(nonce + created + technicalKey)
+    const techKey = config.codigoSoftware || '';
+    const passwordDigest = createHash('sha1')
+      .update(techKey + nonce + created)
+      .digest('base64');
+
+    const security = {
+      'xmlns:wsse': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
+      'xmlns:wsu': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
+      'soap12:mustUnderstand': '1',
+      'wsu:Timestamp': {
+        'xmlns:wsu': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
+        'wsu:Id': 'TS-' + Date.now(),
+        'wsu:Created': created,
+        'wsu:Expires': expires
+      },
+      'wsse:BinarySecurityToken': {
+        'xmlns:wsse': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
+        'xmlns:wsu': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
+        'EncodingType': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary',
+        'ValueType': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3',
+        'wsu:Id': 'X509-' + Date.now(),
+        '$value': certB64
+      },
+      'wsse:UsernameToken': {
+        'xmlns:wsse': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
+        'xmlns:wsu': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
+        'wsse:Username': config.softwareId || config.codigoSoftware,
+        'wsse:Password': {
+          '$value': passwordDigest,
+          '@Type': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest'
+        },
+        'wsse:Nonce': {
+          '$value': nonce,
+          '@EncodingType': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary'
+        },
+        'wsu:Created': created
+      }
+    };
+
+    // Si hay TestSetId, agregarlo al Security header (DIAN lo requiere en habilitación)
+    if (testSetId || config.testSetId) {
+      security['wsu:TestSetId'] = {
+        '$value': testSetId || config.testSetId
+      };
+    }
 
     return {
       'soap12:Header': {
@@ -72,28 +124,7 @@ export class DianSoapClient {
           'soap12:mustUnderstand': '1',
           'xmlns:wsa': 'http://www.w3.org/2005/08/addressing'
         },
-        'wsse:Security': {
-          'xmlns:wsse': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
-          'xmlns:wsu': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
-          'soap12:mustUnderstand': '1',
-          'wsu:Timestamp': {
-            'xmlns:wsu': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
-            'wsu:Id': 'TS-' + Date.now(),
-            'wsu:Created': new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
-            'wsu:Expires': new Date(Date.now() + 5 * 60 * 1000).toISOString().replace(/\.\d{3}Z$/, 'Z')
-          },
-          'wsse:BinarySecurityToken': {
-            'xmlns:wsse': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
-            'xmlns:wsu': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
-            'EncodingType': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary',
-            'ValueType': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3',
-            'wsu:Id': 'X509-' + Date.now(),
-            '$value': this.certData.certPem
-              .replace('-----BEGIN CERTIFICATE-----', '')
-              .replace('-----END CERTIFICATE-----', '')
-              .replace(/\n/g, '')
-          }
-        }
+        'wsse:Security': security
       },
       'xmlns:wsa': 'http://www.w3.org/2005/08/addressing',
       'xmlns:wsse': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
@@ -105,7 +136,7 @@ export class DianSoapClient {
    * Envia Factura de Venta (SendBillAsync)
    * Seccion 11.8 del Anexo Tecnico
    * @param {string} signedXml - XML firmado de la factura (con ds:Signature)
-   * @param {Object} metadata - Metadatos (id, fileName)
+   * @param {Object} metadata - Metadatos (id, fileName, testSetId)
    * @returns {Promise<Object>} Respuesta DIAN con trackingId, CUFE, QR, etc.
    */
   async sendInvoice(signedXml, metadata = {}) {
@@ -122,7 +153,13 @@ export class DianSoapClient {
     };
 
     // Agregar header WS-Security manualmente
-    this.client.addSoapHeader(this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/SendBillAsync'), '', 'soap12', 'http://www.w3.org/2003/05/soap-envelope');
+    const testSetId = metadata.testSetId || config.testSetId;
+    this.client.addSoapHeader(
+      this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/SendBillAsync', testSetId),
+      '',
+      'soap12',
+      'http://www.w3.org/2003/05/soap-envelope'
+    );
 
     try {
       const [result] = await this.client.SendBillAsyncAsync(payload);
@@ -172,7 +209,12 @@ export class DianSoapClient {
       GetStatusAsync: { trackingId }
     };
 
-    this.client.addSoapHeader(this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/GetStatusAsync'), '', 'soap12', 'http://www.w3.org/2003/05/soap-envelope');
+    this.client.addSoapHeader(
+      this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/GetStatusAsync'),
+      '',
+      'soap12',
+      'http://www.w3.org/2003/05/soap-envelope'
+    );
 
     try {
       const [result] = await this.client.GetStatusAsyncAsync(payload);
@@ -193,7 +235,12 @@ export class DianSoapClient {
       GetStatusZip: { trackId: trackingId }
     };
 
-    this.client.addSoapHeader(this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/GetStatusZip'), '', 'soap12', 'http://www.w3.org/2003/05/soap-envelope');
+    this.client.addSoapHeader(
+      this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/GetStatusZip'),
+      '',
+      'soap12',
+      'http://www.w3.org/2003/05/soap-envelope'
+    );
 
     try {
       const [result] = await this.client.GetStatusZipAsync(payload);
@@ -210,11 +257,14 @@ export class DianSoapClient {
   async getNumberingRange() {
     await this.initialize();
 
-    const payload = {
-      GetNumberingRange: {}
-    };
+    const payload = { GetNumberingRange: {} };
 
-    this.client.addSoapHeader(this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/GetNumberingRange'), '', 'soap12', 'http://www.w3.org/2003/05/soap-envelope');
+    this.client.addSoapHeader(
+      this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/GetNumberingRange'),
+      '',
+      'soap12',
+      'http://www.w3.org/2003/05/soap-envelope'
+    );
 
     try {
       const [result] = await this.client.GetNumberingRangeAsync(payload);
@@ -233,7 +283,12 @@ export class DianSoapClient {
 
     const payload = { GetExchangeEmails: {} };
 
-    this.client.addSoapHeader(this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/GetExchangeEmails'), '', 'soap12', 'http://www.w3.org/2003/05/soap-envelope');
+    this.client.addSoapHeader(
+      this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/GetExchangeEmails'),
+      '',
+      'soap12',
+      'http://www.w3.org/2003/05/soap-envelope'
+    );
 
     try {
       const [result] = await this.client.GetExchangeEmailsAsync(payload);
@@ -270,7 +325,12 @@ export class DianSoapClient {
       }
     };
 
-    this.client.addSoapHeader(this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/SendTestSetAsync'), '', 'soap12', 'http://www.w3.org/2003/05/soap-envelope');
+    this.client.addSoapHeader(
+      this.buildSoapHeader('http://wcf.dian.colombia/IWcfDianCustomerServices/SendTestSetAsync', config.testSetId),
+      '',
+      'soap12',
+      'http://www.w3.org/2003/05/soap-envelope'
+    );
 
     try {
       const [result] = await this.client.SendTestSetAsyncAsync(payload);

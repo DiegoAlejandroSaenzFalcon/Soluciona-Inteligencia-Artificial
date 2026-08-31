@@ -10,7 +10,7 @@ const CustomerSchema = z.object({
   direccion: z.string().optional(),
   municipio: z.string().optional(),
   departamento: z.string().optional(),
-  tipoIdentificacion: z.string().regex(/^(13|22|31|41|42|43|50|91)$/).default('31')
+  tipoIdentificacion: z.string().regex(/^(13|22|31|41|42|43|50|91)$/, 'Tipo identificación inválido').default('31')
 });
 
 const InvoiceSchema = z.object({

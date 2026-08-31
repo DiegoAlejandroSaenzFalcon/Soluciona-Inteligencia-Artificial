@@ -131,6 +131,14 @@ CREATE TABLE IF NOT EXISTS sessions (
   expires_at TEXT NOT NULL,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS password_resets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  token_hash TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  used INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE IF NOT EXISTS permissions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   code TEXT NOT NULL UNIQUE,
@@ -736,6 +744,65 @@ if (!adminExiste) {
     console.log('[DB] Admin inicial creado. Contraseña generada (guárdala ahora): ' + ADMIN_PASS);
   }
 }
+
+// ---- Seed permisos + roles RBAC (fiel a src/db/init.ts, idempotente) ----
+// Sin esto, los usuarios no-admin registrados no tendrian permisos en el panel.
+function seedPermissionsRoles() {
+  const PERMISOS = [
+    ['orders:read', 'Ver pedidos'], ['orders:create', 'Crear pedidos'],
+    ['orders:update', 'Actualizar pedidos'], ['orders:delete', 'Eliminar/Cancelar pedidos'],
+    ['orders:confirm', 'Confirmar pedidos'], ['orders:status', 'Cambiar estado de pedidos'],
+    ['kitchen:read', 'Ver cocina/KDS'], ['kitchen:update', 'Actualizar estados en cocina'],
+    ['customers:read', 'Ver clientes'], ['customers:create', 'Crear clientes'],
+    ['customers:update', 'Actualizar clientes'], ['customers:delete', 'Eliminar clientes'],
+    ['conversations:read', 'Ver conversaciones'], ['conversations:reply', 'Responder conversaciones'],
+    ['config:read', 'Ver configuracion'], ['config:write', 'Modificar configuracion'],
+    ['config:secrets', 'Gestionar secrets'],
+    ['reports:read', 'Ver reportes'], ['reports:export', 'Exportar reportes'],
+    ['inventory:read', 'Ver inventario'], ['inventory:write', 'Gestionar inventario'],
+    ['inventory:adjust', 'Ajustes de inventario'], ['inventory:transfers', 'Traslados entre bodegas'],
+    ['purchases:read', 'Ver ordenes de compra'], ['purchases:create', 'Crear ordenes de compra'],
+    ['purchases:approve', 'Aprobar ordenes de compra'], ['purchases:receive', 'Recibir mercancia'],
+    ['accounting:read', 'Ver contabilidad'], ['accounting:write', 'Contabilizar asientos'],
+    ['accounting:reconcile', 'Conciliar bancos'], ['accounting:close', 'Cierre contable'],
+    ['payroll:read', 'Ver nomina'], ['payroll:write', 'Procesar nomina'], ['payroll:approve', 'Aprobar nomina'],
+    ['users:read', 'Ver usuarios'], ['users:create', 'Crear usuarios'],
+    ['users:update', 'Actualizar usuarios'], ['users:delete', 'Eliminar usuarios'],
+    ['users:roles', 'Gestionar roles/permisos'],
+  ];
+  const ROLE_PERMISOS = {
+    operador: [
+      'orders:read', 'orders:create', 'orders:update', 'orders:confirm', 'orders:status',
+      'kitchen:read', 'kitchen:update',
+      'customers:read', 'customers:create', 'customers:update',
+      'conversations:read', 'conversations:reply',
+      'config:read', 'reports:read',
+      'inventory:read', 'inventory:write',
+      'purchases:read', 'purchases:create', 'purchases:receive',
+      'accounting:read',
+    ],
+    cocina: ['orders:read', 'orders:status', 'kitchen:read', 'kitchen:update'],
+    solo_lectura: [
+      'orders:read', 'customers:read', 'conversations:read', 'config:read',
+      'reports:read', 'inventory:read', 'purchases:read', 'accounting:read',
+    ],
+  };
+  try {
+    const insPerm = db.prepare('INSERT OR IGNORE INTO permissions (code, nombre) VALUES (?, ?)');
+    const idPerm = db.prepare('SELECT id FROM permissions WHERE code = ?');
+    const insRp = db.prepare('INSERT OR IGNORE INTO role_permissions (role, permission_id) VALUES (?, ?)');
+    for (const [code, nombre] of PERMISOS) insPerm.run(code, nombre);
+    for (const [role, codes] of Object.entries(ROLE_PERMISOS)) {
+      for (const code of codes) {
+        const r = idPerm.get(code);
+        if (r) insRp.run(role, r.id);
+      }
+    }
+  } catch (e) {
+    console.error('[DB] Error sembrando permisos:', e.message);
+  }
+}
+seedPermissionsRoles();
 
 // ---- Consumo IA (cuotas por rol: chatbot / asistentes / vision) ----
 function registrarUsoIA(rol, modelo, proveedor, tokensPrompt, tokensCompletados) {

@@ -435,3 +435,55 @@ kubectl rollout undo deployment/soluciona-app -n production
 ---
 
 *Última actualización: 2025-08-23 | Versión 1.0.0*
+---
+
+## Desarrollo local en Linux (sin Docker / sin PostgreSQL)
+
+Este entorno corre la app directamente con Node.js 22 y SQLite (sin dependencias externas). Los scripts `.bat` del repo son para Windows; aquí se usa `node` directo.
+
+### 1. Dependencias
+El `package.json` está alineado con `package-lock.json` (dependencias reales de runtime). Instalar:
+```bash
+npm ci
+```
+
+### 2. Configuración
+```bash
+cp config.example.json config.json
+cp .env.example .env
+# En .env dejar DB_ENGINE=sqlite (default del código, no requiere PostgreSQL)
+```
+
+### 3. Arrancar
+```bash
+node index.js
+```
+- Dashboard/API: http://localhost:3000
+- Panel empresarial: http://localhost:3000/panel-empresarial
+- Panel global: http://localhost:3000/panel-global
+- El bot de WhatsApp (Baileys) genera un QR en la consola y en el panel; escanéalo con el WhatsApp del negocio para conectar.
+- Primer arranque crea el admin `admin@localhost` y muestra la contraseña generada en consola (guárdala). Para fijarla: `ADMIN_PASSWORD=tu_clave node index.js` o `npm run reset-admin -- <clave>`.
+
+### 4. Variables de entorno críticas
+LLM_API_KEY / ASISTENTES_IA_API_KEY / VISION_API_KEY (NVIDIA o Gemini) ─ sin ellas la IA responde con error controlado pero el resto funciona.
+
+### 5. Tests
+```bash
+npm test          # vitest run (tests/unit)
+```
+
+### 6. DIAN middleware (facturación electrónica)
+Módulo ESM aparte, con su propia BD/cert de prueba:
+```bash
+cd dian-middleware
+npm install
+cp .env.example .env        # placeholders de prueba (DIAN_NIT=900123456, etc.)
+# generar cert de prueba auto-firmado si no existe (pass test1234):
+node -e "import('node-forge').then(f=>{/* ver ESTADO_PROYECTO.md */})"
+node src/habilitacion/run-habilitacion.js   # prueba local submit:false (60F+20NC+20ND)
+```
+El envío real a DIAN requiere credenciales y certificado `.p12` reales (pendiente del repo).
+
+---
+
+*Nota: este README describe el arranque funcional verificado en Linux. El resto del archivo documenta la arquitectura objetivo (Docker/K8s/PostgreSQL) del proyecto.*

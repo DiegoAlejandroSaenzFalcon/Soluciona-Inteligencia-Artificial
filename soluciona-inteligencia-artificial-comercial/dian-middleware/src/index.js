@@ -11,6 +11,17 @@ import { validateInvoice, validateXmlSchema, validateHabilitacionSet } from './v
 import { validateComplete } from './validation/dian-rules.js';
 import { generateInvoicePdf, generateCreditNotePdf, generateDebitNotePdf } from './pdf/generator.js';
 import { HabilitacionManager, runHabilitacion, MODOS_HABILITACION, MODO_DEFAULT } from './habilitacion/manager.js';
+import {
+  initDianQueue,
+  addInvoiceJob,
+  addCreditNoteJob,
+  addStatusJob,
+  getJobStatus,
+  getQueueMetrics,
+  retryFailedJobs,
+  cleanQueue,
+  closeDianQueue
+} from './queue/dian-queue.js';
 
 /**
  * Clase principal DIAN Middleware
@@ -343,5 +354,14 @@ export {
   runHabilitacion,
   MODOS_HABILITACION,
   MODO_DEFAULT,
-  isHabilitacion
+  isHabilitacion,
+  initDianQueue,
+  addInvoiceJob,
+  addCreditNoteJob,
+  addStatusJob,
+  getJobStatus,
+  getQueueMetrics,
+  retryFailedJobs,
+  cleanQueue,
+  closeDianQueue
 };

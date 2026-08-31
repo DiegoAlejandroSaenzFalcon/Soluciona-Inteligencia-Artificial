@@ -7,6 +7,7 @@ const { enviarFactura: enviarDianGratuito } = require('./adaptadores/dian-gratui
 const { enviar: enviarFactus } = require('./adaptadores/factus');
 const { enviar: enviarAlanube } = require('./adaptadores/alanube');
 const { enviar: enviarOpenData } = require('./adaptadores/opendata');
+const { enviar: enviarDianPropio } = require('./adaptadores/dian-propio');
 
 // ============================================================
 // FRAMEWORK DE INTEGRACIÓN POS — pluggable por adaptador
@@ -242,7 +243,8 @@ const REGISTRO = {
   factus: { enviar: enviarFactus },
   alanube: { enviar: enviarAlanube },
   opendata: { enviar: enviarOpenData },
-  'dian-gratuito': { enviar: enviarDianGratuito }
+  'dian-gratuito': { enviar: enviarDianGratuito },
+  'dian-propio': { enviar: enviarDianPropio }
 };
 
 // Despacha el pedido al destino configurado. Si no hay integración o es 'kds'/'none',

@@ -277,6 +277,66 @@ async function logout(refreshToken) {
   return { ok: true };
 }
 
+// ============================================================
+// REGISTRO DE USUARIOS + RECUPERACIÓN DE CONTRASEÑA
+// ============================================================
+const ROLES_REGISTRO = ['operador', 'cocina', 'solo_lectura'];
+const RESET_TTL_MIN = 30;
+
+async function register({ nombre, email, telefono, password, role }, meta) {
+  const tenantId = (meta && meta.tenantId) || 'default';
+  const em = String(email || '').toLowerCase().trim();
+  if (!em || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return { error: 'email_invalido' };
+  if (!password || String(password).length < 8) return { error: 'password_corto' };
+  if (!nombre || !String(nombre).trim()) return { error: 'datos_incompletos' };
+  const rol = ROLES_REGISTRO.includes(role) ? role : 'operador';
+  const hash = await hashPassword(password);
+  const c = getClient();
+  try {
+    const rows = await c.unsafe(
+      `INSERT INTO users (tenant_id, email, password_hash, nombre, telefono, role, activo, must_change_password)
+       VALUES ($1, $2, $3, $4, $5, $6, 1, 0)
+       RETURNING id, tenant_id, email, nombre, telefono, role, activo, two_factor_enabled, must_change_password`,
+      [tenantId, em, hash, String(nombre).trim(), telefono || null, rol]
+    );
+    return { user: rows[0] };
+  } catch (e) {
+    if (e && (e.code === '23505' || /UNIQUE/i.test(String(e.message)))) return { error: 'email_existe' };
+    throw e;
+  }
+}
+
+async function requestPasswordReset(email) {
+  const em = String(email || '').toLowerCase().trim();
+  const c = getClient();
+  const rows = await c.unsafe('SELECT id FROM users WHERE email = $1 LIMIT 1', [em]);
+  if (!rows.length) return { ok: true, resetToken: null };
+  const raw = crypto.randomBytes(32).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(raw).digest('hex');
+  const expiresAt = new Date(Date.now() + RESET_TTL_MIN * 60000);
+  await c.unsafe(
+    `INSERT INTO password_resets (user_id, token_hash, expires_at, used) VALUES ($1, $2, $3, 0)`,
+    [rows[0].id, tokenHash, expiresAt]
+  );
+  // Sin SMTP configurado se devuelve el token en la respuesta para poder resetear.
+  return { ok: true, resetToken: raw, expiresInMin: RESET_TTL_MIN };
+}
+
+async function resetPassword(resetToken, newPassword) {
+  if (!resetToken || !newPassword || String(newPassword).length < 8) return { error: 'password_corto' };
+  const tokenHash = crypto.createHash('sha256').update(String(resetToken)).digest('hex');
+  const c = getClient();
+  const rows = await c.unsafe(
+    `SELECT * FROM password_resets WHERE token_hash = $1 AND used = 0 AND expires_at > now() LIMIT 1`,
+    [tokenHash]
+  );
+  if (!rows.length) return { error: 'token_invalido' };
+  const hash = await hashPassword(newPassword);
+  await c.unsafe('UPDATE users SET password_hash = $1, must_change_password = 0 WHERE id = $2', [hash, rows[0].user_id]);
+  await c.unsafe('UPDATE password_resets SET used = 1 WHERE id = $1', [rows[0].id]);
+  return { ok: true };
+}
+
 function toPublicUser(u) {
   return {
     id: u.id,
@@ -397,6 +457,10 @@ module.exports = {
   signAccessToken,
   verifyToken,
   login,
+  register,
+  requestPasswordReset,
+  resetPassword,
+  ROLES_REGISTRO,
   verifyTwoFactor,
   refresh,
   logout,

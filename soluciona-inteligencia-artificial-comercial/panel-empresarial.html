@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Panel Empresarial</title>
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="stylesheet" href="/fontawesome/css/all.min.css">
 <style>
   :root{--bg:#0f1420;--panel:#171e2e;--panel2:#1e2740;--line:#2a3550;--tx:#e6edf7;--mut:#93a3c0;--ac:#38bdf8;--ok:#22c55e;--err:#ef4444;--warn:#f59e0b}
   *{box-sizing:border-box}
@@ -23,6 +26,15 @@
   .btn{background:var(--ac);color:#04121f;border:none;border-radius:8px;padding:.65rem 1rem;font-weight:700;font-size:.95rem;width:100%;margin-top:1rem}
   .btn:hover{filter:brightness(1.1)}
   .btn:disabled{opacity:.5;cursor:not-allowed}
+  .login-card .pw{position:relative}
+  .login-card .pw input{padding-right:4.2rem}
+  .login-card .pw-toggle{position:absolute;right:.4rem;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--ac);font-size:.78rem;cursor:pointer;padding:.3rem}
+  .login-card .pw-toggle:hover{text-decoration:underline}
+  .login-card .lgnav{display:flex;justify-content:space-between;gap:.5rem;margin-top:.9rem;font-size:.82rem}
+  .login-card .lgnav button{background:none;border:none;color:var(--ac);cursor:pointer;padding:.2rem;font-size:.82rem}
+  .login-card .lgnav button:hover{text-decoration:underline}
+  .login-card .tok{background:rgba(56,189,248,.08);border:1px dashed var(--ac);border-radius:8px;padding:.6rem;font-family:Consolas,monospace;font-size:.78rem;color:var(--ac);word-break:break-all;margin:.4rem 0}
+  .login-card .hint{color:var(--mut);font-size:.78rem;margin-top:.4rem}
   .app{display:flex;min-height:100vh}
   .side{width:230px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column}
   .side .brand{padding:1.2rem 1.2rem 1rem;border-bottom:1px solid var(--line)}
@@ -32,6 +44,7 @@
   .side nav button{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;background:transparent;border:none;color:var(--tx);padding:.6rem .8rem;border-radius:8px;margin-bottom:.15rem;font-size:.9rem}
   .side nav button:hover{background:var(--panel2)}
   .side nav button.active{background:var(--ac);color:#04121f;font-weight:700}
+  .side nav button i{width:1.2rem;text-align:center;font-size:.95rem}
   .side .us{display:flex;align-items:center;gap:.6rem;padding:1rem;border-top:1px solid var(--line);font-size:.85rem;color:var(--mut)}
   .side .us .nome{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .side .us .role{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:.1rem .5rem;font-size:.7rem;color:var(--ac)}
@@ -91,13 +104,17 @@
 
 <div id="loginView" class="login-wrap hidden">
   <div class="login-card">
-    <h1>🏢 SOLUCIONA · Panel Empresarial</h1>
+    <h1><i class="fa-solid fa-building"></i> SOLUCIONA · Panel Empresarial</h1>
     <p>Inicia sesión con tu cuenta del negocio</p>
+
     <form id="loginForm">
       <label>Correo</label>
       <input type="email" id="lgEmail" autocomplete="username" required>
       <label>Contraseña</label>
-      <input type="password" id="lgPass" autocomplete="current-password" required>
+      <div class="pw">
+        <input type="password" id="lgPass" autocomplete="current-password" required>
+        <button type="button" class="pw-toggle" id="lgPassToggle" onclick="peToggle('lgPass','lgPassToggle')">Mostrar</button>
+      </div>
       <div id="lg2fa" class="hidden">
         <div id="lgQrBox"></div>
         <label>Código 2FA (Google Authenticator)</label>
@@ -105,13 +122,52 @@
       </div>
       <div class="err" id="lgErr"></div>
       <button class="btn" id="lgBtn" type="submit">Ingresar</button>
+      <div class="lgnav">
+        <button type="button" onclick="peShow('register')">Registrarse</button>
+        <button type="button" onclick="peShow('forgot')">¿Olvidaste tu contraseña?</button>
+      </div>
+    </form>
+
+    <form id="regForm" class="hidden">
+      <label>Nombre completo</label>
+      <input type="text" id="regNombre" autocomplete="name" required>
+      <label>Correo</label>
+      <input type="email" id="regEmail" autocomplete="email" required>
+      <label>Contraseña (mínimo 8 caracteres)</label>
+      <div class="pw">
+        <input type="password" id="regPass" autocomplete="new-password" required>
+        <button type="button" class="pw-toggle" id="regPassToggle" onclick="peToggle('regPass','regPassToggle')">Mostrar</button>
+      </div>
+      <div class="hint">Se crea una cuenta con rol Operador (sin permisos de administración).</div>
+      <div class="err" id="regErr"></div>
+      <button class="btn" type="submit">Crear cuenta</button>
+      <div class="lgnav"><button type="button" onclick="peShow('login')">← Volver a iniciar sesión</button></div>
+    </form>
+
+    <form id="forgotForm" class="hidden">
+      <label>Correo de tu cuenta</label>
+      <input type="email" id="fEmail" autocomplete="email" required>
+      <div class="err" id="fErr"></div>
+      <button class="btn" type="submit">Solicitar recuperación</button>
+      <div id="fResetBox" class="hidden" style="margin-top:.8rem">
+        <div class="tok" id="fTokenBox"></div>
+        <label>Código de recuperación</label>
+        <input type="text" id="fToken" autocomplete="off" required>
+        <label>Nueva contraseña (mínimo 8 caracteres)</label>
+        <div class="pw">
+          <input type="password" id="fPass" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" id="fPassToggle" onclick="peToggle('fPass','fPassToggle')">Mostrar</button>
+        </div>
+        <button class="btn" type="button" onclick="peAplicarReset()">Restablecer contraseña</button>
+      </div>
+      <div class="lgnav"><button type="button" onclick="peShow('login')">← Volver a iniciar sesión</button></div>
     </form>
   </div>
 </div>
 
 <div id="appView" class="app hidden">
   <aside class="side">
-    <div class="brand"><b>🏢 SOLUCIONA · Panel Empresarial</b><small id="sideTenant">tenant</small></div>
+    <div class="brand"><b><i class="fa-solid fa-building"></i> SOLUCIONA · Panel Empresarial</b><small id="sideTenant">tenant</small></div>
     <nav id="sideNav"></nav>
     <div class="us">
       <div class="nome" id="usNome">—</div>

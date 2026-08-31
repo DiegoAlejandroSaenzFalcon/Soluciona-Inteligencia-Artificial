@@ -58,7 +58,7 @@ const rateLimiter = getRateLimiter(config);
 async function handleAuthRequest(req, res, url) {
   // Rate limiting para endpoints de auth (usando rate limiter unificado)
   const ip = req.socket.remoteAddress;
-  if (['/api/auth/login', '/api/auth/verify-2fa', '/api/auth/refresh', '/api/auth/setup-2fa', '/api/auth/change-password'].includes(url) && req.method === 'POST') {
+  if (['/api/auth/login', '/api/auth/verify-2fa', '/api/auth/refresh', '/api/auth/setup-2fa', '/api/auth/change-password', '/api/auth/register', '/api/auth/forgot-password', '/api/auth/reset-password'].includes(url) && req.method === 'POST') {
     const rl = rateLimiter.check(ip, url);
     if (!rl.allowed) {
       return json(res, 429, { error: 'rate_limit', retryAfterMs: rl.retryAfterMs });
@@ -82,6 +82,43 @@ async function handleAuthRequest(req, res, url) {
       return json(res, 200, { requiresTwoFactor: true, twoFactorToken: result.twoFactorToken });
     }
     return json(res, 200, result);
+  }
+
+  // ---- REGISTRO DE USUARIO (auto-registro, rol limitado) ----
+  if (url === '/api/auth/register' && req.method === 'POST') {
+    const body = await leerCuerpo(req);
+    if (!body) return json(res, 400, { error: 'json_invalido' });
+    const result = await auth.register(body, { ip: req.socket.remoteAddress, tenantId: body.tenantId });
+    if (result.error) {
+      const status = result.error === 'email_existe' ? 409 : 400;
+      return json(res, status, { error: result.error });
+    }
+    return json(res, 201, { ok: true, user: result.user });
+  }
+
+  // ---- SOLICITAR RECUPERACIÓN DE CONTRASEÑA ----
+  if (url === '/api/auth/forgot-password' && req.method === 'POST') {
+    const body = await leerCuerpo(req);
+    if (!body || !body.email) return json(res, 400, { error: 'datos_incompletos' });
+    const result = await auth.requestPasswordReset(body.email);
+    if (result.resetToken) {
+      console.log('[AUTH] Reset solicitado para', String(body.email).toLowerCase().trim(), '| token:', result.resetToken);
+    }
+    return json(res, 200, {
+      ok: true,
+      // Solo se expone el token porque no hay SMTP configurado; en producción enviar por email.
+      resetToken: result.resetToken || null,
+      expiresInMin: result.expiresInMin || 30,
+    });
+  }
+
+  // ---- RESTABLECER CONTRASEÑA CON TOKEN ----
+  if (url === '/api/auth/reset-password' && req.method === 'POST') {
+    const body = await leerCuerpo(req);
+    if (!body || !body.resetToken || !body.newPassword) return json(res, 400, { error: 'datos_incompletos' });
+    const result = await auth.resetPassword(body.resetToken, body.newPassword);
+    if (result.error) return json(res, 400, { error: result.error });
+    return json(res, 200, { ok: true });
   }
 
   // ---- CAMBIO FORZADO DE CONTRASEÑA (primer inicio / obligatorio) ----

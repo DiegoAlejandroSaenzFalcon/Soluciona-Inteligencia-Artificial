@@ -98,11 +98,11 @@ function getResponse(message) {
 }
 
 const NAV = [
-  { id: 'inicio', icon: '📊', label: 'Inicio', sub: 'Resumen financiero y actividad en vivo' },
-  { id: 'config', icon: '⚙️', label: 'Configuración', sub: 'Config v2: editar, versiones, rollback, auditoría' },
-  { id: 'inventario', icon: '📦', label: 'Inventario', sub: 'Productos, stock, proveedores y órdenes de compra' },
-  { id: 'contabilidad', icon: '🧾', label: 'Contabilidad', sub: 'CxC/CxP, facturas, pagos, aging y asientos' },
-  { id: 'seguridad', icon: '🔐', label: 'Seguridad', sub: 'Autenticación 2FA y sesión' },
+  { id: 'inicio', icon: 'fa-solid fa-chart-line', label: 'Inicio', sub: 'Resumen financiero y actividad en vivo' },
+  { id: 'config', icon: 'fa-solid fa-gear', label: 'Configuración', sub: 'Config v2: editar, versiones, rollback, auditoría' },
+  { id: 'inventario', icon: 'fa-solid fa-boxes-stacked', label: 'Inventario', sub: 'Productos, stock, proveedores y órdenes de compra' },
+  { id: 'contabilidad', icon: 'fa-solid fa-file-invoice-dollar', label: 'Contabilidad', sub: 'CxC/CxP, facturas, pagos, aging y asientos' },
+  { id: 'seguridad', icon: 'fa-solid fa-shield-halved', label: 'Seguridad', sub: 'Autenticación 2FA y sesión' },
 ];
 
 function escH(v) {
@@ -171,8 +171,88 @@ function programarRefresh() {
 function tiene(perm) { return permisos.includes('*') || permisos.includes(perm); }
 
 // ============================================================
-// LOGIN / 2FA / LOGOUT
+// LOGIN / REGISTRO / RECUPERACIÓN / 2FA / LOGOUT
 // ============================================================
+function peShow(panel) {
+  document.getElementById('loginForm').classList.toggle('hidden', panel !== 'login');
+  document.getElementById('regForm').classList.toggle('hidden', panel !== 'register');
+  document.getElementById('forgotForm').classList.toggle('hidden', panel !== 'forgot');
+  document.getElementById('lgErr').textContent = '';
+  document.getElementById('regErr').textContent = '';
+  document.getElementById('fErr').textContent = '';
+  document.getElementById('fResetBox').classList.add('hidden');
+}
+function peToggle(id, btnId) {
+  const p = document.getElementById(id), b = btnId ? document.getElementById(btnId) : null;
+  if (!p) return;
+  const show = p.type === 'password';
+  p.type = show ? 'text' : 'password';
+  if (b) b.textContent = show ? 'Ocultar' : 'Mostrar';
+}
+
+document.getElementById('regForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const btn = this.querySelector('.btn');
+  btn.disabled = true; btn.textContent = 'Creando…';
+  document.getElementById('regErr').textContent = '';
+  try {
+    const nombre = document.getElementById('regNombre').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPass').value;
+    const r = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nombre, email, password }) });
+    const d = await r.json();
+    if (r.status !== 201) throw new Error(d.error || 'No se pudo crear la cuenta');
+    document.getElementById('lgEmail').value = email;
+    peShow('login');
+    document.getElementById('lgErr').textContent = 'Cuenta creada. Inicia sesión.';
+    document.getElementById('lgErr').style.color = 'var(--ok)';
+  } catch (err) {
+    document.getElementById('regErr').textContent = err.message;
+  }
+  btn.disabled = false; btn.textContent = 'Crear cuenta';
+});
+
+document.getElementById('forgotForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const btn = this.querySelector('.btn');
+  btn.disabled = true; btn.textContent = 'Procesando…';
+  document.getElementById('fErr').textContent = '';
+  try {
+    const email = document.getElementById('fEmail').value.trim();
+    const r = await fetch('/api/auth/forgot-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    const d = await r.json();
+    if (r.status !== 200) throw new Error(d.error || 'No se pudo solicitar');
+    document.getElementById('fResetBox').classList.remove('hidden');
+    document.getElementById('fTokenBox').textContent = d.resetToken
+      ? 'Código de recuperación (válido ' + (d.expiresInMin || 30) + ' min): ' + d.resetToken
+      : 'Si el correo existe, revisa el código en la consola del servidor.';
+  } catch (err) {
+    document.getElementById('fErr').textContent = err.message;
+  }
+  btn.disabled = false; btn.textContent = 'Solicitar recuperación';
+});
+
+async function peAplicarReset() {
+  const btn = document.querySelector('#forgotForm .btn[type=button]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Procesando…'; }
+  document.getElementById('fErr').textContent = '';
+  try {
+    const resetToken = document.getElementById('fToken').value.trim();
+    const newPassword = document.getElementById('fPass').value;
+    const r = await fetch('/api/auth/reset-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resetToken, newPassword }) });
+    const d = await r.json();
+    if (r.status !== 200) throw new Error(d.error || 'No se pudo restablecer');
+    document.getElementById('lgEmail').value = '';
+    document.getElementById('lgPass').value = newPassword;
+    peShow('login');
+    document.getElementById('lgErr').textContent = 'Contraseña restablecida. Inicia sesión.';
+    document.getElementById('lgErr').style.color = 'var(--ok)';
+  } catch (err) {
+    document.getElementById('fErr').textContent = err.message;
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'Restablecer contraseña'; }
+}
+
 async function hacerLogin(e) {
   e.preventDefault();
   const btn = document.getElementById('lgBtn');
@@ -286,18 +366,18 @@ function renderNav() {
   const nav = document.getElementById('sideNav');
   if (nav) {
     const items = [
-      { id: 'inicio', icon: '📊', label: 'Inicio' },
-      { id: 'config', icon: '⚙️', label: 'Configuración', soloTrial: true },
-      { id: 'inventario', icon: '📦', label: 'Inventario', soloTrial: true },
-      { id: 'contabilidad', icon: '🧾', label: 'Contabilidad', soloTrial: true },
-      { id: 'seguridad', icon: '🔐', label: 'Seguridad' }
+      { id: 'inicio', icon: 'fa-solid fa-chart-line', label: 'Inicio' },
+      { id: 'config', icon: 'fa-solid fa-gear', label: 'Configuración', soloTrial: true },
+      { id: 'inventario', icon: 'fa-solid fa-boxes-stacked', label: 'Inventario', soloTrial: true },
+      { id: 'contabilidad', icon: 'fa-solid fa-file-invoice-dollar', label: 'Contabilidad', soloTrial: true },
+      { id: 'seguridad', icon: 'fa-solid fa-shield-halved', label: 'Seguridad' }
     ];
     nav.innerHTML = '';
     items.forEach(it => {
       if (it.soloTrial && !trialMode) return;
       const b = document.createElement('button');
       b.id = 'nav-' + it.id;
-      b.textContent = it.icon + ' ' + it.label;
+      b.innerHTML = '<i class="' + it.icon + '"></i><span>' + it.label + '</span>';
       b.onclick = () => ver(it.id);
       nav.appendChild(b);
     });
@@ -309,7 +389,7 @@ function renderNav() {
 function ver(id) {
   NAV.forEach(n => { const b = document.getElementById('nav-' + n.id); if (b) b.classList.toggle('active', n.id === id); });
   const nav = NAV.find(n => n.id === id);
-  document.getElementById('viewTitle').textContent = nav ? nav.icon + ' ' + nav.label : id;
+  document.getElementById('viewTitle').innerHTML = nav ? '<i class="' + nav.icon + '"></i> ' + nav.label : id;
   document.getElementById('viewSub').textContent = nav ? nav.sub : '';
   const cont = document.getElementById('viewContent');
   cont.innerHTML = '<div class="empty">Cargando…</div>';
@@ -331,16 +411,16 @@ function conectarSocket() {
   if (!sesion) return;
   if (socket) socket.disconnect();
   socket = io('/', { path: '/socket.io', transports: ['websocket', 'polling'], auth: { token: sesion.accessToken } });
-  socket.on('connect', () => toast('🔌 En tiempo real conectado', 'ok'));
-  socket.on('connect_error', () => toast('⚠️ Sin conexión en tiempo real', 'warn'));
-  socket.on('pedido:nuevo', d => { toast('📦 Nuevo pedido #' + (d && d.id), 'ok'); if (vistaActiva('inicio')) cargarInicio(); });
-  socket.on('pedido:estado', d => { toast('📦 Pedido #' + (d && d.id) + ' → ' + (d && d.estado)); if (vistaActiva('inicio')) cargarInicio(); });
-  socket.on('cita:estado', d => toast('📅 Cita #' + (d && d.id) + ' → ' + (d && d.estado)));
-  socket.on('stock:cambio', () => { toast('📦 Inventario actualizado'); if (vistaActiva('inventario')) cargarInventario(); });
-  socket.on('compras:cambio', () => { toast('🧾 Órdenes de compra actualizadas'); if (vistaActiva('inventario')) cargarInventario(); });
-  socket.on('venta:nueva', () => { toast('🧾 Nueva venta registrada', 'ok'); if (vistaActiva('inicio') || vistaActiva('contabilidad')) { cargarInicio(); } });
-  socket.on('pago:nuevo', () => { toast('💵 Nuevo pago registrado'); if (vistaActiva('contabilidad')) cargarContabilidad(); });
-  socket.on('config:cambio', () => toast('⚙️ Configuración modificada'));
+  socket.on('connect', () => toast('En tiempo real conectado', 'ok'));
+  socket.on('connect_error', () => toast('Sin conexión en tiempo real', 'warn'));
+  socket.on('pedido:nuevo', d => { toast('Nuevo pedido #' + (d && d.id), 'ok'); if (vistaActiva('inicio')) cargarInicio(); });
+  socket.on('pedido:estado', d => { toast('Pedido #' + (d && d.id) + ' → ' + (d && d.estado)); if (vistaActiva('inicio')) cargarInicio(); });
+  socket.on('cita:estado', d => toast('Cita #' + (d && d.id) + ' → ' + (d && d.estado)));
+  socket.on('stock:cambio', () => { toast('Inventario actualizado'); if (vistaActiva('inventario')) cargarInventario(); });
+  socket.on('compras:cambio', () => { toast('Órdenes de compra actualizadas'); if (vistaActiva('inventario')) cargarInventario(); });
+  socket.on('venta:nueva', () => { toast('Nueva venta registrada', 'ok'); if (vistaActiva('inicio') || vistaActiva('contabilidad')) { cargarInicio(); } });
+  socket.on('pago:nuevo', () => { toast('Nuevo pago registrado'); if (vistaActiva('contabilidad')) cargarContabilidad(); });
+  socket.on('config:cambio', () => toast('Configuración modificada'));
 }
 function vistaActiva(id) {
   const b = document.getElementById('nav-' + id);
@@ -432,7 +512,7 @@ async function renderSeguridad() {
       </table>
     </div>
     <div class="card">
-      <h3>🔐 Autenticación en dos pasos (2FA)</h3>
+      <h3><i class="fa-solid fa-shield-halved"></i> Autenticación en dos pasos (2FA)</h3>
       <p class="sub">Si activas 2FA, además de tu contraseña se pedirá un código de 6 dígitos generado por tu app de autenticación (Google Authenticator, etc.).</p>
       <div id="sec2fa"></div>
     </div>`;
