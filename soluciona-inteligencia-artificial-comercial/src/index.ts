@@ -5,11 +5,10 @@
 import { getConfig } from './shared/config';
 import { getLogger } from './shared/utils/logger';
 import { buildServer } from './interfaces/http/server';
-import { getPool } from './infrastructure/database/pool';
-import { closePool } from './infrastructure/database/pool';
-import { scheduleJwtRotation } from './src/auth/index';
-import { loadSecretVersions } from './src/auth/index';
-import { rotateJwtSecret } from './src/auth/index';
+import { getPool, closePool } from './infrastructure/database/pool';
+// Auth module is CommonJS - use require with type assertion
+const auth = require('./auth/index');
+const { scheduleJwtRotation, loadSecretVersions, rotateJwtSecret } = auth;
 
 const logger = getLogger('main');
 
@@ -22,12 +21,13 @@ async function bootstrap(): Promise<void> {
   console.log('==========================================\n');
 
   console.log('[INIT] Cargando configuración...');
-  console.log(`[INIT] Configuración cargada: ${config.nombreNegocio()} | puerto ${config.port} | software: ${config.softwareNombre}`);
+  // Use business.name for business name, config.name for software name
+  const businessName = config.business?.name || config.name || 'tu negocio';
+  console.log(`[INIT] Configuración cargada: ${businessName} | puerto ${config.port} | software: ${config.name}`);
 
   console.log('[INIT] Cargando módulos...');
   
   // Load JWT secrets and schedule rotation
-  const { loadSecretVersions, scheduleJwtRotation, rotateJwtSecret } = await import('./src/auth/index');
   loadSecretVersions();
   scheduleJwtRotation();
   
@@ -45,15 +45,15 @@ async function bootstrap(): Promise<void> {
   }
 
   // Initialize JWT rotation
-  rotateJwtSecret().catch(e => console.error('[JWT] Error rotando secreto:', e));
+  rotateJwtSecret().catch((e: Error) => console.error('[JWT] Error rotando secreto:', e));
 
   // Start HTTP server
   console.log('[INIT] Iniciando Web...');
   const server = await buildServer();
 
   try {
-    await server.listen({ port: getConfig().port, host: getConfig().host });
-    console.log(`\n[OK] Sistema iniciado. Panel: http://${getConfig().host}:${getConfig().port}`);
+    await server.listen({ port: config.port, host: config.host });
+    console.log(`\n[OK] Sistema iniciado. Panel: http://${config.host}:${config.port}`);
     console.log('[INFO] Para detener: Ctrl+C\n');
   } catch (error) {
     console.error('[ERROR] Error iniciando servidor web:', error);
@@ -79,17 +79,17 @@ async function bootstrap(): Promise<void> {
 }
 
 // Handle unhandled errors
-process.on('unhandledRejection', (reason) => {
+process.on('unhandledRejection', (reason: unknown) => {
   console.error('[WARN] Rechazo no capturado:', reason);
 });
 
-process.on('uncaughtException', (error) => {
+process.on('uncaughtException', (error: Error) => {
   console.error('[WARN] Excepción no capturada:', error);
   process.exit(1);
 });
 
 // Start the application
-bootstrap().catch((error) => {
+bootstrap().catch((error: Error) => {
   console.error('[ERROR] Fatal error during bootstrap:', error);
   process.exit(1);
 });

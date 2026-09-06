@@ -91,7 +91,7 @@ vi.mock('../../config.js', () => ({
 
 // Mock the auth module's database dependencies
 vi.mock('../../src/auth/index.js', () => {
-  const originalModule = require('../../src/auth/index.js');
+  const originalModule = require('../../src/auth/index.cjs');
   return {
     ...originalModule,
     getClient: vi.fn(),

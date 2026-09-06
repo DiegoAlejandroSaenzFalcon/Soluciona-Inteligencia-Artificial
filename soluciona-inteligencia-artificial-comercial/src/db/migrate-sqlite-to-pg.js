@@ -2,9 +2,9 @@
 const fs = require('fs');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
-const { config } = require('../../config');
-const { getClient, closeConnection } = require('./connection');
-const { OPERATIONAL_DDL } = require('./operationalSchema');
+const { config } = require('../../config.cjs');
+const { getClient, closeConnection } = require('./connection.cjs');
+const { OPERATIONAL_DDL } = require('./operationalSchema.cjs');
 
 const TABLAS = [
   {

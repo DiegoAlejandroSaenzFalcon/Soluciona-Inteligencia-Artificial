@@ -1,6 +1,7 @@
 /**
  * Shared Utilities - Common helper functions
  */
+import { Result, Ok, Err } from '../kernel/result';
 
 /**
  * Normalizes text for comparison/search
@@ -77,7 +78,7 @@ export function generateSecureToken(length = 32): string {
   const randomValues = new Uint8Array(length);
   crypto.getRandomValues(randomValues);
   for (let i = 0; i < length; i++) {
-    result += chars[randomValues[i] % chars.length];
+    result += chars[randomValues[i]! % chars.length];
   }
   return result;
 }
@@ -132,7 +133,6 @@ export async function retryWithBackoff<T>(
     maxAttempts?: number;
     baseDelayMs?: number;
     maxDelayMs?: number;
-    jitter?: number;
     onRetry?: (attempt: number, error: Error) => void;
   } = {}
 ): Promise<Result<T, Error>> {
@@ -140,7 +140,6 @@ export async function retryWithBackoff<T>(
     maxAttempts = 3,
     baseDelayMs = 1000,
     maxDelayMs = 30000,
-    jitter = 0.2,
     onRetry,
   } = options;
 
@@ -160,9 +159,9 @@ export async function retryWithBackoff<T>(
       );
       await sleep(delay);
     }
-  }
 
-  return Err(lastError!);
+return Err(lastError!);
+  }
 }
 
 /**

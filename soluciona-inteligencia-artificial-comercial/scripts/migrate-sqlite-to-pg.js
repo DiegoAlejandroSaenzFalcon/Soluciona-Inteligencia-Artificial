@@ -11,7 +11,7 @@ const { DatabaseSync } = require('node:sqlite');
 const { Pool } = require('pg');
 const crypto = require('crypto');
 
-const config = require('../config');
+const config = require('../config.cjs');
 
 const SQLITE_PATH = path.join(config.dataDir, 'neurallgo.db');
 const BATCH_SIZE = 1000;
@@ -46,7 +46,7 @@ function getSQLiteDb() {
 }
 
 function getPgPool() {
-  const config = require('../config');
+  const config = require('../config.cjs');
   return new Pool({
     host: config.dbHost,
     port: config.dbPort,

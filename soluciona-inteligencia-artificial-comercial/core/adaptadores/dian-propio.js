@@ -8,7 +8,7 @@
  * - Numeración autorizada (resolución DIAN)
  */
 
-const { config } = require('../../config');
+const { config } = require('../../config.cjs');
 let dianMiddleware = null;
 let dianQueue = null;
 
@@ -48,7 +48,7 @@ async function initMiddleware() {
   if (dp.resolucionDesde)   process.env.DIAN_RESOLUCION_DESDE = dp.resolucionDesde;
   if (dp.resolucionHasta)   process.env.DIAN_RESOLUCION_HASTA = dp.resolucionHasta;
 
-  const mod = await import('../../dian-middleware/src/index.js');
+  const mod = await import('../../dian-middleware/src/index.cjs');
   dianMiddleware = mod.createDianMiddleware({});
   await dianMiddleware.initialize();
 
@@ -62,7 +62,7 @@ async function initQueue() {
   if (dianQueue) return dianQueue;
 
   try {
-    const mod = await import('../../dian-middleware/src/index.js');
+    const mod = await import('../../dian-middleware/src/index.cjs');
     const queue = await mod.initDianQueue();
     dianQueue = queue;
     return queue;
@@ -203,7 +203,7 @@ async function getJobStatus(jobId) {
   if (!queue) return { error: 'Cola no disponible' };
 
   try {
-    const mod = await import('../../dian-middleware/src/index.js');
+    const mod = await import('../../dian-middleware/src/index.cjs');
     return await mod.getJobStatus(jobId);
   } catch (e) {
     return { error: e.message };

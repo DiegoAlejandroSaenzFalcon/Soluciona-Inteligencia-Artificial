@@ -1,13 +1,13 @@
 ﻿const fs = require('fs');
 const path = require('path');
-const { config } = require('../config');
+const { config } = require('../config.cjs');
 
 // Importar adaptadores POS
-const { enviarFactura: enviarDianGratuito } = require('./adaptadores/dian-gratuito');
-const { enviar: enviarFactus } = require('./adaptadores/factus');
-const { enviar: enviarAlanube } = require('./adaptadores/alanube');
-const { enviar: enviarOpenData } = require('./adaptadores/opendata');
-const { enviar: enviarDianPropio } = require('./adaptadores/dian-propio');
+const { enviarFactura: enviarDianGratuito } = require('./adaptadores/dian-gratuito.cjs');
+const { enviar: enviarFactus } = require('./adaptadores/factus.cjs');
+const { enviar: enviarAlanube } = require('./adaptadores/alanube.cjs');
+const { enviar: enviarOpenData } = require('./adaptadores/opendata.cjs');
+const { enviar: enviarDianPropio } = require('./adaptadores/dian-propio.cjs');
 
 // ============================================================
 // FRAMEWORK DE INTEGRACIÓN POS — pluggable por adaptador

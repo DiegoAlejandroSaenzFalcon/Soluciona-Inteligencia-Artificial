@@ -1,5 +1,5 @@
 'use strict';
-const { getClient } = require('../db/connection');
+const { getClient } = require('../db/connection.cjs');
 
 const num = v => (v == null || v === '' ? 0 : Number(v));
 const red2 = v => Math.round(num(v) * 100) / 100;

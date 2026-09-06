@@ -1,7 +1,7 @@
-﻿const { config, LLM_API_KEY } = require('../config');
-const { loadAgentesUtiles } = require('../agents-loader');
-const { cfgRol, limiteAlcanzado, registrar } = require('./consumo');
-const pool = require('./ia-pool');
+﻿const { config, LLM_API_KEY } = require('../config.cjs');
+const { loadAgentesUtiles } = require('../agents-loader.cjs');
+const { cfgRol, limiteAlcanzado, registrar } = require('./consumo.cjs');
+const pool = require('./ia-pool.cjs');
 
 const AGENTES = loadAgentesUtiles();
 

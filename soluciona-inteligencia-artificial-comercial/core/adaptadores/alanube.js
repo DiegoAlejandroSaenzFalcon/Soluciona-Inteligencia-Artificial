@@ -1,4 +1,4 @@
-const { config } = require('../../config');
+const { config } = require('../../config.cjs');
 
 const ALANUBE_BASE = 'https://api.alanube.com/v1';
 

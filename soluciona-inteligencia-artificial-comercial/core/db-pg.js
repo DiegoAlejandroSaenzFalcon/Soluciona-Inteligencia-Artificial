@@ -1,7 +1,7 @@
 'use strict';
 const path = require('path');
 const { Worker } = require('worker_threads');
-const { config } = require('../config');
+const { config } = require('../config.cjs');
 
 const PAYLOAD_SIZE = 8 * 1024 * 1024;
 const WAIT_TIMEOUT_MS = 120000;

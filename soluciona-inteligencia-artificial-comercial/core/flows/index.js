@@ -1,4 +1,4 @@
-const { config, normalizar } = require('../../config');
+const { config, normalizar } = require('../../config.cjs');
 
 // Motor de flujos por segmento de negocio (DIAN/CIIU).
 // El segmento 'comidas' es el flujo por defecto y vive integrado en el
@@ -6,9 +6,9 @@ const { config, normalizar } = require('../../config');
 // módulo de flujo que despacha la conversación completa.
 const FLUJOS = {
   comidas: null,
-  salud: () => require('./salud'),
-  retail: () => require('./retail'),
-  belleza: () => require('./belleza')
+  salud: () => require('./salud.cjs'),
+  retail: () => require('./retail.cjs'),
+  belleza: () => require('./belleza.cjs')
 };
 
 function segmentoActual() {

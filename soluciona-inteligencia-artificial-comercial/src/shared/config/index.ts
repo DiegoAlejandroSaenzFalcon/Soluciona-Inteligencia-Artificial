@@ -147,7 +147,7 @@ export type AppConfig = z.infer<typeof AppConfigSchema>;
 
 let configCache: AppConfig | null = null;
 
-export function loadConfig(envOverrides: Record<string, string> = process.env): AppConfig {
+export function loadConfig(envOverrides: Record<string, string | undefined> = process.env): AppConfig {
   if (configCache) return configCache;
 
   // Parse environment variables with proper type conversion
@@ -168,8 +168,8 @@ export function loadConfig(envOverrides: Record<string, string> = process.env): 
   };
 
   const config = AppConfigSchema.parse({
-    environment: envOverrides.NODE_ENV || 'development',
-    port: envOverrides.PORT ? parseInt(envOverrides.PORT, 10) : 3000,
+    environment: envOverrides['NODE_ENV'] || 'development',
+    port: envOverrides['PORT'] ? parseInt(envOverrides['PORT']!, 10) : 3000,
     database: parseEnv(DatabaseConfigSchema, 'DB_'),
     redis: parseEnv(RedisConfigSchema, 'REDIS_'),
     minio: parseEnv(MinIOConfigSchema, 'MINIO_'),

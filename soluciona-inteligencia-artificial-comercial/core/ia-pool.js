@@ -19,7 +19,7 @@
 // pero si todas sus claves fallan, prueba los demás proveedores.
 // ============================================================
 
-const { config } = require('../config');
+const { config } = require('../config.cjs');
 
 function POOL() { return config.ia_pool || {}; }
 const PREFERIDO = {

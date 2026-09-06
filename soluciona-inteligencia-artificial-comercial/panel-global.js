@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const central = require('./core/central');
+const central = require('./core/central.cjs');
 
 const PANEL_CFG = (() => {
   try {

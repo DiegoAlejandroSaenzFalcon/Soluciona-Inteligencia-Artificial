@@ -5,7 +5,7 @@ console.log('\n=== TEST EXPRESS - WhatsApp Lite ===\n');
 
 try {
   // Test 1: Core modules exist
-  const core = require('./core/modules');
+  const core = require('./core/modules.cjs');
   console.log('[TEST 1] core/modules OK');
   
   // Test 2: ¿Trial activo?

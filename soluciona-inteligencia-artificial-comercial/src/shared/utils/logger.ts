@@ -1,7 +1,7 @@
 /**
  * Structured Logger - Pino-based with correlation IDs
  */
-import pino, { Logger, Level } from 'pino';
+import pino, { type Logger } from 'pino';
 import { getConfig } from '../config';
 
 const config = getConfig();
@@ -35,4 +35,4 @@ export function getLogger(moduleName: string): Logger {
   return logger.child({ module: moduleName });
 }
 
-export const logger = logger;
+export { logger };

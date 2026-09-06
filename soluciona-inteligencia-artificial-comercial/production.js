@@ -4,7 +4,7 @@
  * Para microempresarios de Colombia
  */
 
-const { loadLicense, isTrialActive, getFeatures, esPedido, esPersonal } = require('./core/modules');
+const { loadLicense, isTrialActive, getFeatures, esPedido, esPersonal } = require('./core/modules.cjs');
 
 console.log('\n================================================');
 console.log('  WhatsApp Lite - Production');
@@ -27,8 +27,8 @@ console.log('  ✓ Budget-friendly para microempresas');
 console.log('\n[INFO] Servidor iniciando en: http://localhost:8080');
 console.log('[INFO] Presiona Ctrl+C para detener\n');
 
-require('./transports/whatsapp').iniciarWhatsApp().catch(e => {
+require('./transports/whatsapp.cjs').iniciarWhatsApp().catch(e => {
   console.error('[ERROR] WhatsApp:', e.message);
 });
 
-require('./transports/web').iniciarWeb();
+require('./transports/web.cjs').iniciarWeb();

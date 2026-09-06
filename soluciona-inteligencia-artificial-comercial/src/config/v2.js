@@ -2,9 +2,9 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { config } = require('../../config');
-const { getClient } = require('../db/connection');
-const { validateSection, getSectionKeys, SECTIONS } = require('./schemas');
+const { config } = require('../../config.cjs');
+const { getClient } = require('../db/connection.cjs');
+const { validateSection, getSectionKeys, SECTIONS } = require('./schemas.cjs');
 
 const CONFIG_PATH = path.join(__dirname, '..', '..', 'config.json');
 const TENANT_ID = 'default';

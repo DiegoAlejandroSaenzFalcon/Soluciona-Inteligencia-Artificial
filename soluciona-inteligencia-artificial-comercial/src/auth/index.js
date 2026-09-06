@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { config } = require('../../config');
-const { getClient } = require('../db/connection');
+const { config } = require('../../config.cjs');
+const { getClient } = require('../db/connection.cjs');
 
 const ACCESS_TTL = '15m';
 const REFRESH_TTL_DAYS = 30;

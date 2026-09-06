@@ -1,9 +1,9 @@
-﻿const { config, numDeCelular, normalizar, esc } = require('../../config');
+﻿const { config, numDeCelular, normalizar, esc } = require('../../config.cjs');
 const {
   obtenerEstado, guardarEstado, limpiarEstado, resetearCarrito,
   agregarAlCarrito, obtenerResumenCarrito,
   transicionarAConfirmacion
-} = require('../../core/state-machine');
+} = require('../../core/state-machine.cjs');
 
 const PENDIENTES = new Map();
 

@@ -7,10 +7,15 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
-    "production": "node production.js",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
     "reset-admin": "node reset-admin.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx src/db/seed.ts",
+    "db:studio": "drizzle-kit studio",
     "db:migrate-data": "node --experimental-sqlite src/db/migrate-sqlite-to-pg.js",
     "db:verify-pg": "node --experimental-sqlite src/db/verify-pg.js"
   },

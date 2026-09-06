@@ -1,9 +1,9 @@
 'use strict';
 const QRCode = require('qrcode');
-const auth = require('./index');
-const { getClient } = require('../db/connection');
-const { getRateLimiter } = require('../utils/rateLimiter');
-const { config } = require('../../config');
+const auth = require('./index.cjs');
+const { getClient } = require('../db/connection.cjs');
+const { getRateLimiter } = require('../utils/rateLimiter.cjs');
+const { config } = require('../../config.cjs');
 
 function leerCuerpo(req) {
   return new Promise((resolve) => {
@@ -305,7 +305,7 @@ async function handleAuthRequest(req, res, url) {
 
 function configNombre() {
   try {
-    const { config } = require('../../config');
+    const { config } = require('../../config.cjs');
     const APP = 'Soluciona IA';
     return config.negocio ? `${APP} · ${config.negocio}` : APP;
   } catch {

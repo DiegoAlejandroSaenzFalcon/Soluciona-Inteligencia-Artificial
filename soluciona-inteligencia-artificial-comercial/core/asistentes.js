@@ -1,6 +1,6 @@
-const { config, LLM_API_KEY } = require('../config');
-const { loadAgentesUtiles } = require('../agents-loader');
-const { askLLM, agenteMasRelevante } = require('./ai');
+const { config, LLM_API_KEY } = require('../config.cjs');
+const { loadAgentesUtiles } = require('../agents-loader.cjs');
+const { askLLM, agenteMasRelevante } = require('./ai.cjs');
 
 const CATEGORIAS_ES = {
   marketing: 'Marketing',

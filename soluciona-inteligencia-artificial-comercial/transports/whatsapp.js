@@ -7,23 +7,23 @@ let makeWASocket, useMultiFileAuthState, DisconnectReason;
 
 const {
   config, fechaDia, hoyInicio, numDeCelular
-} = require('../config');
+} = require('../config.cjs');
 const {
   guardarLidMap, leerLidMaps, resolverLid, aplicarMapeoLid
-} = require('../core/db');
+} = require('../core/db.cjs');
 const {
   leerPedidos, guardarPedido, patchPedido, resumenDe,
   formatearConfirmacion, reporteHoyTexto, siguienteId, parsearPedido
-} = require('../core/orders');
-const { validarUbicacion, distanciaRuta, costoDomicilio } = require('../core/geo');
-const { setSock, setConectado, alertarDueno } = require('../core/notify');
-const { generarMenuPNG } = require('../core/menu-img');
-const { registrar } = require('../core/conversacion');
-const { obtenerFlujo } = require('../core/flows');
+} = require('../core/orders.cjs');
+const { validarUbicacion, distanciaRuta, costoDomicilio } = require('../core/geo.cjs');
+const { setSock, setConectado, alertarDueno } = require('../core/notify.cjs');
+const { generarMenuPNG } = require('../core/menu-img.cjs');
+const { registrar } = require('../core/conversacion.cjs');
+const { obtenerFlujo } = require('../core/flows.cjs');
 const {
   askLLM, atenderClienteIA, agenteMasRelevante,
   dividirMensaje, esRespuestaDeError, esFueraDeTema, AGENTES
-} = require('../core/ai');
+} = require('../core/ai.cjs');
 const {
   ESTADOS, TRIGGERS,
   obtenerEstado, guardarEstado, limpiarEstado, resetearCarrito,
@@ -31,15 +31,15 @@ const {
   transicionarAConfirmacion, transicionarAEsperandoUbicacion,
   transicionarAExploracion, transicionarACancelacion,
   agregarHistorial, obtenerHistorialReciente, detectarTrigger
-} = require('../core/state-machine');
+} = require('../core/state-machine.cjs');
 const {
   procesarMensajeCliente,
   formatearRespuestaNatural,
   formatearTriggerConfirmacion,
   formatearTriggerCancelacion,
   formatearTriggerModificacion
-} = require('../core/ai-structured');
-const { StructuredLogger, runWithCorrelation, getTraceId, getTenantId } = require('../kernel/src/common/logger/structured-logger');
+} = require('../core/ai-structured.cjs');
+const { StructuredLogger, runWithCorrelation, getTraceId, getTenantId } = require('../kernel/src/common/logger/structured-logger.cjs');
 const logger = new StructuredLogger('whatsapp-transport', 'info');
 
 let sock = null;
@@ -401,7 +401,7 @@ async function intentarResolverLid(s, lidBase) {
 // (clientes/conversaciones/pedidos) que aún no tienen número real.
 async function resolverLidsPendientes(s) {
   try {
-    const { lidsPendientes } = require('../core/db');
+    const { lidsPendientes } = require('../core/db.cjs');
     const lids = lidsPendientes();
     if (!lids.length) return;
     logger.info(`[LID] ${lids.length} LIDs pendientes de resolver...`);
@@ -634,7 +634,7 @@ async function procesar(s, m, jid, cuerpo, ubicacion) {
   const remitente = m.pushName || 'Cliente';
   const tel = numeroCliente(jid, m);
   if (remitente !== 'Cliente') {
-    const { actualizarPerfil } = require('../core/db');
+    const { actualizarPerfil } = require('../core/db.cjs');
     actualizarPerfil({ telefono: tel, remitente, fecha: new Date().toISOString() });
   }
 

@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2024",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "lib": ["ES2024"],
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
@@ -20,23 +20,19 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
-    "erasableSyntaxOnly": false,
+    "isolatedModules": false,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@soluciona/*": ["packages/*/src"],
-      "@soluciona/design-system": ["packages/design-system/src"],
-      "@soluciona/shared-types": ["packages/shared-types/src"],
-      "@soluciona/shared-utils": ["packages/shared-utils/src"],
-      "@soluciona/config": ["packages/config/src"],
-      "@soluciona/logger": ["packages/logger/src"],
-      "@soluciona/dian-sdk": ["packages/dian-sdk/src"],
-      "@soluciona/whatsapp-sdk": ["packages/whatsapp-sdk/src"],
-      "@soluciona/testing": ["packages/testing/src"]
+      "@/*": ["src/*"],
+      "@domain/*": ["src/domain/*"],
+      "@application/*": ["src/application/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@shared/*": ["src/shared/*"]
     }
   },
-  "exclude": ["node_modules", "dist", "build", "coverage", ".turbo", "*.config.*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "build", "coverage", ".turbo", "*.config.*", "**/*.test.ts", "**/*.spec.ts", "src/interfaces/http/routes/*", "src/interfaces/http/plugins/*"]
 }

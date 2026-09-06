@@ -1,5 +1,5 @@
-const { config } = require('../config');
-const db = require('./db');
+const { config } = require('../config.cjs');
+const db = require('./db.cjs');
 
 // ============================================================
 // FACTURACIÓN ELECTRÓNICA (DIAN) — genérica y por proveedor
@@ -48,7 +48,7 @@ function estadoFactura(pedido) {
 async function emitirFactura(pedido) {
   const fc = configFacturacion();
   if (!fc || !fc.proveedor) return { ok: false, error: 'facturación no configurada' };
-  const { REGISTRO } = require('./integracion');
+  const { REGISTRO } = require('./integracion.cjs');
   const adaptador = REGISTRO[fc.proveedor];
   if (!adaptador) return { ok: false, error: `proveedor "${fc.proveedor}" no registrado` };
 

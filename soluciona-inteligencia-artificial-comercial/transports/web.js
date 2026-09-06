@@ -2,32 +2,32 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { config, esc, csvCell, hoyInicio, normalizar } = require('../config');
+const { config, esc, csvCell, hoyInicio, normalizar } = require('../config.cjs');
 
 // Unified Rate Limiter
-const { getRateLimiter } = require('../src/utils/rateLimiter');
+const { getRateLimiter } = require('../src/utils/rateLimiter.cjs');
 const rateLimiter = getRateLimiter(config);
 
-const { leerPedidos, resumenDe, cambiarEstado } = require('../core/orders');
-const { listarClientes, obtenerCliente, resolverLid } = require('../core/db');
-const { notificar, estadoBot } = require('../core/notify');
-const { hilos, leerHilo } = require('../core/conversacion');
-const { askLLM } = require('../core/ai');
-const { loadAgentesUtiles } = require('../agents-loader');
-const { ASISTENTES, catalogoExpertos, preguntarAsistente } = require('../core/asistentes');
-const { extraerMenu } = require('../core/vision');
-const { handleAuthRequest } = require('../src/auth/routes');
-const auth = require('../src/auth/index');
-const { getClient } = require('../src/db/connection');
+const { leerPedidos, resumenDe, cambiarEstado } = require('../core/orders.cjs');
+const { listarClientes, obtenerCliente, resolverLid } = require('../core/db.cjs');
+const { notificar, estadoBot } = require('../core/notify.cjs');
+const { hilos, leerHilo } = require('../core/conversacion.cjs');
+const { askLLM } = require('../core/ai.cjs');
+const { loadAgentesUtiles } = require('../agents-loader.cjs');
+const { ASISTENTES, catalogoExpertos, preguntarAsistente } = require('../core/asistentes.cjs');
+const { extraerMenu } = require('../core/vision.cjs');
+const { handleAuthRequest } = require('../src/auth/routes.cjs');
+const auth = require('../src/auth/index.cjs');
+const { getClient } = require('../src/db/connection.cjs');
 
-const { handleConfigRequest } = require('../src/config/routes');
+const { handleConfigRequest } = require('../src/config/routes.cjs');
 
-const modules = require('../core/modules');
+const modules = require('../core/modules.cjs');
 
-const { handleInventoryRequest } = require('../src/inventory/routes');
-const { handleAccountingRequest } = require('../src/accounting/routes');
+const { handleInventoryRequest } = require('../src/inventory/routes.cjs');
+const { handleAccountingRequest } = require('../src/accounting/routes.cjs');
 
-const { initWebSockets, emitir, contarClientes } = require('../src/websockets');
+const { initWebSockets, emitir, contarClientes } = require('../src/websockets.cjs');
 const QRCode = require('qrcode');
 
 // Responde al error de un handler sin dejar la conexión colgada.
@@ -205,7 +205,7 @@ function resumenConfiguracion() {
     'dian-gratuito': ['nit', 'password', 'codigo_software']
   };
 
-  const adaptadores = Object.keys(require('./../core/integracion').REGISTRO).map(tipo => {
+  const adaptadores = Object.keys(require('./../core/integracion.cjs').REGISTRO).map(tipo => {
     const clavesReq = clavesPorAdaptador[tipo] || [];
     const activo = integracion.tipo === tipo;
     const faltantes = activo ? clavesReq.filter(c => !integracion[c]) : clavesReq;
@@ -544,7 +544,7 @@ function validarJWT(req) {
   if (!m) return null;
   const token = m[1];
   try {
-    const authMod = require('./auth/index');
+    const authMod = require('./auth/index.cjs');
     const payload = authMod.verifyToken(token);
     return payload && !payload.purpose ? payload : null;
   } catch {
@@ -567,7 +567,7 @@ async function validarLogin(usuario, password) {
   return ok ? rows[0] : null;
 }
 
-const { paginaLogin: _paginaLogin } = require('./login-page');
+const { paginaLogin: _paginaLogin } = require('./login-page.cjs');
 function paginaLogin(error) {
   return _paginaLogin(esc, config.negocio || 'Soluciona', error);
 }
@@ -854,7 +854,7 @@ function iniciarWeb() {
     }
 
     if (url === '/api/consumo') {
-      const { resumenConsumo } = require('../core/consumo');
+      const { resumenConsumo } = require('../core/consumo.cjs');
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ roles: resumenConsumo() }));
       return;
@@ -940,7 +940,7 @@ function iniciarWeb() {
     if (url === '/api/health') {
       const waHealth = global.whatsappHealth ? global.whatsappHealth() : { connected: false, error: 'health not available' };
       const waMetrics = global.whatsappMetrics ? global.whatsappMetrics() : { error: 'metrics not available' };
-      const dbHealth = { ok: await require('../core/db').ping() };
+      const dbHealth = { ok: await require('../core/db.cjs').ping() };
       
       // Disco
       let diskHealth = { ok: true, freeGB: 0, usedPct: 0 };
@@ -978,7 +978,7 @@ function iniciarWeb() {
       // IA Pool
       let iaPoolHealth = { ok: true, keys: 0, healthy: 0 };
       try {
-        const poolMod = require('../core/ia-pool');
+        const poolMod = require('../core/ia-pool.cjs');
         const pool = poolMod.resumenPool();
         iaPoolHealth.keys = pool.total || 0;
         iaPoolHealth.healthy = pool.healthy || 0;
@@ -1061,7 +1061,7 @@ function iniciarWeb() {
       if (!autenticar(req)) {
         return fail(res, { status: 401, message: 'no_autenticado' });
       }
-      const poolMod = require('../core/ia-pool');
+      const poolMod = require('../core/ia-pool.cjs');
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ ok: true, pool: poolMod.resumenPool() }));
       return;
@@ -1160,7 +1160,7 @@ function iniciarWeb() {
     if (url === '/api/citas') {
       const u = new URL(req.url, 'http://localhost');
       const estadoFiltro = u.searchParams.get('estado') || null;
-      const { leerCitas, cambiarEstadoCita } = require('../core/db');
+      const { leerCitas, cambiarEstadoCita } = require('../core/db.cjs');
       if (req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(leerCitas(estadoFiltro)));
@@ -1250,8 +1250,8 @@ function iniciarWeb() {
               console.log('[KDS] Aviso a cliente:', ok ? 'enviado' : 'no enviado (bot puede estar apagado)');
             }
             if (pedido && data.estado === 'entregado') {
-              const orders = require('../core/orders');
-              const facturacion = require('../core/facturacion');
+              const orders = require('../core/orders.cjs');
+              const facturacion = require('../core/facturacion.cjs');
               const conPago = { ...pedido, estado_pago: 'pagado' };
               orders.patchPedido(id, { estado_pago: 'pagado' });
               facturacion.intentarEmitirAlCobrar(conPago).catch(e => console.error('[FACTURA]', e && e.message ? e.message : e));

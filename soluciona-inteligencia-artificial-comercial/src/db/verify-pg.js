@@ -3,8 +3,8 @@ process.env.DB_ENGINE = 'postgres';
 
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
-const { config } = require('../../config');
-const db = require('../../core/db');
+const { config } = require('../../config.cjs');
+const db = require('../../core/db.cjs');
 
 const sqlitePath = path.join(config.dataDir, 'neurallgo.db');
 const sq = new DatabaseSync(sqlitePath, { readOnly: true });

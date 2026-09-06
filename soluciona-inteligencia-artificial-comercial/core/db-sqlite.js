@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
-const { config } = require('../config');
+const { config } = require('../config.cjs');
 
 const DB_PATH = path.join(config.dataDir, 'neurallgo.db');
 if (!fs.existsSync(config.dataDir)) fs.mkdirSync(config.dataDir, { recursive: true });

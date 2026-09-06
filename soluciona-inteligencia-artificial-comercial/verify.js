@@ -1,5 +1,5 @@
 'use strict';
-const { loadLicense, isTrialActive, getFeatures, esPedido, esPersonal, detectMessageType } = require('./core/modules');
+const { loadLicense, isTrialActive, getFeatures, esPedido, esPersonal, detectMessageType } = require('./core/modules.cjs');
 
 console.log('=== Verificación de Sistema WhatsApp Lite ===');
 

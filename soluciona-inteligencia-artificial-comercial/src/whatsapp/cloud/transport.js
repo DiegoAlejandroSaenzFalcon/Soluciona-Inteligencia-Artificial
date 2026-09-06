@@ -5,7 +5,7 @@
  * Permite wechsel entre Baileys (dev) y Cloud API (prod) via WHATSAPP_TRANSPORT=cloud|baileys
  */
 
-const { CloudApiClient } = require('./client');
+const { CloudApiClient } = require('./client.cjs');
 const { spawn } = require('child_process');
 const crypto = require('crypto');
 
@@ -306,7 +306,7 @@ function createTransport(config) {
   }
   
   // Fallback a Baileys (existente)
-  const BaileysTransport = require('../transports/whatsapp');
+  const BaileysTransport = require('../transports/whatsapp.cjs');
   return new BaileysTransport(config);
 }
 

@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { Resvg } = require('@resvg/resvg-js');
-const { config } = require('../config');
+const { config } = require('../config.cjs');
 
 const ANCHO = 1080;          // px base (WhatsApp muestra hasta 1080)
 const ESCALA = 2;            // 2x para nitidez

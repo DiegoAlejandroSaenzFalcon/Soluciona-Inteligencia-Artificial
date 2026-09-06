@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { runWithCorrelation } = require('../logger/structured-logger');
+const { runWithCorrelation } = require('../logger/structured-logger.cjs');
 
 const DEFAULT_OPTIONS = {
   traceIdHeader: 'x-trace-id',
@@ -17,7 +17,7 @@ function createCorrelationMiddleware(options = {}) {
     const tenantId = req.headers[opts.tenantIdHeader] || 'unknown';
     const userId = req.headers[opts.userIdHeader] || 'anonymous';
 
-    const { runWithCorrelation } = require('../logger/structured-logger');
+    const { runWithCorrelation } = require('../logger/structured-logger.cjs');
     runWithCorrelation(traceId, tenantId, userId, () => {
       res.setHeader(opts.traceIdHeader, traceId);
       res.setHeader(opts.tenantIdHeader, tenantId);
@@ -36,7 +36,7 @@ function createWebSocketCorrelationMiddleware(options = {}) {
     const tenantId = req.headers[opts.tenantIdHeader] || 'unknown';
     const userId = req.headers[opts.userIdHeader] || 'anonymous';
 
-    const { runWithCorrelation } = require('../logger/structured-logger');
+    const { runWithCorrelation } = require('../logger/structured-logger.cjs');
     runWithCorrelation(traceId, tenantId, userId, () => {
       ws.traceId = traceId;
       ws.tenantId = tenantId;

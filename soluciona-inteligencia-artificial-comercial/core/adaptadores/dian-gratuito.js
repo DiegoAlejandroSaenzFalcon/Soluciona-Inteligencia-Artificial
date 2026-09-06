@@ -3,13 +3,13 @@ const path = require('path');
 const crypto = require('crypto');
 const QRCode = require('qrcode');
 const bwipjs = require('bwip-js');
-const { config } = require('../../config');
+const { config } = require('../../config.cjs');
 // dian-middleware es un paquete ESM ("type": "module"); desde este módulo CJS
 // se carga con import() dinámico (lazy, cacheado tras el primer uso).
 let _dianSigPromise = null;
 function dianSig() {
   if (!_dianSigPromise) {
-    _dianSigPromise = import('../../dian-middleware/src/security/signature.js');
+    _dianSigPromise = import('../../dian-middleware/src/security/signature.cjs');
   }
   return _dianSigPromise;
 }

@@ -24,7 +24,7 @@ const path = require('path');
 process.chdir(path.resolve(__dirname));
 
 // Rotación de logs (diario, 7 días, 10MB max)
-require('./kernel/src/common/logger/file-transport');
+require('./kernel/src/common/logger/file-transport.cjs');
 
 // El bot NUNCA debe morir por un error puntual de red/WhatsApp:
 // se registra y se sigue escuchando (baileys se reconecta solo).
@@ -43,7 +43,7 @@ console.log('==========================================\n');
 
 console.log('[INIT] Cargando configuracion...');
 try {
-  const { config } = require('./config');
+  const { config } = require('./config.cjs');
   console.log(`[INIT] Configuracion cargada: ${config.nombreNegocio()} | puerto ${config.puerto} | software: ${config.softwareNombre}`);
 } catch (e) {
   console.error('[ERROR] Fallo al cargar config:', e.message);
@@ -51,7 +51,7 @@ try {
 
 console.log('[INIT] Cargando modulos...');
 try {
-  const modules = require('./core/modules');
+  const modules = require('./core/modules.cjs');
   const licenseResult = modules.loadLicense();
   console.log('[MODULOS] Estado:', licenseResult.type, '| Features:', Object.keys(modules.getFeatures()).join(', '));
 } catch (e) {
@@ -62,7 +62,7 @@ console.log('[INIT] Iniciando WhatsApp...');
 if (!process.env.DISABLE_WHATSAPP) {
   if (process.env.WHATSAPP_TRANSPORT === 'cloud') {
     try {
-      const { createTransport } = require('./src/whatsapp/cloud/transport');
+      const { createTransport } = require('./src/whatsapp/cloud/transport.cjs');
       const transportConfig = {
         phoneId: process.env.WHATSAPP_CLOUD_PHONE_ID,
         accessToken: process.env.WHATSAPP_CLOUD_TOKEN,
@@ -86,7 +86,7 @@ if (!process.env.DISABLE_WHATSAPP) {
   } else {
     // Modo estándar (Baileys): flujo original con QR en el panel
     try {
-      const { iniciarWhatsApp } = require('./transports/whatsapp');
+      const { iniciarWhatsApp } = require('./transports/whatsapp.cjs');
       iniciarWhatsApp().catch(e => console.error('[ERROR] WhatsApp:', e.message));
     } catch (e) {
       console.warn('[WARN] Error iniciando WhatsApp:', e.message);
@@ -98,7 +98,7 @@ if (!process.env.DISABLE_WHATSAPP) {
 
 console.log('[INIT] Iniciando Web...');
 try {
-  const web = require('./transports/web');
+  const web = require('./transports/web.cjs');
   if (typeof web.iniciarWeb === 'function') {
     web.iniciarWeb();
   } else {
@@ -112,13 +112,13 @@ try {
 
 // Iniciar limpieza automática de sesiones expiradas (legacy + Cloud API)
 try {
-  const { iniciarLimpiezaSesiones } = require('./core/db-sqlite');
+  const { iniciarLimpiezaSesiones } = require('./core/db-sqlite.cjs');
   const cleanupInterval = iniciarLimpiezaSesiones();
   console.log('[INIT] Limpieza de sesiones expiradas programada (cada hora)');
 } catch (e) {
   console.warn('[WARN] No se pudo iniciar limpieza de sesiones:', e.message);
 }
 
-const { config } = require('./config');
+const { config } = require('./config.cjs');
 console.log(`\n[OK] Sistema iniciado. Panel: http://localhost:${config.puerto}`);
 console.log('[INFO] Para detener: Ctrl+C\n');
