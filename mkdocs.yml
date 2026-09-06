@@ -16,13 +16,11 @@ theme:
       primary: purple
       accent: amber
 
-docs_dir: .
-
 nav:
   - Inicio: index.md
-  - Comercial: soluciona-inteligencia-artificial-comercial/README.md
-  - Empresarial: soluciona-inteligencia-artificial-empresarial/README.md
-  - Residencial: soluciona-inteligencia-artificial-residencial/README.md
+  - Comercial: comercial/README.md
+  - Empresarial: empresarial/README.md
+  - Residencial: residencial/README.md
 
 plugins:
   - search
