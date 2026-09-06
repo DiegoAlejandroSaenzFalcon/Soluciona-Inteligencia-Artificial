@@ -16,6 +16,8 @@ theme:
       primary: purple
       accent: amber
 
+docs_dir: .
+
 nav:
   - Inicio: index.md
   - Comercial: soluciona-inteligencia-artificial-comercial/README.md
