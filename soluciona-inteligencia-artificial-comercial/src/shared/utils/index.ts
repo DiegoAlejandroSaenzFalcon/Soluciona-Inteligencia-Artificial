@@ -143,7 +143,11 @@ export async function retryWithBackoff<T>(
     onRetry,
   } = options;
 
-  let lastError: Error;
+  if (maxAttempts < 1) {
+    return Err(new Error('maxAttempts must be at least 1'));
+  }
+
+  let lastError: Error = new Error('Unknown error');
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
@@ -159,9 +163,9 @@ export async function retryWithBackoff<T>(
       );
       await sleep(delay);
     }
-
-return Err(lastError!);
   }
+
+  return Err(lastError);
 }
 
 /**
@@ -216,3 +220,4 @@ export function formatDuration(ms: number): string {
   if (ms < 3600000) return `${(ms / 60000).toFixed(1)}m`;
   return `${(ms / 3600000).toFixed(1)}h`;
 }
+

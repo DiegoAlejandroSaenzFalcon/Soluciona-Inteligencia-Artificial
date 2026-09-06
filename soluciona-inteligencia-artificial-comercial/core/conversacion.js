@@ -1,4 +1,4 @@
-const db = require('./db.cjs');
+﻿const db = require('./db.js');
 
 function registrar(hilo, remitente, rol, texto) {
   db.registrarConversacion(hilo, remitente, rol, texto);
@@ -13,3 +13,4 @@ function leerHilo(hilo) {
 }
 
 module.exports = { registrar, hilos, leerHilo };
+

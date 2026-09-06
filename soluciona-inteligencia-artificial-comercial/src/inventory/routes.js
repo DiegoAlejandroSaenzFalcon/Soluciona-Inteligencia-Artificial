@@ -1,7 +1,7 @@
-'use strict';
-const inv = require('./index.cjs');
-const auth = require('../auth/index.cjs');
-const { currentUser, json } = require('../auth/routes.cjs');
+﻿'use strict';
+const inv = require('./index.js');
+const auth = require('../auth/index.js');
+const { currentUser, json } = require('../auth/routes.js');
 
 function leerCuerpo(req) {
   return new Promise((resolve) => {

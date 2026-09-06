@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // POOL DE MODELOS / API KEYS CON ROTACIÓN AUTOMÁTICA
 // ============================================================
 // Cada rol (chatbot / asistentes / visión) pide al pool una clave
@@ -19,7 +19,7 @@
 // pero si todas sus claves fallan, prueba los demás proveedores.
 // ============================================================
 
-const { config } = require('../config.cjs');
+const { config } = require('../config.js');
 
 function POOL() { return config.ia_pool || {}; }
 const PREFERIDO = {

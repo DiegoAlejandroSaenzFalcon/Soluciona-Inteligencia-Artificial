@@ -1,14 +1,16 @@
+# Soluciona IA - Staging Docker Compose Example
+# Copy this file to docker-compose.staging.yml and configure via .env.staging
+
 version: '3.8'
 
 services:
-  # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
     container_name: soluciona-postgres-staging
     environment:
       POSTGRES_DB: ${DB_NAME:-soluciona_ia_staging}
       POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
     volumes:
       - postgres_staging_data:/var/lib/postgresql/data
@@ -20,16 +22,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-        reservations:
-          memory: 1G
     networks:
       - soluciona-staging-network
 
-  # Redis Cache & Queue
   redis:
     image: redis:7-alpine
     container_name: soluciona-redis-staging
@@ -43,23 +38,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-        reservations:
-          memory: 256M
     networks:
       - soluciona-staging-network
 
-  # MinIO Object Storage
   minio:
     image: minio/minio:latest
     container_name: soluciona-minio-staging
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
     volumes:
       - minio_staging_data:/data
     ports:
@@ -73,17 +61,16 @@ services:
     networks:
       - soluciona-staging-network
 
-  # Keycloak
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
     container_name: soluciona-keycloak-staging
     command: start-dev --import-realm
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/soluciona_ia_staging
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-soluciona_ia_staging}
       KC_DB_USERNAME: postgres
-      KC_DB_PASSWORD: postgres
-      KC_HOSTNAME: staging.soluciona.ai
+      KC_DB_PASSWORD: ${DB_PASS}
+      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME:-staging.soluciona.ai}
       KC_HTTP_ENABLED: "true"
       KC_HTTP_PORT: "8080"
       KEYCLOAK_ADMIN: admin
@@ -103,24 +90,25 @@ services:
     networks:
       - soluciona-staging-network
 
-  # Application (Staging)
   app-staging:
     build:
       context: .
       dockerfile: Dockerfile.prod
     container_name: soluciona-app-staging
+    env_file:
+      - .env.staging
     environment:
       NODE_ENV: staging
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: soluciona_ia_staging
+      DB_NAME: ${DB_NAME:-soluciona_ia_staging}
       DB_USER: postgres
-      DB_PASS: postgres
+      DB_PASS: ${DB_PASS}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       MINIO_ENDPOINT: minio:9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       JAEGER_ENDPOINT: jaeger:4317
       OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
       OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://tempo:4318/v1/traces
@@ -156,13 +144,13 @@ services:
     networks:
       - soluciona-staging-network
 
-  # Jaeger
   jaeger:
     image: jaegertracing/all-in-one:1.53
     container_name: soluciona-jaeger-staging
     environment:
       COLLECTOR_OTLP_ENABLED: true
       SPAN_STORAGE_TYPE: badger
+      BADGER_EPHEMERAL: false
     ports:
       - "16686:16686"
       - "6831:6831/udp"
@@ -174,7 +162,6 @@ services:
     networks:
       - soluciona-staging-network
 
-  # Prometheus
   prometheus:
     image: prom/prometheus:v2.48.0
     container_name: soluciona-prometheus-staging
@@ -183,6 +170,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=30d'
       - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_staging_data:/prometheus
@@ -191,7 +179,6 @@ services:
     networks:
       - soluciona-staging-network
 
-  # Grafana
   grafana:
     image: grafana/grafana:10.2.0
     container_name: soluciona-grafana-staging
@@ -200,6 +187,12 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
       GF_INSTALL_PLUGINS: grafana-piechart-panel
       GF_SERVER_ROOT_URL: https://grafana.staging.soluciona.ai
+      GF_SERVER_DOMAIN: grafana.staging.soluciona.ai
+      GF_SERVER_ENFORCE_DOMAIN: "true"
+      GF_SECURITY_COOKIE_SECURE: "true"
+      GF_SECURITY_COOKIE_SAMESITE: "lax"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_USERS_ALLOW_ORG_CREATE: "false"
     volumes:
       - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
       - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
@@ -213,7 +206,6 @@ services:
     networks:
       - soluciona-staging-network
 
-  # Loki
   loki:
     image: grafana/loki:2.9.0
     container_name: soluciona-loki-staging
@@ -226,7 +218,6 @@ services:
     networks:
       - soluciona-staging-network
 
-  # Tempo
   tempo:
     image: grafana/tempo:2.3.0
     container_name: soluciona-tempo-staging
@@ -241,7 +232,6 @@ services:
     networks:
       - soluciona-staging-network
 
-  # Alertmanager
   alertmanager:
     image: prom/alertmanager:v0.26.0
     container_name: soluciona-alertmanager-staging
@@ -253,7 +243,6 @@ services:
     networks:
       - soluciona-staging-network
 
-  # cAdvisor
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.0
     container_name: soluciona-cadvisor-staging

@@ -1,8 +1,8 @@
-'use strict';
+﻿'use strict';
 // Adaptador SQLite con API compatible con el paquete `postgres` (unsafe()).
 // Permite que src/auth/* y demás código SQL use $1..$n / now() / RETURNING
 // sobre la misma BD real (data/neurallgo.db).
-const { db } = require('../../core/db-sqlite.cjs');
+const { db } = require('../../core/db-sqlite.js');
 
 function traducirSql(sql) {
   let out = String(sql);

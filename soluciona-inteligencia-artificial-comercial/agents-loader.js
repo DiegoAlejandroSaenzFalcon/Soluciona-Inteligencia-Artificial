@@ -1,6 +1,6 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
-const { config } = require('./config.cjs');
+const { config } = require('./config.js');
 
 const AGENCY_DIR = path.join(__dirname, '..', 'agency-agents');
 
@@ -65,3 +65,4 @@ function loadAgentesUtiles() {
 }
 
 module.exports = { loadAllAgents, loadAgentesUtiles };
+

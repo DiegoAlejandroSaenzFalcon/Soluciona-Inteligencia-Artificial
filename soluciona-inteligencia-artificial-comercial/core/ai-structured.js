@@ -1,6 +1,6 @@
-﻿const { config, LLM_API_KEY } = require('../config.cjs');
-const { cfgRol, limiteAlcanzado, registrar } = require('./consumo.cjs');
-const { menuSeccionado, esFueraDeTema, mensajeFueraDeTema } = require('./ai.cjs');
+﻿const { config, LLM_API_KEY } = require('../config.js');
+const { cfgRol, limiteAlcanzado, registrar } = require('./consumo.js');
+const { menuSeccionado, esFueraDeTema, mensajeFueraDeTema } = require('./ai.js');
 
 function construirSystemPrompt(estado, carrito, resumenCarrito) {
   const menu = menuSeccionado();

@@ -1,7 +1,7 @@
-'use strict';
+﻿'use strict';
 const { parentPort, workerData } = require('worker_threads');
 const postgres = require('postgres');
-const { OPERATIONAL_DDL } = require('../src/db/operationalSchema.cjs');
+const { OPERATIONAL_DDL } = require('../src/db/operationalSchema.js');
 
 const sql = postgres(workerData.url, {
   max: workerData.max || 10,

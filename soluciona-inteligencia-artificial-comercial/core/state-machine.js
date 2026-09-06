@@ -1,4 +1,4 @@
-const { config } = require('../config.cjs');
+﻿const { config } = require('../config.js');
 
 const ESTADOS = {
   EXPLORACION: 'exploracion',

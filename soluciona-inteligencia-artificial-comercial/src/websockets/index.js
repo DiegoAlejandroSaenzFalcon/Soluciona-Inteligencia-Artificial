@@ -1,6 +1,6 @@
-'use strict';
+﻿'use strict';
 const { Server } = require('socket.io');
-const auth = require('../auth/index.cjs');
+const auth = require('../auth/index.js');
 
 let io = null;
 
@@ -39,7 +39,7 @@ function autenticar(socket, next) {
 
 function initWebSockets(server) {
   if (io) return io;
-  const { config } = require('../../config.cjs');
+  const { config } = require('../../config.js');
   // CORS restringido: OBLIGATORIO configurar ws_allowed_origin en producción
   const isProduction = process.env.NODE_ENV === 'production';
   const allowedOrigin = config.ws_allowed_origin || (isProduction ? '' : 'http://localhost:3000');

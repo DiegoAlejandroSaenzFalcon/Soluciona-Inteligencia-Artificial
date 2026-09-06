@@ -1,4 +1,4 @@
-// Test setup file - runs before all tests
+﻿// Test setup file - runs before all tests
 // Mock everything BEFORE importing any modules that use node:sqlite
 
 // Mock the config
@@ -91,7 +91,7 @@ vi.mock('../../config.js', () => ({
 
 // Mock the auth module's database dependencies
 vi.mock('../../src/auth/index.js', () => {
-  const originalModule = require('../../src/auth/index.cjs');
+  const originalModule = require('../../src/auth/index.js');
   return {
     ...originalModule,
     getClient: vi.fn(),

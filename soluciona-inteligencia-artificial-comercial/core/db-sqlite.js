@@ -1,7 +1,7 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
-const { config } = require('../config.cjs');
+const { config } = require('../config.js');
 
 const DB_PATH = path.join(config.dataDir, 'neurallgo.db');
 if (!fs.existsSync(config.dataDir)) fs.mkdirSync(config.dataDir, { recursive: true });
@@ -929,3 +929,4 @@ module.exports = {
   iniciarLimpiezaSesiones,
   ping
 };
+

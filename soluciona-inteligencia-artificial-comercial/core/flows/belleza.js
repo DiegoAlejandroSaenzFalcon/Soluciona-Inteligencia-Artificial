@@ -1,5 +1,5 @@
-﻿const { config, numDeCelular, fechaDia, normalizar, esc } = require('../../config.cjs');
-const { guardarCita, leerCitas, siguienteCitaId, cambiarEstadoCita } = require('../../core/db.cjs');
+﻿const { config, numDeCelular, fechaDia, normalizar, esc } = require('../../config.js');
+const { guardarCita, leerCitas, siguienteCitaId, cambiarEstadoCita } = require('../../core/db.js');
 
 const PENDIENTES = new Map();
 

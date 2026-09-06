@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * WhatsApp Lite - Punto de Entrada Simplificado
  * Productivo para microempresas Colombias
@@ -23,7 +23,7 @@ console.error = (...args) => {
 
 // Verificar y cargar módulos necesarios
 try {
-  const modules = require('./core/modules.cjs');
+  const modules = require('./core/modules.js');
 
   console.log('[OK] Modulo de linguas cargado');
   console.log('[OK] Principal Funcionalidades:', Object.keys(modules.getFeatures()).join(', '));
@@ -33,7 +33,7 @@ try {
 
   // Iniciar WhatsApp (async, no bloquea si hay error)
   try {
-    const ws = require('./transports/whatsapp.cjs');
+    const ws = require('./transports/whatsapp.js');
     if (typeof ws.iniciarWhatsApp === 'function') {
       ws.iniciarWhatsApp().catch(e => {
         console.warn('[WARN] Error iniciando WhatsApp:', e.message);
@@ -47,7 +47,7 @@ try {
 
   // Iniciar Web (síncrono: retorna void, NO es promesa)
   try {
-    const web = require('./transports/web.cjs');
+    const web = require('./transports/web.js');
     if (typeof web.iniciarWeb === 'function') {
       web.iniciarWeb();
     } else {
@@ -68,7 +68,7 @@ try {
 
   // Intentar iniciar solo el servidor web
   try {
-    require('./transports/web.cjs').iniciarWeb();
+    require('./transports/web.js').iniciarWeb();
   } catch (e2) {
     console.error('[ERROR] Fallo al iniciar:', e2.message);
     process.exit(1);

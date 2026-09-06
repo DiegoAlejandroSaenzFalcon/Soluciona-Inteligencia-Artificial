@@ -1,7 +1,7 @@
-﻿const { config, LLM_API_KEY } = require('../config.cjs');
-const { loadAgentesUtiles } = require('../agents-loader.cjs');
-const { cfgRol, limiteAlcanzado, registrar } = require('./consumo.cjs');
-const pool = require('./ia-pool.cjs');
+﻿const { config, LLM_API_KEY } = require('../config.js');
+const { loadAgentesUtiles } = require('../agents-loader.js');
+const { cfgRol, limiteAlcanzado, registrar } = require('./consumo.js');
+const pool = require('./ia-pool.js');
 
 const AGENTES = loadAgentesUtiles();
 
@@ -330,3 +330,4 @@ module.exports = {
   dividirMensaje, esRespuestaDeError, esFueraDeTema, AGENTES,
   mensajeFueraDeTema, menuSeccionado
 };
+

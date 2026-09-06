@@ -1,4 +1,4 @@
-const { config } = require('../../config.cjs');
+﻿const { config } = require('../../config.js');
 
 const FACTUS_BASE = 'https://api.factus.com.co/v1';
 

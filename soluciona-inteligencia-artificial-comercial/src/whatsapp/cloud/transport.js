@@ -1,11 +1,11 @@
-'use strict';
+﻿'use strict';
 /**
  * Transport Adapter - WhatsApp Cloud API (Official)
  * Implementa la interfaz de transporte compatible con la app existente
  * Permite wechsel entre Baileys (dev) y Cloud API (prod) via WHATSAPP_TRANSPORT=cloud|baileys
  */
 
-const { CloudApiClient } = require('./client.cjs');
+const { CloudApiClient } = require('./client.js');
 const { spawn } = require('child_process');
 const crypto = require('crypto');
 
@@ -306,7 +306,7 @@ function createTransport(config) {
   }
   
   // Fallback a Baileys (existente)
-  const BaileysTransport = require('../transports/whatsapp.cjs');
+  const BaileysTransport = require('../transports/whatsapp.js');
   return new BaileysTransport(config);
 }
 

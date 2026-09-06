@@ -1,6 +1,6 @@
-const { config } = require('../config.cjs');
-const { registrarUsoIA, consumoIADia, consumoIAMes } = require('./db.cjs');
-const pool = require('./ia-pool.cjs');
+﻿const { config } = require('../config.js');
+const { registrarUsoIA, consumoIADia, consumoIAMes } = require('./db.js');
+const pool = require('./ia-pool.js');
 
 // ============================================================
 // CONTROL DE CONSUMO IA (cuotas por rol)

@@ -1,33 +1,33 @@
-﻿const http = require('http');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { config, esc, csvCell, hoyInicio, normalizar } = require('../config.cjs');
+const { config, esc, csvCell, hoyInicio, normalizar } = require('../config.js');
 
 // Unified Rate Limiter
-const { getRateLimiter } = require('../src/utils/rateLimiter.cjs');
+const { getRateLimiter } = require('../src/utils/rateLimiter.js');
 const rateLimiter = getRateLimiter(config);
 
-const { leerPedidos, resumenDe, cambiarEstado } = require('../core/orders.cjs');
-const { listarClientes, obtenerCliente, resolverLid } = require('../core/db.cjs');
-const { notificar, estadoBot } = require('../core/notify.cjs');
-const { hilos, leerHilo } = require('../core/conversacion.cjs');
-const { askLLM } = require('../core/ai.cjs');
-const { loadAgentesUtiles } = require('../agents-loader.cjs');
-const { ASISTENTES, catalogoExpertos, preguntarAsistente } = require('../core/asistentes.cjs');
-const { extraerMenu } = require('../core/vision.cjs');
-const { handleAuthRequest } = require('../src/auth/routes.cjs');
-const auth = require('../src/auth/index.cjs');
-const { getClient } = require('../src/db/connection.cjs');
+const { leerPedidos, resumenDe, cambiarEstado } = require('../core/orders.js');
+const { listarClientes, obtenerCliente, resolverLid } = require('../core/db.js');
+const { notificar, estadoBot } = require('../core/notify.js');
+const { hilos, leerHilo } = require('../core/conversacion.js');
+const { askLLM } = require('../core/ai.js');
+const { loadAgentesUtiles } = require('../agents-loader.js');
+const { ASISTENTES, catalogoExpertos, preguntarAsistente } = require('../core/asistentes.js');
+const { extraerMenu } = require('../core/vision.js');
+const { handleAuthRequest } = require('../src/auth/routes.js');
+const auth = require('../src/auth/index.js');
+const { getClient } = require('../src/db/connection.js');
 
-const { handleConfigRequest } = require('../src/config/routes.cjs');
+const { handleConfigRequest } = require('../src/config/routes.js');
 
-const modules = require('../core/modules.cjs');
+const modules = require('../core/modules');
 
-const { handleInventoryRequest } = require('../src/inventory/routes.cjs');
-const { handleAccountingRequest } = require('../src/accounting/routes.cjs');
+const { handleInventoryRequest } = require('../src/inventory/routes.js');
+const { handleAccountingRequest } = require('../src/accounting/routes.js');
 
-const { initWebSockets, emitir, contarClientes } = require('../src/websockets.cjs');
+const { initWebSockets, emitir, contarClientes } = require('../src/websockets');
 const QRCode = require('qrcode');
 
 // Responde al error de un handler sin dejar la conexión colgada.
@@ -205,7 +205,7 @@ function resumenConfiguracion() {
     'dian-gratuito': ['nit', 'password', 'codigo_software']
   };
 
-  const adaptadores = Object.keys(require('./../core/integracion.cjs').REGISTRO).map(tipo => {
+  const adaptadores = Object.keys(require('./../core/integracion.js').REGISTRO).map(tipo => {
     const clavesReq = clavesPorAdaptador[tipo] || [];
     const activo = integracion.tipo === tipo;
     const faltantes = activo ? clavesReq.filter(c => !integracion[c]) : clavesReq;
@@ -544,7 +544,7 @@ function validarJWT(req) {
   if (!m) return null;
   const token = m[1];
   try {
-    const authMod = require('./auth/index.cjs');
+    const authMod = require('./auth/index.js');
     const payload = authMod.verifyToken(token);
     return payload && !payload.purpose ? payload : null;
   } catch {
@@ -567,7 +567,7 @@ async function validarLogin(usuario, password) {
   return ok ? rows[0] : null;
 }
 
-const { paginaLogin: _paginaLogin } = require('./login-page.cjs');
+const { paginaLogin: _paginaLogin } = require('./login-page.js');
 function paginaLogin(error) {
   return _paginaLogin(esc, config.negocio || 'Soluciona', error);
 }
@@ -854,7 +854,7 @@ function iniciarWeb() {
     }
 
     if (url === '/api/consumo') {
-      const { resumenConsumo } = require('../core/consumo.cjs');
+      const { resumenConsumo } = require('../core/consumo.js');
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ roles: resumenConsumo() }));
       return;
@@ -940,7 +940,7 @@ function iniciarWeb() {
     if (url === '/api/health') {
       const waHealth = global.whatsappHealth ? global.whatsappHealth() : { connected: false, error: 'health not available' };
       const waMetrics = global.whatsappMetrics ? global.whatsappMetrics() : { error: 'metrics not available' };
-      const dbHealth = { ok: await require('../core/db.cjs').ping() };
+      const dbHealth = { ok: await require('../core/db.js').ping() };
       
       // Disco
       let diskHealth = { ok: true, freeGB: 0, usedPct: 0 };
@@ -978,7 +978,7 @@ function iniciarWeb() {
       // IA Pool
       let iaPoolHealth = { ok: true, keys: 0, healthy: 0 };
       try {
-        const poolMod = require('../core/ia-pool.cjs');
+        const poolMod = require('../core/ia-pool.js');
         const pool = poolMod.resumenPool();
         iaPoolHealth.keys = pool.total || 0;
         iaPoolHealth.healthy = pool.healthy || 0;
@@ -1061,7 +1061,7 @@ function iniciarWeb() {
       if (!autenticar(req)) {
         return fail(res, { status: 401, message: 'no_autenticado' });
       }
-      const poolMod = require('../core/ia-pool.cjs');
+      const poolMod = require('../core/ia-pool.js');
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ ok: true, pool: poolMod.resumenPool() }));
       return;
@@ -1160,7 +1160,7 @@ function iniciarWeb() {
     if (url === '/api/citas') {
       const u = new URL(req.url, 'http://localhost');
       const estadoFiltro = u.searchParams.get('estado') || null;
-      const { leerCitas, cambiarEstadoCita } = require('../core/db.cjs');
+      const { leerCitas, cambiarEstadoCita } = require('../core/db.js');
       if (req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(leerCitas(estadoFiltro)));
@@ -1250,8 +1250,8 @@ function iniciarWeb() {
               console.log('[KDS] Aviso a cliente:', ok ? 'enviado' : 'no enviado (bot puede estar apagado)');
             }
             if (pedido && data.estado === 'entregado') {
-              const orders = require('../core/orders.cjs');
-              const facturacion = require('../core/facturacion.cjs');
+              const orders = require('../core/orders.js');
+              const facturacion = require('../core/facturacion.js');
               const conPago = { ...pedido, estado_pago: 'pagado' };
               orders.patchPedido(id, { estado_pago: 'pagado' });
               facturacion.intentarEmitirAlCobrar(conPago).catch(e => console.error('[FACTURA]', e && e.message ? e.message : e));
@@ -1325,3 +1325,4 @@ function iniciarWeb() {
 }
 
 module.exports = { iniciarWeb };
+

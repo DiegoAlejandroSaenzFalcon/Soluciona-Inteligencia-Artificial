@@ -4,8 +4,8 @@
 export abstract class Entity<T extends { id: string | number }> {
   protected constructor(public readonly props: T) {}
 
-  get id(): string | number {
-    return this.props.id;
+  get id(): string {
+    return String(this.props.id);
   }
 
   equals(other: Entity<T>): boolean {
@@ -33,7 +33,7 @@ export abstract class ValueObject<T> {
 /**
  * Aggregate Root - Consistency boundary
  */
-export abstract class AggregateRoot<T extends { id: string }> extends Entity<T> {
+export abstract class AggregateRoot<T extends { id: string | number }> extends Entity<T> {
   private _domainEvents: import('../../shared/kernel/events').DomainEvent[] = [];
 
   get domainEvents(): ReadonlyArray<import('../../shared/kernel/events').DomainEvent> {

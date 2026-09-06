@@ -1,10 +1,10 @@
-'use strict';
+﻿'use strict';
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { config } = require('../../config.cjs');
-const { getClient } = require('../db/connection.cjs');
-const { validateSection, getSectionKeys, SECTIONS } = require('./schemas.cjs');
+const { config } = require('../../config.js');
+const { getClient } = require('../db/connection.js');
+const { validateSection, getSectionKeys, SECTIONS } = require('./schemas.js');
 
 const CONFIG_PATH = path.join(__dirname, '..', '..', 'config.json');
 const TENANT_ID = 'default';

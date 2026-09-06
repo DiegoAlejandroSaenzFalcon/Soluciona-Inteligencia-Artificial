@@ -1,5 +1,5 @@
-const { config, LLM_API_KEY } = require('../config.cjs');
-const { cfgRol, limiteAlcanzado, registrar } = require('./consumo.cjs');
+﻿const { config, LLM_API_KEY } = require('../config.js');
+const { cfgRol, limiteAlcanzado, registrar } = require('./consumo.js');
 
 // Visión por imagen vía NVIDIA NIM (OpenAI-compatible, base64 image_url).
 async function llamarVision(base64, mime, prompt) {

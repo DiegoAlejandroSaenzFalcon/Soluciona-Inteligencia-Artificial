@@ -164,6 +164,10 @@ coverage/
 # Docker
 .docker/
 Dockerfile.local
+docker-compose.yml
+docker-compose.*.yml
+!docker-compose.example.yml
+!docker-compose.*.example.yml
 
 # Misc
 *.pem

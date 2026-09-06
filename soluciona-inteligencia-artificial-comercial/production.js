@@ -1,10 +1,10 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * WhatsApp Lite - Production Mode
  * Para microempresarios de Colombia
  */
 
-const { loadLicense, isTrialActive, getFeatures, esPedido, esPersonal } = require('./core/modules.cjs');
+const { loadLicense, isTrialActive, getFeatures, esPedido, esPersonal } = require('./core/modules.js');
 
 console.log('\n================================================');
 console.log('  WhatsApp Lite - Production');
@@ -27,8 +27,8 @@ console.log('  ✓ Budget-friendly para microempresas');
 console.log('\n[INFO] Servidor iniciando en: http://localhost:8080');
 console.log('[INFO] Presiona Ctrl+C para detener\n');
 
-require('./transports/whatsapp.cjs').iniciarWhatsApp().catch(e => {
+require('./transports/whatsapp.js').iniciarWhatsApp().catch(e => {
   console.error('[ERROR] WhatsApp:', e.message);
 });
 
-require('./transports/web.cjs').iniciarWeb();
+require('./transports/web.js').iniciarWeb();

@@ -1,6 +1,6 @@
-const { config, fechaDia, hoyInicio, normalizar, escaparRegex } = require('../config.cjs');
-const { enviarPedido } = require('./integracion.cjs');
-const db = require('./db.cjs');
+﻿const { config, fechaDia, hoyInicio, normalizar, escaparRegex } = require('../config.js');
+const { enviarPedido } = require('./integracion.js');
+const db = require('./db.js');
 
 function leerPedidos() {
   return db.leerPedidos();
@@ -8,7 +8,7 @@ function leerPedidos() {
 
 function guardarPedido(datos) {
   db.guardarPedido(datos);
-  try { require('../src/websockets.cjs').emitir('default', 'pedido:nuevo', { id: datos && datos.id, telefono: datos && datos.telefono }); } catch {}
+  try { require('../src/websockets.js').emitir('default', 'pedido:nuevo', { id: datos && datos.id, telefono: datos && datos.telefono }); } catch {}
   enviarPedido(datos).catch(e => console.error('[!] Error en integración POS:', e && e.message ? e.message : e));
 }
 
@@ -126,3 +126,4 @@ module.exports = {
   leerPedidos, guardarPedido, patchPedido, cambiarEstado, siguienteId,
   parsearPedido, resumenDe, formatearConfirmacion, reporteHoyTexto
 };
+

@@ -1,10 +1,10 @@
-'use strict';
+﻿'use strict';
 const fs = require('fs');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
-const { config } = require('../../config.cjs');
-const { getClient, closeConnection } = require('./connection.cjs');
-const { OPERATIONAL_DDL } = require('./operationalSchema.cjs');
+const { config } = require('../../config.js');
+const { getClient, closeConnection } = require('./connection.js');
+const { OPERATIONAL_DDL } = require('./operationalSchema.js');
 
 const TABLAS = [
   {

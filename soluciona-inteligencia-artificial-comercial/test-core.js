@@ -1,11 +1,11 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 // Test simple - verificar que los módulos funcionen
 
 console.log('\n=== TEST EXPRESS - WhatsApp Lite ===\n');
 
 try {
   // Test 1: Core modules exist
-  const core = require('./core/modules.cjs');
+  const core = require('./core/modules.js');
   console.log('[TEST 1] core/modules OK');
   
   // Test 2: ¿Trial activo?

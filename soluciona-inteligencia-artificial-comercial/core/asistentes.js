@@ -1,6 +1,6 @@
-const { config, LLM_API_KEY } = require('../config.cjs');
-const { loadAgentesUtiles } = require('../agents-loader.cjs');
-const { askLLM, agenteMasRelevante } = require('./ai.cjs');
+﻿const { config, LLM_API_KEY } = require('../config.js');
+const { loadAgentesUtiles } = require('../agents-loader.js');
+const { askLLM, agenteMasRelevante } = require('./ai.js');
 
 const CATEGORIAS_ES = {
   marketing: 'Marketing',
@@ -88,3 +88,4 @@ function catalogoExpertos() {
 }
 
 module.exports = { ASISTENTES, CATEGORIAS_ES, preguntarAsistente, catalogoExpertos, elegirAgente };
+

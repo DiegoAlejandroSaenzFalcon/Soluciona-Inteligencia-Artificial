@@ -1,11 +1,11 @@
-'use strict';
+﻿'use strict';
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { config } = require('../../config.cjs');
-const { getClient } = require('../db/connection.cjs');
+const { config } = require('../../config.js');
+const { getClient } = require('../db/connection.js');
 
 const ACCESS_TTL = '15m';
 const REFRESH_TTL_DAYS = 30;

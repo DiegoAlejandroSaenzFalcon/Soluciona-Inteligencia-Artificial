@@ -1,4 +1,4 @@
-// Genera imágenes PNG profesionales del menú a partir de config.productos.
+﻿// Genera imágenes PNG profesionales del menú a partir de config.productos.
 // Diseño: SVG → PNG (2x) con @resvg/resvg-js. El menú se divide en VARIAS
 // páginas (imágenes) para que cada una sea legible en el celular.
 // Se regenera solo si cambian los productos (hash del menú).
@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { Resvg } = require('@resvg/resvg-js');
-const { config } = require('../config.cjs');
+const { config } = require('../config.js');
 
 const ANCHO = 1080;          // px base (WhatsApp muestra hasta 1080)
 const ESCALA = 2;            // 2x para nitidez
