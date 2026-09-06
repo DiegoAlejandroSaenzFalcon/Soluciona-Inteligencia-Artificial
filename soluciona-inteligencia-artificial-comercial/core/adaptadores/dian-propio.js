@@ -8,7 +8,7 @@
  * - Numeración autorizada (resolución DIAN)
  */
 
-const { config } = require('../config');
+const { config } = require('../../config');
 let dianMiddleware = null;
 let dianQueue = null;
 

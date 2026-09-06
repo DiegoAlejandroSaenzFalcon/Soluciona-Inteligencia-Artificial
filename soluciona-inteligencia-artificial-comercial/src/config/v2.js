@@ -40,6 +40,22 @@ function extractSection(cfg, section) {
   for (const key of getSectionKeys(section)) {
     if (cfg[key] !== undefined) out[key] = cfg[key];
   }
+  return sanitizeSection(out, section);
+}
+
+function sanitizeSection(obj, section) {
+  if (!obj || typeof obj !== 'object') return obj;
+  const sensitiveKeys = ['api_key', 'access_key', 'token', 'password', 'secret', 'cert_pass', 'pin_software', 'codigo_software'];
+  const out = Array.isArray(obj) ? [] : {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (sensitiveKeys.includes(k.toLowerCase())) {
+      out[k] = v ? '••••••••' : '';
+    } else if (v && typeof v === 'object') {
+      out[k] = sanitizeSection(v, section);
+    } else {
+      out[k] = v;
+    }
+  }
   return out;
 }
 

@@ -223,9 +223,7 @@ document.getElementById('forgotForm').addEventListener('submit', async function 
     const d = await r.json();
     if (r.status !== 200) throw new Error(d.error || 'No se pudo solicitar');
     document.getElementById('fResetBox').classList.remove('hidden');
-    document.getElementById('fTokenBox').textContent = d.resetToken
-      ? 'Código de recuperación (válido ' + (d.expiresInMin || 30) + ' min): ' + d.resetToken
-      : 'Si el correo existe, revisa el código en la consola del servidor.';
+    document.getElementById('fTokenBox').textContent = 'Si el correo existe, revisa el código en la consola del servidor.';
   } catch (err) {
     document.getElementById('fErr').textContent = err.message;
   }

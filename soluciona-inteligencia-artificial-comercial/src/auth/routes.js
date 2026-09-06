@@ -101,13 +101,12 @@ async function handleAuthRequest(req, res, url) {
     const body = await leerCuerpo(req);
     if (!body || !body.email) return json(res, 400, { error: 'datos_incompletos' });
     const result = await auth.requestPasswordReset(body.email);
+    // NO devolver el token al cliente - solo loguear en servidor para desarrollo
     if (result.resetToken) {
       console.log('[AUTH] Reset solicitado para', String(body.email).toLowerCase().trim(), '| token:', result.resetToken);
     }
     return json(res, 200, {
       ok: true,
-      // Solo se expone el token porque no hay SMTP configurado; en producción enviar por email.
-      resetToken: result.resetToken || null,
       expiresInMin: result.expiresInMin || 30,
     });
   }

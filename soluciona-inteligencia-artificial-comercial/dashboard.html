@@ -174,7 +174,10 @@
 <header>
   <h1>{{negocio}}</h1>
   <nav id="tabNav"></nav>
-  <a href="/panel-empresarial" class="panel-link" title="Panel Empresarial: Contabilidad, Inventario, Config v2, Seguridad">🏢 Panel Empresarial</a>
+  <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;justify-content:center">
+    <a href="/panel-empresarial" class="panel-link" title="Panel Empresarial: Contabilidad, Inventario, Config v2, Seguridad">🏢 Panel Empresarial</a>
+    <button id="btnLogout" class="panel-link" style="background:#e53935;border-color:#e53935;font-size:0.85rem;padding:0.5rem 1rem" title="Cerrar sesión">🚪 Salir</button>
+  </div>
 </header>
 <div id="estadoBanner" style="display:none;background:#f44336;color:#fff;text-align:center;padding:.6rem 1rem;font-weight:700;font-size:.95rem">⚠️ El bot de WhatsApp está DESCONECTADO. Los pedidos que lleguen NO se registran.</div>
 
@@ -1441,6 +1444,14 @@ async function cambiarEstadoCita(id, estado) {
     setInterval(checkEstado, 15000);
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
+
+  // Logout handler
+  document.getElementById('btnLogout')?.addEventListener('click', async function() {
+    try {
+      await fetch('/logout', { method: 'POST', credentials: 'same-origin' });
+    } catch(e) { /* ignore */ }
+    window.location.href = '/login';
+  });
 
   initDashboard();
 </script>

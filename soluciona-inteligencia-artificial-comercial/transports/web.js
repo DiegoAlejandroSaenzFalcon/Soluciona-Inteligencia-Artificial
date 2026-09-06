@@ -537,6 +537,26 @@ function tokenValido(req) {
   return m && sesionesHas(m[1]);
 }
 
+// Valida JWT de panel-empresarial (Bearer token en Authorization header)
+function validarJWT(req) {
+  const h = req.headers['authorization'] || '';
+  const m = h.match(/^Bearer\s+(.+)$/i);
+  if (!m) return null;
+  const token = m[1];
+  try {
+    const authMod = require('./auth/index');
+    const payload = authMod.verifyToken(token);
+    return payload && !payload.purpose ? payload : null;
+  } catch {
+    return null;
+  }
+}
+
+// Valida autenticación dual: legacy cookie O JWT
+function autenticar(req) {
+  return tokenValido(req) || validarJWT(req);
+}
+
 async function validarLogin(usuario, password) {
   const em = String(usuario || '').toLowerCase().trim();
   if (!em || !password) return null;
@@ -733,9 +753,7 @@ function iniciarWeb() {
       url === '/panel-config.js' ||
       url === '/panel-inventario.js' ||
       url === '/panel-contabilidad.js' ||
-      url.startsWith('/api/auth/') ||
-      // Dashboard legado necesita este endpoint para cargar su vista
-      url === '/api/configuracion'
+      url.startsWith('/api/auth/')
     ) {
       // servir sin el guard de cookie legado
     } else {
@@ -1004,12 +1022,18 @@ function iniciarWeb() {
     }
 
     if (url === '/api/configuracion' && req.method === 'GET') {
+      if (!autenticar(req)) {
+        return fail(res, { status: 401, message: 'no_autenticado' });
+      }
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify(resumenConfiguracion()));
       return;
     }
 
     if (url === '/api/configuracion' && req.method === 'POST') {
+      if (!autenticar(req)) {
+        return fail(res, { status: 401, message: 'no_autenticado' });
+      }
       // CSRF protection for legacy endpoint
       const csrfToken = req.headers[CSRF_TOKEN_HEADER] || req.headers['x-xsrf-token'];
       if (!validateCsrfToken(req, csrfToken)) {
@@ -1034,6 +1058,9 @@ function iniciarWeb() {
 
     // ===== POOL DE CLAVES IA (rotación automática) =====
     if (url === '/api/ia-pool' && req.method === 'GET') {
+      if (!autenticar(req)) {
+        return fail(res, { status: 401, message: 'no_autenticado' });
+      }
       const poolMod = require('../core/ia-pool');
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ ok: true, pool: poolMod.resumenPool() }));
@@ -1041,6 +1068,9 @@ function iniciarWeb() {
     }
 
     if (url === '/api/ia-pool' && req.method === 'POST') {
+      if (!autenticar(req)) {
+        return fail(res, { status: 401, message: 'no_autenticado' });
+      }
       // CSRF protection for legacy endpoint
       const csrfToken = req.headers[CSRF_TOKEN_HEADER] || req.headers['x-xsrf-token'];
       if (!validateCsrfToken(req, csrfToken)) {
