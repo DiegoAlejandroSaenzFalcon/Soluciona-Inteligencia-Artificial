@@ -1,0 +1,26 @@
+﻿site_name: "SOLUCIONA INTELIGENCIA ARTIFICIAL"
+site_url: "https://diegoalejandrosaenzfalcon.github.io/Soluciona-Inteligencia-Artificial/"
+site_author: "Diego Alejandro Saenz Falcon"
+copyright: "Copyright &copy; 2024 Diego Alejandro Saenz Falcon"
+
+repo_url: "https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial"
+repo_name: "DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial"
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: purple
+      accent: amber
+    - scheme: slate
+      primary: purple
+      accent: amber
+
+nav:
+  - Inicio: index.md
+  - Comercial: soluciona-inteligencia-artificial-comercial/README.md
+  - Empresarial: soluciona-inteligencia-artificial-empresarial/README.md
+  - Residencial: soluciona-inteligencia-artificial-residencial/README.md
+
+plugins:
+  - search
