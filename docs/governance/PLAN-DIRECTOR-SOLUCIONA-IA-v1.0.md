@@ -381,3 +381,102 @@ Todo despliegue debe poder reproducirse desde un commit/tag conocido.
 ## 14. Criterio rector
 
 > Soluciona IA no se desarrolla acumulando código. Se desarrolla acumulando capacidades verificadas, trazables, reversibles y documentadas.
+
+## 15. Parámetros operativos de ejecución (Anexo operacional)
+
+Este anexo concreta los parámetros técnicos y de coste que rigen las fases, sin alterar el roadmap de Fase 0-9 ni las reglas de gobernanza anteriores.
+
+### 15.1 Infraestructura Oracle Cloud (objetivo)
+
+| Parámetro | Valor |
+|-----------|-------|
+| Shape | VM.Standard.A1.Flex (ARM64) |
+| OCPU | 2 |
+| RAM | 12 GB |
+| SO | Ubuntu 24.04 LTS ARM64 |
+| Puertos externos | 22 (SSH), 80 (HTTP), 443 (HTTPS) |
+| Puertos NO expuestos | 5432 (PostgreSQL), 6379 (Redis), 3000 (SaaS) y cualquier interno de agentes |
+
+Estructura en el servidor:
+
+```text
+/opt/soluciona/
+├── repo/      (clone del repositorio, source of truth ejecutable)
+├── env/       (variables de entorno y secretos montados, NO en Git)
+├── data/      (volúmenes persistentes: PostgreSQL, Redis, uploads)
+├── backups/   (pg_dump, redis BGSAVE, retención programada)
+├── logs/      (logs agregados, journal, healthchecks)
+└── scripts/   (bootstrap, restore, healthcheck, deploy, rollback)
+```
+
+Hardening mínimo: usuario no root (`soluciona`), SSH solo por clave, UFW + Security Lists/NSGs de OCI, `unattended-upgrades`. Ver detalle en `DISASTER-RECOVERY.md` y `PROCESO-DESARROLLO-PRODUCCION.md`.
+
+### 15.2 Estrategia de coste
+
+- Objetivo: **$0 para desarrollo** cuando sea técnicamente viable.
+- Preferir OSS, Oracle Always Free, GitHub, PostgreSQL, Redis y LangGraph OSS con persistencia autogestionada.
+- Desarrollo: `paid_models = DENY`, `free_endpoints = ALLOW`, `local_models = ALLOW`.
+- Producción: modelos de pago permitidos según presupuesto y autorización del cliente.
+- No introducir servicios pagos innecesarios.
+
+### 15.3 Frontera SaaS ↔ SolucionaTIA (contrato mínimo)
+
+Regla inamovible: la capa agentic (SolucionaTIA/LangGraph) **no accede directamente** a tablas internas del SaaS, no ejecuta SQL arbitrario y no salta RBAC/tenant isolation/auditoría. La primera integración es **READ ONLY** sobre un límite API/event versionado.
+
+Contratos mínimos: `TenantContext`, `Customer`, `Conversation`, `Message`, `Product/Catalog`, `Order`, `BusinessProfile`, `Opportunity`, `Evidence`, `AgentTask`, `AgentResult`.
+
+IDs obligatorios a preservar en todo contrato: `tenant_id`, `run_id`, `trace_id`, `task_id`, `correlation_id`.
+
+### 15.4 Matriz de permisos multi-agente
+
+| Agente | Edición | Aprueba PR | Operaciones destructivas |
+|--------|---------|------------|--------------------------|
+| director/orchestrator | No | Coordinación | No |
+| architect | Solo docs/ADR | Sí | No |
+| developer | En su zona | Propios | Solo su zona, con aprobación |
+| reviewer | No | Sí | No |
+| qa | Solo tests | Tests | No |
+| security | Solo fixes seguridad | Seguridad | No |
+| devops | infra + CI/CD | Infra | Con aprobación explícita |
+| database/migrations | schema + migraciones | DB | Con aprobación explícita |
+| documentation | docs/ | Docs | No |
+| ai-integration | agentic + ai-coordination | Agentic | Con aprobación |
+
+Las API keys quedan fuera de Git y se configuran por variables/archivos seguros.
+
+### 15.5 Plantilla de evidencia por tarea
+
+Toda tarea cierra con un bloque de reporte:
+
+```text
+EXECUTIVE_STATUS, TASK, OBJECTIVE, EVIDENCE_CLASSIFICATION, FINDINGS,
+FILES_CHANGED, FILES_CREATED, FILES_NOT_CHANGED, TESTS_RUN, TEST_RESULTS,
+SECURITY_IMPACT, ARCHITECTURE_IMPACT, PERFORMANCE_IMPACT, ROLLBACK,
+COMMIT_SHA, BRANCH, PR, BLOCKERS, NEXT_TASK
+```
+
+Lo no demostrable se marca `DESCONOCIDO`. Ver `CONTRIBUTING.md` para el formato completo.
+
+### 15.6 Misiones inmediatas (mapeadas a fases)
+
+| Prioridad | Misión | Fase | Entregable |
+|-----------|--------|------|------------|
+| P0 | Recovery SolucionaTIA/LangGraph (no reconstruir antes de agotar `git fsck`/`reflog`/backups) | 0 | `docs/governance/LANGGRAPH-RECOVERY-REPORT.md` |
+| P0 | Architecture Audit (Issue #2): dual runtime, doble PG, Baileys→Cloud API, IA legacy vs Router | 3 | `ai-coordination/AUDIT_NOTES.md`, `CURRENT_STATUS.md` |
+| P0 | CI/CD Reconciliation (working-directory / build context monorepo) — Issue #3 | 1 | Rama `fix/ci-cd-monorepo-context` + pipeline verde |
+| P0 | Oracle Bootstrap (2 OCPU/12 GB ARM64, hardening) | 2 | VM accesible + stack base |
+| P1 | PostgreSQL + SaaS consolidado | 2-3 | SaaS + PG verificados |
+| P1 | Redis/Valkey + BullMQ | 2 | Redis operativo |
+| P1 | SolucionaTIA/LangGraph desplegada + persistencia | 7 | Agentic con healthcheck |
+| P1 | Contrato SaaS↔Agentic READ ONLY | 7 | Integration slice verificado |
+| P2 | Inventario, Compras, Recetas/Producción | 5-6 | Features |
+| P3 | IA operacional (routing + evaluación) | 8-9 | Piloto real |
+
+### 15.7 Documentos de gobernanza (índice vivo)
+
+- `PLAN-DIRECTOR-SOLUCIONA-IA-v1.0.md` — este documento
+- `CURRENT-STATE-v1.0.md` — estado verificado por auditoría
+- `DISASTER-RECOVERY.md` — continuidad / restauración independiente de la IA
+- `PROCESO-DESARROLLO-PRODUCCION.md` — proceso parametrizado dev/prod (gates, versionado, migraciones, rollback)
+- `LANGGRAPH-RECOVERY-REPORT.md` — forense Git de la capa agentic (misión P0)
+- `PROMPT_MAESTRO_MULTIAGENTE_CONTEXTO_TOTAL.md` (raíz) — contexto total para cualquier IA entrante

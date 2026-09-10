@@ -77,3 +77,18 @@ Cada tarea debe terminar con:
 - riesgos conocidos;
 - commit SHA;
 - siguiente tarea recomendada.
+
+## Documentos de gobernanza
+
+Además de este archivo, todo agente debe leer según aplique:
+
+- `docs/governance/PLAN-DIRECTOR-SOLUCIONA-IA-v1.0.md` — autoridad suprema y roadmap
+- `docs/governance/CURRENT-STATE-v1.0.md` — estado verificado
+- `docs/governance/DISASTER-RECOVERY.md` — continuidad y restauración
+- `docs/governance/PROCESO-DESARROLLO-PRODUCCION.md` — proceso parametrizado dev/prod
+- `docs/governance/LANGGRAPH-RECOVERY-REPORT.md` — forense de la capa agentic SolucionaTIA
+- `PROMPT_MAESTRO_MULTIAGENTE_CONTEXTO_TOTAL.md` — contexto total para continuidad entre IAs
+
+## Frontera SaaS ↔ SolucionaTIA
+
+La capa agentic (SolucionaTIA/LangGraph) es una pieza separada del SaaS. No accede directamente a tablas internas, no ejecuta SQL arbitrario y no salta RBAC/tenant isolation. La primera integración es READ ONLY sobre un límite API/event versionado. Ver `PLAN-DIRECTOR-SOLUCIONA-IA-v1.0.md` §15.3.

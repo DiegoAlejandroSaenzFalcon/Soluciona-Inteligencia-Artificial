@@ -84,3 +84,29 @@ No se considera cerrada la línea base mientras no estén resueltos o explícita
 **G1 — Gobernanza técnica y CI confiable.**
 
 Solo después de G1 se deben iniciar migraciones funcionales de inventario, SaaS multi-tenant, WhatsApp oficial o SolucionaTIA.
+
+## 8. Hallazgo de recuperación — capa agentic SolucionaTIA/LangGraph
+
+Auditoría forense de Git realizada (2026-09-10) sobre `main` y todas las ramas remotas:
+
+- No existe el directorio Python `solucionatia/` ni `ai-coordination/` en el repositorio.
+- No existen `langgraph.json`, `pyproject.toml` ni `requirements*.txt` de la capa agentic.
+- No existe `SOLUCIONATIA_AGENTIC_SYSTEM_SPEC_v1.0.md` (contrato técnico referenciado en el historial de contexto).
+- Los commits reportados en el historial de contexto (`eb5d42f` E0, `b5e6b41` WIP, `6fb810c` FREEZE, `c1d4772` E1) **no están en el historial alcanzable** (`git log --all`).
+
+**Clasificación**: `NO_ENCONTRADO_TRAS_INSPECCION` (parcial — `git fsck --unreachable` y `reflog` exhaustivo aún pendientes).
+
+**Regla**: no reconstruir SolucionaTIA mientras quede una vía razonable de recuperación. Ver `docs/governance/LANGGRAPH-RECOVERY-REPORT.md`.
+
+## 9. Artefactos de gobernanza (estado de esta actualización)
+
+| Documento | Estado |
+|-----------|--------|
+| `docs/governance/PLAN-DIRECTOR-SOLUCIONA-IA-v1.0.md` | Ampliado con §15 (parámetros operativos, coste, contratos SaaS↔Agentic, matriz multi-agente, evidencias, misiones) |
+| `docs/governance/CURRENT-STATE-v1.0.md` | Este documento (ampliado con recuperación agentic) |
+| `docs/governance/DISASTER-RECOVERY.md` | Creado — RTO < 4 h, RPO < 1 h, runbooks y simulacros |
+| `docs/governance/PROCESO-DESARROLLO-PRODUCCION.md` | Creado — entornos, gates, versionado, migraciones, rollback |
+| `docs/governance/LANGGRAPH-RECOVERY-REPORT.md` | Creado — forense Git de la capa agentic |
+| `PROMPT_MAESTRO_MULTIAGENTE_CONTEXTO_TOTAL.md` (raíz) | Creado — contexto total para continuidad entre IAs |
+| `AGENTS.md` (raíz) | Ampliado con índice de gobernanza y frontera SaaS↔Agentic |
+| `CONTRIBUTING.md` (raíz) | Ampliado con plantilla de evidencia e índice de gobernanza |
