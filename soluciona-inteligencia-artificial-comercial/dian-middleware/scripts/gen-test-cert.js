@@ -2,20 +2,22 @@
  * Genera un certificado digital self-signed para pruebas locales (Sandbox).
  * NO usar en produccion. Para produccion, obtener .p12 de una certificadora ONAC.
  *
- * Genera: certs/firma.p12  (RSA 2048, SHA-256, pass: test1234, valido 10 anos)
+ * Genera: certs/firma.p12  (RSA 2048, SHA-256, valido 10 anos)
+ * Password: set TEST_CERT_PASS env var, or generated randomly each run.
  */
 
 import forge from 'node-forge';
 import { writeFileSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { randomBytes } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PROJECT_ROOT = join(__dirname, '..');
 const OUT_DIR = join(PROJECT_ROOT, 'certs');
 const OUT_PATH = join(OUT_DIR, 'firma.p12');
-const PASSWORD = 'test1234';
+const PASSWORD = process.env.TEST_CERT_PASS || randomBytes(16).toString('hex');
 
 mkdirSync(OUT_DIR, { recursive: true });
 
