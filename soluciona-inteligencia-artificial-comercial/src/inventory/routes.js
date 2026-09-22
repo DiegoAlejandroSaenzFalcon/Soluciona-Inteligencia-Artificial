@@ -195,6 +195,24 @@ async function handleInventoryRequest(req, res, url) {
     catch (e) { return wrapError(res, e); }
   }
 
+  // ============ LOTES (inventario alimentario) ============
+  if (parts[0] === 'api' && parts[1] === 'inventory' && parts[2] === 'products' && parts.length === 5 && parts[4] === 'lots') {
+    const id = idParam(parts, 3);
+    if (!id) return json(res, 400, { error: 'id_invalido' });
+    if (req.method === 'GET') {
+      const { error } = await autenticarYPermitir(req, res, 'inventory:read');
+      if (error) return true;
+      return json(res, 200, { lots: await inv.listarLotes(id) });
+    }
+  }
+  if (url === '/api/inventory/lots/por-vencer' && req.method === 'GET') {
+    const { error } = await autenticarYPermitir(req, res, 'inventory:read');
+    if (error) return true;
+    const q = new URLSearchParams(url.split('?')[1] || '');
+    const dias = q.get('dias') != null ? Number(q.get('dias')) : 7;
+    return json(res, 200, { lots: await inv.lotesPorVencer(dias) });
+  }
+
   // ============ PROVEEDORES ============
   if (parts[0] === 'api' && parts[1] === 'inventory' && parts[2] === 'suppliers' && parts.length === 3) {
     if (req.method === 'GET') {
