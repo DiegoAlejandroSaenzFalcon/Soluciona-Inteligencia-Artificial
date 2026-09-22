@@ -195,4 +195,14 @@ thinking_mode: "on_demand"                 # Solo diagnósticos complejos
 
 ---
 
-*Última actualización: 2026-09-21 | Versión 1.0.0 | Aprobado por: PO (Diego Alejandro Saenz Falcon)*
+*Última actualización: 2026-09-21 | Versión 1.1.0 | Aprobado por: PO (Diego Alejandro Saenz Falcon)*
+
+## 12. Continuidad multi-IA y preservación (NUEVO — 2026-09-21)
+
+**Origen:** la máquina del PO se formateó ese día; quedó demostrado que el disco no es confiable.
+
+- **Regla-CERO:** *"La máquina local es caché; GitHub es la verdad."* Nada existe hasta que esté commiteado y pusheado.
+- Ninguna IA declara nada "terminado" sin haber hecho commit + push y documentado la evidencia.
+- Toda IA nueva que entre (Codex, DeepSeek, Kimi, otra sesión de Kimi, etc.) OBLIGATORIAMENTE lee primero `docs/CONTINUIDAD.md`, luego este AGENTS.md, luego `docs/PLAN-DE-TERMINACION-SOFTWARE.md`.
+- Si una IA encuentra trabajo local sin commitear: lo preserva (commit+push) y lo registra en `docs/CONTINUIDAD.md` antes de seguir con su tarea.
+- Clientes: datos de clientes NUNCA en este repo público. Cada cliente vive en su propio repo **privado** (ej: `San-Angel`). El core se mantiene limpio y genérico.

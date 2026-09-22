@@ -4,8 +4,8 @@
 | | |
 |---|---|
 | **Documento** | PLAN-DE-TERMINACION-SOFTWARE.md |
-| **Versión** | 1.0.0 |
-| **Fecha** | 2026-09-21 |
+| **Versión** | 1.2.0 |
+| **Fecha** | 2026-09-21 (reorganizado ese mismo día) |
 | **Autor** | Auditoría OpenCode / Kimi K3 (sesión de inspección física del repositorio) |
 | **Ámbito** | `C:\Proyectos\Soluciona-Inteligencia-Artificial` (Espacio B — producto genérico) |
 | **Clasificación** | Documento público del repositorio (sin datos de clientes) |
@@ -14,6 +14,12 @@
 > filesystem, `git`, arranque real del servidor y sondeo HTTP el 2026-09-21. Se conservan los
 > estados de evidencia del proyecto: IMPLEMENTADO_Y_VERIFICADO / PARCIALMENTE_IMPLEMENTADO /
 > PRESENTE_PERO_NO_PROBADO_E2E / DOCUMENTADO_PERO_NO_VERIFICADO / DESCONOCIDO.
+
+> **ESTADO DE PRESERVACIÓN (2026-09-21, FASE 0 ejecutada por auditoría IA-Kimi-K3):**
+> todo el trabajo nuevo de este repositorio está ya commiteado y pusheado a GitHub:
+> **PR #9** (hito H1 inventario alimentario, rama `feature/inventario-alimentario`) y
+> **PR #10** (esta misma reorganización documental, rama `docs/estado-y-plan-2026-09`).
+> **Regla nueva del proyecto: "Nada existe si no está commiteado y pusheado"** — ver CONTINUIDAD.md.
 
 ---
 
