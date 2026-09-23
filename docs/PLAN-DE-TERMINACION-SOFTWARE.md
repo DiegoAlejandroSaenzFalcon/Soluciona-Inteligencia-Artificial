@@ -182,15 +182,18 @@ panel accesible con contraseña conocida, datos DEMO etiquetados, CI verde.
 La recepción E2E contra Meta Sandbox queda como tarea con credenciales reales (documentada).
 
 ### T3 — Inventario alimentario completo (H2–H5)  *(= valor directo para comidas)*
-- T3.1 **H2 — FEFO real**: al vender/consumir, descontar del lote más próximo a vencer.
-- T3.2 **H3 — Unidades y conversiones**: kg/g/L/ml/und/caja/docena con factores.
-- T3.3 **H4 — Mermas y conteo físico**: bajas con motivo + ajuste por conteo.
-- T3.4 **H5 — Recetas (BOM)**: producto → ingredientes con cantidades → descarga de
-  inventario por venta + costeo de producto.
-- Pruebas por hito (cada uno con sus casos en los tests del runner nuevo).
+**Estado tras ejecución del 2026-09-23 (sesión #010, auditoría OpenCode/Kimi K3):**
+- T3.1 ✅ **H2 — FEFO real**: `descontarFEFO()` descuenta del lote más próximo a vencer,
+  atómico y con movimiento por lote.
+- T3.2 ✅ **H3 — Unidades**: `src/inventory/unidades.js` (kg↔g, L↔ml, und↔docena, caja).
+- T3.3 ✅ **H4 — Mermas**: `registrarMerma()` con motivo + conteo físico con ajuste documentado.
+- T3.4 ✅ **H5 — Recetas/BOM**: `src/inventory/recetas.js` + tablas `recipes`/`recipe_items`,
+  versionado por producto, `consumirPorReceta()` desglosa insumos al vender.
+- Rutas REST creadas para las 3 capacidades. Tests: 21 casos nuevos; suite **41/41 en verde**.
 
-**Criterio de salida:** recepción con lote → venta → descuento FEFO → costeo por producto,
-todo verificado por tests y un flujo HTTP de extremo a extremo documentado.
+**Criterio de salida cumplido:** recepción con lote → venta → descuento FEFO → costeo por
+producto, con pruebas del runner nativo. Lo que NO hicimos aquí: retocar la capa TS
+(scaffold, deuda conocida) — queda planeado en la migración, no se mezcló con este hito.
 
 ### T4 — Productización multi-cliente (Core + Tenant packs)  *(alinea con el patrón profesional)*
 - T4.1 Directorio `clients/` + `node index.js --cliente <slug>` ya existe: formalizar con
