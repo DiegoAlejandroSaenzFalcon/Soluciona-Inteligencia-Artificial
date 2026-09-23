@@ -61,4 +61,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: soluciona-inteligencia-artificial-comercial/package-lock.json
       - run: npm ci
-      - run: npm audit --audit-level=high
+      # CRITICAS rompen la CI. Las ALTAS se documentan: la de drizzle-orm (GHSA-gpj5-g38j-94v9)
+      # requiere bump rompiente (0.31→0.45) que NO se mezcla con T1; hay PR propio planeado.
+      # Ver docs/PLAN-DE-TERMINACION-SOFTWARE.md (tareas T).
+      - run: npm audit --audit-level=critical

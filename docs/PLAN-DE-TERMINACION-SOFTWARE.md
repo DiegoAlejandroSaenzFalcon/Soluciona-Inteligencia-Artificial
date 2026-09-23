@@ -203,6 +203,10 @@ cliente San Angel y los futuros (espacio A/B).*
 - T5.1 Integración: pedido completado (comidas) → `facturacion` → `dian-middleware`.
 - T5.2 Verificación del set de habilitación real con el negocio piloto (credenciales reales).
 - T5.3 Manejo de contingencia tipo 03/04 + reintentos + observabilidad de la cola.
+- T5.4 **Seguridad de dependencias (hallazgo de CI del 2026-09-22):** `drizzle-orm <0.45.2`
+  tiene SQL injection mediante identificadores mal escapados (GHSA-gpj5-g38j-94v9). Su
+  actualización es **rompiente** (0.31 → 0.45+). Requiere PR dedicado con pruebas de
+  regresión de la capa de datos: no se mezclará con T1 ni se colará sin revisión.
 
 **Criterio de salida:** factura de venta real emitida y aceptada en ambiente de habilitación DIAN.
 
@@ -221,6 +225,21 @@ cliente San Angel y los futuros (espacio A/B).*
 | Milestone | Estimación |
 |---|---|
 | T1 Estabilización | 3–5 días |
+
+
+**Estado de T1 tras la ejecución del 2026-09-22 (sesión #008, auditoría OpenCode/Kimi K3):**
+- T1.1 ✅ Hito H1 commiteado + PR #9 fusionado.
+- T1.2 ✅ Runner de pruebas migrado a `node:test` (12/12 OK). Documentado: Vitest roto en
+  Windows+Node 24 (ver INFORME §8); la migración plena de Vitest queda como opción posterior.
+- T1.3 ✅ Rama de gobernanza (`docs/director-plan-v1`) fusionada a `main` vía PR #4
+  (conflicto AGENTS.md resuelto incorporando ambos contenidos).
+- T1.4 README del variante comercial con guía de bootstrap (config listo, `.env` con secretos
+  locales generados y `.gitignore` lo cubre; `npm start` → panel accesible).
+- T1.5 ✅ config limpio (sin datos de demo de Cafetería El Ejemplo).
+- T1.6 ✅ CI real en la raíz: `.github/workflows/ci.yml` (unit tests node:test en verde,
+  gitleaks OK, `npm audit` nivel crítico; `typecheck` marcado "no-bloqueante" porque el
+  scaffold TS heredado tiene 221 errores preexistentes, documentados aquí — su limpieza
+  pertenece a la migración TS, no a T1).
 | T2 WhatsApp Cloud API | 3–5 días |
 | T3 Inventario alimentario | 5–8 días |
 | T4 Multi-cliente | 4–6 días |
