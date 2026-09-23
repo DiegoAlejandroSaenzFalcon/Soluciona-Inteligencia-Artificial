@@ -76,6 +76,16 @@ if (!process.env.DISABLE_WHATSAPP) {
       transport.initialize().then(() => {
         console.log('[INIT] WhatsApp Cloud API conectado');
         global.whatsappTransport = transport;
+
+        // Cableado T2: el webhook empuja → el transporte normaliza → el pipeline
+        // existente (pedidos) procesa. Antes el webhook no entregaba nada.
+        const { procesarMensajeCloud } = require('./transports/whatsapp.js');
+        transport.onMessage(async (msg) => {
+          try { await procesarMensajeCloud(msg, transport); }
+          catch (e) { console.error('[INIT] Error procesando mensaje Cloud:', e && e.message ? e.message : e); }
+        });
+        // web.js usa esta referencia para atender /webhook/whatsapp
+        global.whatsappCloudTransport = transport;
       }).catch(e => {
         console.error('[ERROR] WhatsApp Cloud API:', e.message);
         process.exit(1);
