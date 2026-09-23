@@ -24,6 +24,7 @@
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@resvg/resvg-js": "^2.6.2",
     "@whiskeysockets/baileys": "^6.7.24",
+    "@xmldom/xmldom": "^0.9.12",
     "bcryptjs": "^2.4.3",
     "bwip-js": "^4.11.4",
     "dotenv": "^16.4.5",
@@ -40,7 +41,6 @@
     "socket.io": "^4.7.5",
     "uuid": "^9.0.1",
     "werift": "^0.24.4",
-    "xmldom": "^0.6.0",
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.22.5"
   },

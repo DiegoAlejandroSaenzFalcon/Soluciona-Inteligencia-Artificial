@@ -3,7 +3,7 @@
  * Validaciones aritméticas, estructura UBL, reglas de negocio
  */
 
-import { DOMParser } from 'xmldom';
+import { DOMParser } from '@xmldom/xmldom';
 import xpath from 'xpath';
 
 /**

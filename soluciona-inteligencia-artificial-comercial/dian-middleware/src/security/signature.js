@@ -11,7 +11,7 @@
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 import forge from 'node-forge';
-import { DOMParser, XMLSerializer } from 'xmldom';
+import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import { select as xpath } from 'xpath';
 import { SignedXml } from 'xml-crypto';
 

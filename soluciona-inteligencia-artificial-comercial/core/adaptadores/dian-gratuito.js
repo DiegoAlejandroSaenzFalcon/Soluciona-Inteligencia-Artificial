@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const QRCode = require('qrcode');
@@ -13,7 +13,7 @@ function dianSig() {
   }
   return _dianSigPromise;
 }
-const { DOMParser } = require('xmldom');
+const { DOMParser } = require('@xmldom/xmldom');
 
 const DIAN_BASE = 'https://facturaelectronica.dian.gov.co';
 const DIAN_BASE_TEST = 'https://facturaelectronica.dian.gov.co/habilitacion';
