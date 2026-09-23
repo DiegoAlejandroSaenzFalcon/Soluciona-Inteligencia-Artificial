@@ -1246,5 +1246,73 @@ async function iniciarWhatsApp() {
   await iniciarSesion();
 }
 
-module.exports = { iniciarWhatsApp };
+/**
+ * Puente WhatsApp Cloud API (oficial) → pipeline existente.
+ * Toma un mensaje ya normalizado por el transporte Cloud y lo alimenta
+ * al mismo flujo que el socket Baileys: comandos de dueño, pedidos, etc.
+ * (auditoría T2 — antes el webhook no entregaba al pipeline)
+ */
+async function procesarMensajeCloud(mensajeCloud, cloudTransport) {
+  if (!mensajeCloud || !cloudTransport) return;
+
+  const jid = mensajeCloud.from; // Cloud API ya da el teléfono limpio
+  if (!jid) return;
+  if (jid.endsWith('@g.us') || jid === 'status@broadcast') return;
+
+  // Encapsulamos el mensaje Cloud en la forma mínima que espera el pipeline actual.
+  const m = {
+    key: { id: mensajeCloud.id || `cloud-${Date.now()}`, remoteJid: jid, fromMe: false },
+    message: {},
+    pushName: mensajeCloud.contactName || null,
+  };
+  if (mensajeCloud.text) m.message.conversation = mensajeCloud.text;
+  if (mensajeCloud.location) {
+    m.message.locationMessage = {
+      degreesLatitude: mensajeCloud.location.latitude,
+      degreesLongitude: mensajeCloud.location.longitude,
+      name: mensajeCloud.location.name || '',
+      address: mensajeCloud.location.address || '',
+    };
+  }
+
+  const cuerpo = (mensajeCloud.text || '').trim();
+  const ubicacion = mensajeCloud.location ? {
+    lat: mensajeCloud.location.latitude,
+    lng: mensajeCloud.location.longitude,
+    nombre: mensajeCloud.location.name || '',
+    detalle: mensajeCloud.location.address || '',
+  } : null;
+
+  // responder() usa el socket global del módulo (module-scope). Aquí lo ponemos
+  // apuntando al transporte Cloud para que las respuestas salgan por la API oficial.
+  sock = cloudSockAdapter(cloudTransport);
+  setSock(sock); // notifica a notify.js para comandos de dueño
+
+  await procesar(sock, m, jid, cuerpo, ubicacion);
+}
+
+// Adaptador mínimo: el pipeline existente solo necesita sendMessage (texto/media).
+function cloudSockAdapter(cloudTransport) {
+  return {
+    sendMessage: async (jid, content, options = {}) => {
+      const to = String(jid).split('@')[0];
+      if (content.text) return cloudTransport.sendText(to, content.text);
+      if (content.image) {
+        const id = content.image.id || content.image.mediaId || content.image;
+        return cloudTransport.sendImage(to, id, content.caption || '');
+      }
+      if (content.document) {
+        const id = content.document.id || content.document.mediaId || content.document;
+        return cloudTransport.sendDocument(to, id, content.fileName || '', content.caption || '');
+      }
+      if (content.audio) {
+        const id = content.audio.id || content.audio.mediaId || content.audio;
+        return cloudTransport.sendAudio(to, id);
+      }
+      throw new Error('tipo_de_mensaje_no_soportado_en_adapter_cloud');
+    },
+  };
+}
+
+module.exports = { iniciarWhatsApp, procesarMensajeCloud };
 
