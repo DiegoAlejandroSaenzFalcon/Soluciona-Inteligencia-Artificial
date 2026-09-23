@@ -9,8 +9,9 @@
     "dev": "node index.js",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:unit": "vitest run tests/unit",
+    "test": "node --test \"tests/node/**/*.test.js\"",
+    "test:unit": "node --test \"tests/node/**/*.test.js\"",
+    "test:vitest": "vitest run",
     "reset-admin": "node reset-admin.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -23,6 +24,7 @@
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@resvg/resvg-js": "^2.6.2",
     "@whiskeysockets/baileys": "^6.7.24",
+    "@xmldom/xmldom": "^0.9.12",
     "bcryptjs": "^2.4.3",
     "bwip-js": "^4.11.4",
     "dotenv": "^16.4.5",
@@ -39,7 +41,6 @@
     "socket.io": "^4.7.5",
     "uuid": "^9.0.1",
     "werift": "^0.24.4",
-    "xmldom": "^0.6.0",
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.22.5"
   },
@@ -48,8 +49,6 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.14.2",
     "@types/pg": "^8.11.6",
-    "@vitest/coverage-v8": "^1.6.1",
-    "@vitest/ui": "^1.6.0",
     "drizzle-kit": "^0.22.8",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -60,8 +59,7 @@
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.2",
     "tsx": "^4.23.12",
-    "typescript": "^5.4.5",
-    "vitest": "^1.6.1"
+    "typescript": "^5.4.5"
   },
   "engines": {
     "node": ">=22.0.0"
