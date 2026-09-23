@@ -312,6 +312,89 @@ async function handleInventoryRequest(req, res, url) {
     }
   }
 
+  // ============================================================
+  // T3 (H2/H4/H5): FEFO de salidas, mermas y recetas
+  // ============================================================
+
+  // POST /api/inventory/products/:id/deducir-fefo       → H2: descuenta del lote más próximo a vencer
+  if (parts[0] === 'api' && parts[1] === 'inventory' && parts[2] === 'products' && parts[4] === 'deducir-fefo' && parts.length === 5) {
+    const id = idParam(parts, 3);
+    if (!id) return json(res, 400, { error: 'id_invalido' });
+    if (req.method === 'POST') {
+      const { user, error } = await autenticarYPermitir(req, res, 'inventory:write');
+      if (error) return true;
+      const body = await leerCuerpo(req);
+      try { return json(res, 200, await inv.descontarFEFO(id, body && body.cantidad, { ...body, usuarioId: user.id })); }
+      catch (e) { return wrapError(res, e); }
+    }
+  }
+
+  // POST /api/inventory/products/:id/merma             → H4: baja con motivo documentado
+  if (parts[0] === 'api' && parts[1] === 'inventory' && parts[2] === 'products' && parts[4] === 'merma' && parts.length === 5) {
+    const id = idParam(parts, 3);
+    if (!id) return json(res, 400, { error: 'id_invalido' });
+    if (req.method === 'POST') {
+      const { user, error } = await autenticarYPermitir(req, res, 'inventory:write');
+      if (error) return true;
+      const body = await leerCuerpo(req);
+      try { return json(res, 200, await inv.registrarMerma(id, body && body.cantidad, { ...(body || {}), motivo: body && body.motivo, usuarioId: user.id })); }
+      catch (e) { return wrapError(res, e); }
+    }
+  }
+
+  // POST /api/inventory/products/:id/conteo-fisico      → H4: conteo físico aplicado
+  if (parts[0] === 'api' && parts[1] === 'inventory' && parts[2] === 'products' && parts[4] === 'conteo-fisico' && parts.length === 5) {
+    const id = idParam(parts, 3);
+    if (!id) return json(res, 400, { error: 'id_invalido' });
+    if (req.method === 'POST') {
+      const { user, error } = await autenticarYPermitir(req, res, 'inventory:adjust');
+      if (error) return true;
+      const body = await leerCuerpo(req);
+      try { return json(res, 200, await inv.aplicarConteoFisico(id, body && body.conteoReal, { ...(body || {}), usuarioId: user.id })); }
+      catch (e) { return wrapError(res, e); }
+    }
+  }
+
+  // Recetas (BOM): producto → ingredientes → costeo → desglose por venta
+  if (parts[0] === 'api' && parts[1] === 'inventory' && parts[2] === 'recipes' && parts.length === 3) {
+    if (req.method === 'GET') {
+      const { error } = await autenticarYPermitir(req, res, 'inventory:read');
+      if (error) return true;
+      try { return json(res, 200, { recipes: await inv.listarRecetas() }); }
+      catch (e) { return wrapError(res, e); }
+    }
+  }
+  if (parts[0] === 'api' && parts[1] === 'inventory' && parts[2] === 'products' && parts[4] === 'recipe' && parts.length === 5) {
+    const id = idParam(parts, 3);
+    if (!id) return json(res, 400, { error: 'id_invalido' });
+    if (req.method === 'GET') {
+      const qs = new URL(req.url, 'http://localhost').searchParams;
+      const version = qs.get('version') ? Number(qs.get('version')) : null;
+      const { error } = await autenticarYPermitir(req, res, 'inventory:read');
+      if (error) return true;
+      try { return json(res, 200, { recipe: await inv.obtenerReceta(id, version) }); }
+      catch (e) { return wrapError(res, e); }
+    }
+    if (req.method === 'PUT' || req.method === 'POST') {
+      const { user, error } = await autenticarYPermitir(req, res, 'inventory:write');
+      if (error) return true;
+      const body = await leerCuerpo(req);
+      try { return json(res, 200, await inv.guardarReceta(id, body || {}, user.id)); }
+      catch (e) { return wrapError(res, e); }
+    }
+  }
+  if (parts[0] === 'api' && parts[1] === 'inventory' && parts[2] === 'products' && parts[4] === 'consumir-receta' && parts.length === 5) {
+    const id = idParam(parts, 3);
+    if (!id) return json(res, 400, { error: 'id_invalido' });
+    if (req.method === 'POST') {
+      const { user, error } = await autenticarYPermitir(req, res, 'inventory:write');
+      if (error) return true;
+      const body = await leerCuerpo(req);
+      try { return json(res, 200, await inv.consumirPorReceta(id, body && body.unidades, { ...(body || {}), usuarioId: user.id })); }
+      catch (e) { return wrapError(res, e); }
+    }
+  }
+
   return false;
 }
 

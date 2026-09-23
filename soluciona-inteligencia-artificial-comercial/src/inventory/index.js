@@ -890,6 +890,245 @@ async function lotesPorVencer(dias = 7) {
   return rows.map(mapaLote);
 }
 
+// ============================================================
+// T3 H2 — FEFO REAL en salidas: descuenta del lote más próximo a vencer
+// ============================================================
+async function descontarFEFO(productId, cantidad, opts = {}) {
+  const { variantId = null, bodega = 'principal', usuarioId = null, observacion = '', referenciaTipo = 'venta', referenciaId = null } = opts;
+  const n = Number(cantidad);
+  if (!Number.isFinite(n) || n <= 0) throw Object.assign(new Error('cantidad_invalida'), { status: 400 });
+
+  const { detalleMermaFEFO } = require('./mermas.js');
+
+  return tx(async c => {
+    const rows = await c.unsafe(
+      `SELECT id, product_id, variant_id, bodega, numero_lote, fecha_vencimiento, cantidad_actual
+         FROM inventory_lots
+        WHERE tenant_id = $1 AND product_id = $2 AND COALESCE(variant_id, 0) = COALESCE($3, 0)
+          AND bodega = $4 AND COALESCE(cantidad_actual, 0) > 0
+        ORDER BY fecha_vencimiento ASC, numero_lote ASC`,
+      [tenantId, Number(productId), variantId, bodega]
+    );
+
+    const plan = detalleMermaFEFO(rows, n);
+
+    for (const d of plan.detalle) {
+      await c.unsafe(
+        `UPDATE inventory_lots
+            SET cantidad_actual = cantidad_actual - $1, updated_at = now()
+          WHERE id = $2 AND COALESCE(cantidad_actual, 0) >= $1`,
+        [String(d.consumir), d.lotId]
+      );
+      await c.unsafe(
+        `INSERT INTO stock_movements (tenant_id, product_id, variant_id, bodega, tipo, cantidad, costo_unitario, referencia_tipo, referencia_id, observacion, usuario_id)
+         VALUES ($1,$2,$3,$4,'salida_fefo',$5,NULL,$6,$7,$8,$9)`,
+        [tenantId, Number(productId), variantId, bodega, String(d.consumir), referenciaTipo, referenciaId, observacion || `FEFO lote ${d.numeroLote}`, usuarioId]
+      );
+    }
+
+    await c.unsafe(
+      `INSERT INTO stock (tenant_id, product_id, variant_id, bodega, cantidad)
+       VALUES ($1,$2,$3,$4,$5)
+       ON CONFLICT (tenant_id, product_id, variant_id, bodega)
+       DO UPDATE SET cantidad = stock.cantidad - $5, updated_at = now()`,
+      [tenantId, Number(productId), variantId, bodega, String(n), n]
+    );
+
+    return { productId: Number(productId), cantidad: n, lotesVistos: plan.detalle.length, fefoAplicado: true };
+  });
+}
+
+// ============================================================
+// T3 H4 — Mermas (baja controlada con motivo) + conteo físico
+// ============================================================
+async function registrarMerma(productId, cantidad, opts = {}) {
+  const { variantId = null, bodega = 'principal', motivo, nota = '', usuarioId = null } = opts;
+  const { validarMotivo, detalleMermaFEFO } = require('./mermas.js');
+  const m = validarMotivo(motivo, nota);
+  const n = Number(cantidad);
+  if (!Number.isFinite(n) || n <= 0) throw Object.assign(new Error('cantidad_invalida'), { status: 400 });
+
+  return tx(async c => {
+    const rows = await c.unsafe(
+      `SELECT id, product_id, variant_id, bodega, numero_lote, fecha_vencimiento, cantidad_actual, costo_unitario
+         FROM inventory_lots
+        WHERE tenant_id = $1 AND product_id = $2 AND COALESCE(variant_id, 0) = COALESCE($3, 0)
+          AND bodega = $4 AND COALESCE(cantidad_actual, 0) > 0
+        ORDER BY fecha_vencimiento ASC, numero_lote ASC`,
+      [tenantId, Number(productId), variantId, bodega]
+    );
+
+    const plan = detalleMermaFEFO(rows, n);
+    let costoTotal = 0;
+
+    for (const d of plan.detalle) {
+      const lote = rows.find(r => r.id === d.lotId);
+      const cu = lote && lote.costo_unitario != null ? Number(lote.costo_unitario) : 0;
+      costoTotal += d.consumir * cu;
+
+      await c.unsafe(
+        `UPDATE inventory_lots
+            SET cantidad_actual = cantidad_actual - $1, updated_at = now()
+          WHERE id = $2 AND COALESCE(cantidad_actual, 0) >= $1`,
+        [String(d.consumir), d.lotId]
+      );
+      await c.unsafe(
+        `INSERT INTO stock_movements (tenant_id, product_id, variant_id, bodega, tipo, cantidad, costo_unitario, referencia_tipo, referencia_id, observacion, usuario_id)
+         VALUES ($1,$2,$3,$4,'merma',$5,$6,'merma',NULL,$7,$8)`,
+        [tenantId, Number(productId), variantId, bodega, String(d.consumir), String(cu), `Merma (${m})${nota ? ' — ' + nota : ''} [lote ${d.numeroLote}]`, usuarioId]
+      );
+    }
+
+    await c.unsafe(
+      `INSERT INTO stock (tenant_id, product_id, variant_id, bodega, cantidad)
+       VALUES ($1,$2,$3,$4,$5)
+       ON CONFLICT (tenant_id, product_id, variant_id, bodega)
+       DO UPDATE SET cantidad = stock.cantidad - $5, updated_at = now()`,
+      [tenantId, Number(productId), variantId, bodega, String(n), n]
+    );
+
+    return { ok: true, productId: Number(productId), cantidad: n, motivo: m, costoTotal: Number(costoTotal.toFixed(2)) };
+  });
+}
+
+// Analiza un conteo físico (sistema vs real) y aplica el ajuste documentado.
+async function aplicarConteoFisico(productId, conteoReal, opts = {}) {
+  const { variantId = null, bodega = 'principal', motivo = 'otro', nota = '', usuarioId = null } = opts;
+  const { analizarConteo } = require('./mermas.js');
+  const stockRows = await getStock(productId);
+  const row = stockRows.find(r => (r.variant_id ?? null) === (variantId ?? null) && r.bodega === bodega);
+  const teorico = row ? Number(row.cantidad) : 0;
+
+  const analisis = analizarConteo(teorico, conteoReal, { motivo });
+  if (!analisis.requiere_ajuste) return { ok: true, productId: Number(productId), ...analisis };
+
+  if (analisis.diferencia > 0) {
+    await ajustarStock(productId, { variantId, bodega, cantidad: analisis.conteoReal, usuarioId, observacion: nota || 'Conteo físico — sobrante' });
+  } else {
+    await registrarMerma(productId, -analisis.diferencia, { variantId, bodega, motivo, nota: nota || 'Conteo físico — faltante', usuarioId });
+  }
+  return { ok: true, productId: Number(productId), ...analisis, aplicado: true };
+}
+
+// ============================================================
+// T3 H5 — Recetas (BOM): producto → ingredientes → desglose + costeo
+// ============================================================
+async function guardarReceta(productId, data, usuarioId = null) {
+  if (!data || !data.nombre) throw Object.assign(new Error('nombre_requerido'), { status: 400 });
+  if (!Array.isArray(data.items) || !data.items.length) throw Object.assign(new Error('receta_sin_items'), { status: 400 });
+
+  const productos = new Map();
+  for (const it of data.items) {
+    const p = await getProduct(it.ingredientProductId);
+    productos.set(it.ingredientProductId, p);
+  }
+  const { validarReceta } = require('./recetas.js');
+  const entrada = validarReceta({ items: data.items.map(it => ({ ...it })) }, productos);
+
+  return tx(async c => {
+    const versionActual = await c.unsafe(
+      `SELECT COALESCE(MAX(version), 0) AS max_version FROM recipes WHERE tenant_id = $1 AND product_id = $2`,
+      [tenantId, Number(productId)]
+    );
+    const nuevaVersion = (Number(versionActual[0]?.max_version) || 0) + 1;
+
+    const previa = await c.unsafe(
+      `UPDATE recipes SET activa = 0, actualizado = now() WHERE tenant_id = $1 AND product_id = $2`,
+      [tenantId, Number(productId)]
+    );
+
+    const cabecera = await c.unsafe(
+      `INSERT INTO recipes (tenant_id, product_id, nombre, descripcion, version, activa, nota, creado, actualizado)
+       VALUES ($1,$2,$3,$4,$5,1,$6,CURRENT_TIMESTAMP,NULL) RETURNING id`,
+      [tenantId, Number(productId), String(data.nombre).trim(), data.descripcion || '', nuevaVersion, data.nota || null]
+    );
+    const recipeId = cabecera[0].id;
+
+    for (let i = 0; i < entrada.items.length; i++) {
+      const it = entrada.items[i];
+      const prod = productos.get(it.ingredientProductId);
+      await c.unsafe(
+        `INSERT INTO recipe_items (tenant_id, recipe_id, ingredient_product_id, cantidad, unidad, nota, orden)
+         VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+        [tenantId, recipeId, it.ingredientProductId, String(it.cantidad), it.unidad, it.nota || null, i]
+      );
+    }
+
+    return { ok: true, recipeId, productId: Number(productId), version: nuevaVersion, items: entrada.items.length };
+  });
+}
+
+async function obtenerReceta(productId, version = null) {
+  const c = getClient();
+  const clausulaVersion = version == null
+    ? 'AND activa = 1'
+    : 'AND version = ' + Number(version);
+  const rec = await c.unsafe(
+    `SELECT id, product_id, nombre, descripcion, version, activa, nota, creado, actualizado
+       FROM recipes WHERE tenant_id = $1 AND product_id = $2 ${clausulaVersion}
+       ORDER BY version DESC LIMIT 1`,
+    [tenantId, Number(productId)]
+  );
+  if (!rec.length) throw Object.assign(new Error('receta_no_encontrada'), { status: 404 });
+  const r = rec[0];
+  const items = await c.unsafe(
+    `SELECT ri.id, ri.ingredient_product_id, ri.cantidad, ri.unidad, ri.nota, ri.orden,
+            p.nombre AS ingrediente_nombre, p.unidad_medida,
+            (SELECT COALESCE(SUM(s.cantidad), 0) FROM stock s WHERE s.product_id = ri.ingredient_product_id) AS stock_disponible,
+            (SELECT costo FROM products WHERE id = ri.ingredient_product_id) AS costo_actual
+       FROM recipe_items ri JOIN products p ON p.id = ri.ingredient_product_id
+      WHERE ri.tenant_id = $1 AND ri.recipe_id = $2 ORDER BY ri.orden`,
+    [tenantId, r.id]
+  );
+  return {
+    ...r,
+    items: items.map(it => ({
+      id: it.id,
+      ingredienteProductId: it.ingredient_product_id,
+      ingredienteNombre: it.ingrediente_nombre,
+      cantidad: Number(it.cantidad),
+      unidad: it.unidad,
+      nota: it.nota,
+      orden: it.orden,
+      stockDisponible: Number(it.stock_disponible || 0),
+      costoUnitarioActual: it.costo_actual == null ? null : Number(it.costo_actual),
+    })),
+  };
+}
+
+async function listarRecetas() {
+  const c = getClient();
+  const rows = await c.unsafe(
+    `SELECT r.id, r.product_id, r.nombre, r.version, r.activa, r.creado, r.actualizado,
+            p.nombre AS producto_nombre,
+            (SELECT COUNT(*) FROM recipe_items ri WHERE ri.recipe_id = r.id) AS items
+       FROM recipes r JOIN products p ON p.id = r.product_id
+      WHERE r.tenant_id = $1 ORDER BY p.nombre, r.version DESC`,
+    [tenantId]
+  );
+  return rows.map(r => ({ ...r, version: Number(r.version), items: Number(r.items) }));
+}
+
+// Desglose completo de una venta: aplica la receta activa y descarga insumos por FEFO.
+async function consumirPorReceta(productId, unidadesVendidas, opts = {}) {
+  const { usuarioId = null, referenciaTipo = 'venta', referenciaId = null, observacion = '' } = opts;
+  const receta = await obtenerReceta(productId);
+  const { calcularDesglose } = require('./recetas.js');
+  const desglose = calcularDesglose(receta, unidadesVendidas);
+
+  const resultados = [];
+  for (const linea of desglose) {
+    const r = await descontarFEFO(linea.ingredientProductId, linea.totalADescontar, {
+      usuarioId,
+      referenciaTipo,
+      referenciaId,
+      observacion: `${observacion ? observacion + ' — ' : ''}Consumo por receta (${receta.nombre}, x${unidadesVendidas})`
+    });
+    resultados.push({ ingredientProductId: linea.ingredientProductId, cantidad: linea.totalADescontar, aplicado: r.fefoAplicado });
+  }
+  return { ok: true, productId: Number(productId), unidadesVendidas, recetaAplicada: receta.nombre, version: receta.version, lineas: resultados };
+}
+
 module.exports = {
   listCategories, createCategory, updateCategory, deleteCategory,
   listProducts, getProduct, createProduct, updateProduct, deleteProduct,
@@ -899,4 +1138,6 @@ module.exports = {
   listPurchaseOrders, getPurchaseOrder, createPurchaseOrder, updatePurchaseOrder,
   cambiarEstadoPurchaseOrder, recibirPurchaseOrder, deletePurchaseOrder,
   listarLotes, lotesPorVencer,
+  descontarFEFO, registrarMerma, aplicarConteoFisico,
+  guardarReceta, obtenerReceta, listarRecetas, consumirPorReceta,
 };
