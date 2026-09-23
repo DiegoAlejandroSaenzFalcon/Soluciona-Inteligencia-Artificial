@@ -240,6 +240,11 @@ cliente San Angel y los futuros (espacio A/B).*
   gitleaks OK, `npm audit` nivel crítico; `typecheck` marcado "no-bloqueante" porque el
   scaffold TS heredado tiene 221 errores preexistentes, documentados aquí — su limpieza
   pertenece a la migración TS, no a T1).
+- T1.7 ✅ Retiro de Vitest roto — y de paso eliminación de su cadena de vulnerabilidades
+  críticas que la CI detectó tras activarse (vitest/@vitest/ui/@vitest/coverage-v8 con
+  transitive esbuild/vite). Esto era el punto profesional: la herramienta estaba rota Y
+  vulnerable; **ambas cosas se resolvieron con la misma acción**. Migración posterior a
+  Vitest 5 es opcional pero se documenta como mejora, no como bloqueador.
 | T2 WhatsApp Cloud API | 3–5 días |
 | T3 Inventario alimentario | 5–8 días |
 | T4 Multi-cliente | 4–6 días |
