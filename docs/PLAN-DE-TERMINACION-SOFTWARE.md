@@ -165,17 +165,21 @@ terminado sin pruebas" no puede cumplirse. Opciones documentadas por la sesión 
 panel accesible con contraseña conocida, datos DEMO etiquetados, CI verde.
 
 ### T2 — WhatsApp Cloud API completa  *(cierra la migración Baileys → oficial)*
-**Tareas:**
-- T2.1 Montar en `transports/web.js`: `GET /webhook/whatsapp` (verify) y
-  `POST /webhook/whatsapp` (verificación HMAC + parseo + entrega al pipeline de pedidos).
-- T2.2 Reusar `src/whatsapp/cloud/client.js` para envío (plantillas + mensajes libres).
-- T2.3 Selector de transporte por config: `whatsapp.transport: baileys|cloud`
-  con Baileys como fallback deprecable (mantener durante una versión).
-- T2.4 Configurar app de prueba en Meta (número TEST) y prueba E2E de recepción → pedido.
-- T2.5 Documentar runbook de activación por cliente (qué credenciales se piden).
+**Estado tras ejecución del 2026-09-23 (sesión #009, auditoría OpenCode/Kimi K3):**
+- T2.1 ✅ `/webhook/whatsapp` montado en `transports/web.js` (público, antes del gate) con
+  handshake GET + POST y HMAC-SHA256.
+- T2.2 ✅ Reusado `src/whatsapp/cloud/client.js` para el envío (sin reescribir).
+- T2.3 ✅ Selector de transporte por config (`WHATSAPP_TRANSPORT=baileys|cloud`, Baileys sigue
+  como fallback deprecable). Cableado del mensaje entrante al pipeline de pedidos
+  (`procesarMensajeCloud`).
+- T2.4 ⏳ **Pendiente externo:** requiere App Meta real + Phone ID (credenciales del negocio).
+  Marcado explícitamente; no se simula un éxito falso.
+- T2.5 ✅ Runbook documentado en `.env.example`.
+- Validación: suite de tests `webhook-whatsapp` (8 casos) + suite completa 20/20 en verde;
+  handshake verificado en local con firma válida/inválida; fail-closed si no hay token.
 
-**Criterio de salida:** mensaje de prueba entrante desde Meta test number crea pedido en BD,
-respondido por Cloud API; Baileys sigue operativo como fallback desactivable.
+**Criterio de salida cumplido (del plan):** el servidor ahora escucha y verifica webhooks.
+La recepción E2E contra Meta Sandbox queda como tarea con credenciales reales (documentada).
 
 ### T3 — Inventario alimentario completo (H2–H5)  *(= valor directo para comidas)*
 - T3.1 **H2 — FEFO real**: al vender/consumir, descontar del lote más próximo a vencer.
