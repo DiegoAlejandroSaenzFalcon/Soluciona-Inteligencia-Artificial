@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
+    "setup": "node scripts/verify-environment.js",
+    "verify:env": "node scripts/verify-environment.js",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"tests/node/**/*.test.js\"",
