@@ -1,0 +1,23 @@
+{
+  "id": "demo",
+  "negocio": "Negocio Demo (configurar nombre)",
+  "segmento": "comidas",
+  "ciiu": "5611",
+  "moneda": "$",
+  "hora_reporte": "21:00",
+  "puerto": 3000,
+  "numero_dueno": "570000000000",
+  "ubicacion_negocio": { "lat": 0, "lng": 0 },
+  "menu": {
+    "color": "#1f9d55",
+    "url": "",
+    "logo": ""
+  },
+  "productos": [
+    { "nombre": "Café americano", "alias": ["cafe", "americano"], "precio": 3000, "ingredientes": "Café, agua" },
+    { "nombre": "Tostada con queso", "alias": ["tostada"], "precio": 4500, "ingredientes": "Pan, queso" },
+    { "nombre": "Jugo natural", "alias": ["jugo"], "precio": 3500, "ingredientes": "Fruta, agua" }
+  ],
+  "domicilios": { "faixas": [], "radio_max_entrega_km": 0, "gratis_si_total_sobre": 0 },
+  "nota": "Este es el pack DEMO del monorepo. NO es un cliente real. Sirve para verificar la mecánica cliente=pack. Eliminar antes del primer piloto real si se quiere."
+}
