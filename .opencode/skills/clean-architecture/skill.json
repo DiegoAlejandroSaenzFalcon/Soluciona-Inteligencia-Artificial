@@ -1,0 +1,24 @@
+{
+  "name": "clean-architecture",
+  "version": "1.0.0",
+  "description": "Clean Architecture templates and enforcement for Soluciona IA",
+  "author": "Soluciona IA Team",
+  "capabilities": [
+    "entity-template",
+    "use-case-template",
+    "repository-template",
+    "controller-template",
+    "dependency-rule-check"
+  ],
+  "templates": {
+    "entity": "templates/entity.template.ts",
+    "use-case": "templates/use-case.template.ts",
+    "repository": "templates/repository.template.ts",
+    "controller": "templates/controller.template.ts",
+    "module": "templates/module.template.ts"
+  },
+  "scripts": {
+    "check-deps": "scripts/check-dependencies.js",
+    "generate-module": "scripts/generate-module.js"
+  }
+}

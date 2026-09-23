@@ -1,0 +1,105 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/deepseek-v4-flash-free",
+  "default_agent": "sdd-engineer",
+  "permission": {
+    "edit": "ask",
+    "bash": "ask",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "task": "ask"
+  },
+  "instructions": [
+    "AGENTS.md",
+    "SPEC.md",
+    "INIT.md",
+    "GOVERNANCE.md",
+    "QUALITY_GATES.md",
+    "CLIENT_ADAPTATION.md"
+  ],
+  "autoupdate": "notify",
+  "agents": {
+    "sdd-engineer": {
+      "description": "Spec Driven Development Engineer - implements from approved specs",
+      "mode": "all",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "task": "allow",
+        "webfetch": "allow"
+      }
+    },
+    "spec-analyst": {
+      "description": "Analyzes requirements and writes executable specs (Given/When/Then)",
+      "mode": "all",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny",
+        "webfetch": "allow"
+      }
+    },
+    "test-engineer": {
+      "description": "Writes tests first (TDD), ensures coverage >80%, creates test data",
+      "mode": "all",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "task": "allow"
+      }
+    },
+    "security-auditor": {
+      "description": "Reviews code for security issues, threat modeling, OWASP compliance",
+      "mode": "all",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "webfetch": "allow",
+        "websearch": "allow"
+      }
+    },
+    "architect": {
+      "description": "Reviews architecture decisions, creates/updates ADRs, enforces Clean Architecture",
+      "mode": "all",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "webfetch": "allow"
+      }
+    },
+    "devops-engineer": {
+      "description": "CI/CD pipelines, Docker, Kubernetes, monitoring, infrastructure as code",
+      "mode": "all",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "task": "allow"
+      }
+    },
+    "client-onboarding": {
+      "description": "Guides client onboarding: discovery, spec, config, migration, training",
+      "mode": "all",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "webfetch": "allow"
+      }
+    },
+    "docs-engineer": {
+      "description": "Maintains living documentation: JSDoc, README, ADRs, runbooks, API docs",
+      "mode": "all",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "allow",
+        "bash": "deny",
+        "webfetch": "allow"
+      }
+    }
+  }
+}

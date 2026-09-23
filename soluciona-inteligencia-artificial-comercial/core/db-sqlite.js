@@ -318,9 +318,32 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     purchase_receipt_id INTEGER NOT NULL, po_item_id INTEGER,
     product_id INTEGER, variant_id INTEGER, cantidad REAL DEFAULT 1,
-    precio_unitario REAL DEFAULT 0, lote TEXT, fecha_vencimiento TEXT, ubicacion TEXT
+precio_unitario REAL DEFAULT 0, lote TEXT, fecha_vencimiento TEXT, ubicacion TEXT
   );
 `);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS inventory_lots (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tenant_id TEXT NOT NULL DEFAULT 'default',
+    product_id INTEGER NOT NULL,
+    variant_id INTEGER,
+    bodega TEXT DEFAULT 'principal',
+    numero_lote TEXT NOT NULL,
+    fecha_vencimiento TEXT NOT NULL,
+    condicion TEXT NOT NULL DEFAULT 'ambiente',
+    cantidad_inicial REAL DEFAULT 0,
+    cantidad_actual REAL DEFAULT 0,
+    costo_unitario REAL,
+    proveedor_id INTEGER,
+    recepcion_id INTEGER,
+    creado TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_lots_product ON inventory_lots(tenant_id, product_id);
+  CREATE INDEX IF NOT EXISTS idx_lots_venc ON inventory_lots(tenant_id, fecha_vencimiento);
+`);
+
 __migrar('products', {
   category_id: 'INTEGER', codigo_barras: 'TEXT', descripcion: 'TEXT', ingredientes: 'TEXT',
   precio: 'REAL', costo: 'REAL', unidad_medida: "TEXT DEFAULT 'unidad'", ubicacion: 'TEXT',
@@ -356,6 +379,7 @@ __migrar('stock', {
 __migrar('purchase_orders', {
   subtotal: 'REAL DEFAULT 0', impuestos: 'REAL DEFAULT 0', observacion: 'TEXT',
   descuento: 'REAL DEFAULT 0', created_at: 'TEXT DEFAULT CURRENT_TIMESTAMP', updated_at: 'TEXT',
+  creado_por: 'INTEGER', aprobado_por: 'INTEGER', fecha_aprobacion: 'TEXT',
 });
 __migrar('product_variants', { tenant_id: "TEXT DEFAULT 'default'" });
 

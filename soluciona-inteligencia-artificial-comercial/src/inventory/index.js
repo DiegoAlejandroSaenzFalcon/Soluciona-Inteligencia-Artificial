@@ -1,5 +1,6 @@
 ﻿'use strict';
 const { getClient } = require('../db/connection.js');
+const { normalizarLote } = require('./lotes.js');
 
 const num = v => (v == null || v === '' ? 0 : Number(v));
 const tenantId = 'default';
@@ -718,10 +719,13 @@ async function recibirPurchaseOrder(id, data, usuarioId = null) {
   const recibidos = body.items;
   if (!Array.isArray(recibidos) || !recibidos.length) throw Object.assign(new Error('items_requeridos'), { status: 400 });
 
+  // Lote obligatorio para todo producto (inventario alimentario):
+  // cada item recibido debe traer numeroLote y fechaVencimiento.
   const porItem = {};
   for (const r of recibidos) {
     if (r.poItemId == null || num(r.cantidad) <= 0) throw Object.assign(new Error('item_incompleto'), { status: 400 });
-    porItem[Number(r.poItemId)] = num(r.cantidad);
+    const lote = normalizarLote(r);
+    porItem[Number(r.poItemId)] = Object.assign(lote, { cantidad: num(r.cantidad) });
   }
 
   return tx(async c => {
@@ -736,8 +740,9 @@ async function recibirPurchaseOrder(id, data, usuarioId = null) {
 
     let completo = true;
     for (const it of po.items) {
-      const recibir = porItem[it.id] || 0;
-      if (recibir <= 0) continue;
+      const lote = porItem[it.id];
+      if (!lote || lote.cantidad <= 0) continue;
+      const recibir = lote.cantidad;
       const nuevaRecibida = it.cantidad_recibida + recibir;
       if (nuevaRecibida > it.cantidad) throw Object.assign(new Error('cantidad_excede'), { status: 409 });
 
@@ -745,7 +750,7 @@ async function recibirPurchaseOrder(id, data, usuarioId = null) {
         `INSERT INTO purchase_receipt_items (purchase_receipt_id, po_item_id, product_id, variant_id, cantidad, precio_unitario, lote, fecha_vencimiento, ubicacion)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
         [receiptId, it.id, it.product_id, it.variant_id, String(recibir), String(it.precio_unitario),
-         null, null, null]
+         lote.numeroLote, lote.fechaVencimiento, null]
       );
       await c.unsafe(
         'UPDATE purchase_order_items SET cantidad_recibida = $1 WHERE id = $2',
@@ -755,7 +760,7 @@ async function recibirPurchaseOrder(id, data, usuarioId = null) {
 
       // Entrada a stock (kardex) + actualizar costo
       if (it.product_id) {
-        const stockRow = await c.unsafe(
+        await c.unsafe(
           `INSERT INTO stock (tenant_id, product_id, variant_id, bodega, cantidad)
            VALUES ($1,$2,$3,'principal',$4)
            ON CONFLICT (tenant_id, product_id, variant_id, bodega)
@@ -769,6 +774,15 @@ async function recibirPurchaseOrder(id, data, usuarioId = null) {
           [tenantId, it.product_id, it.variant_id, String(recibir), String(it.precio_unitario), Number(id),
            `Recepción ${numero}`, usuarioId]
         );
+        await crearLote(c, {
+          productId: it.product_id,
+          variantId: it.variant_id,
+          lote,
+          cantidad: recibir,
+          costoUnitario: it.precio_unitario,
+          proveedorId: po.supplier_id,
+          recepcionId: receiptId,
+        });
         await c.unsafe(
           'UPDATE products SET costo = $1, updated_at = now() WHERE id = $2',
           [String(it.precio_unitario), it.product_id]
@@ -792,6 +806,90 @@ async function deletePurchaseOrder(id) {
   return { ok: true };
 }
 
+// ============================================================
+// LOTES (inventario alimentario) + FEFO
+// ============================================================
+
+// Crea o acumula un lote de inventario. Debe ejecutarse dentro de una transacción.
+async function crearLote(c, opts = {}) {
+  const {
+    productId, variantId = null, bodega = 'principal', lote,
+    cantidad = 0, costoUnitario = null, proveedorId = null, recepcionId = null,
+  } = opts;
+  const norm = (lote && lote.numeroLote && lote.fechaVencimiento) ? lote : normalizarLote(lote);
+
+  const existente = await c.unsafe(
+    `SELECT id FROM inventory_lots
+     WHERE tenant_id = $1 AND product_id = $2 AND COALESCE(variant_id, 0) = COALESCE($3, 0)
+       AND bodega = $4 AND numero_lote = $5`,
+    [tenantId, Number(productId), variantId, bodega, norm.numeroLote]
+  );
+
+  if (existente.length) {
+    await c.unsafe(
+      `UPDATE inventory_lots SET cantidad_actual = cantidad_actual + $1,
+         costo_unitario = COALESCE($2, costo_unitario), updated_at = $3
+       WHERE id = $4`,
+      [String(num(cantidad)), costoUnitario != null ? String(num(costoUnitario)) : null, new Date().toISOString(), existente[0].id]
+    );
+    return existente[0].id;
+  }
+
+  const rows = await c.unsafe(
+    `INSERT INTO inventory_lots (tenant_id, product_id, variant_id, bodega, numero_lote, fecha_vencimiento, condicion, cantidad_inicial, cantidad_actual, costo_unitario, proveedor_id, recepcion_id, creado)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING id`,
+    [tenantId, Number(productId), variantId, bodega, norm.numeroLote, norm.fechaVencimiento, norm.condicion,
+     String(num(cantidad)), String(num(cantidad)), costoUnitario != null ? String(num(costoUnitario)) : null,
+     proveedorId, recepcionId, new Date().toISOString()]
+  );
+  return rows[0].id;
+}
+
+function mapaLote(r) {
+  return {
+    ...r,
+    id: num(r.id),
+    product_id: num(r.product_id),
+    cantidad_inicial: r.cantidad_inicial == null ? null : num(r.cantidad_inicial),
+    cantidad_actual: r.cantidad_actual == null ? null : num(r.cantidad_actual),
+    costo_unitario: r.costo_unitario == null ? null : num(r.costo_unitario),
+  };
+}
+
+async function listarLotes(productId) {
+  const c = getClient();
+  const rows = await c.unsafe(
+    `SELECT l.id, l.product_id, l.variant_id, l.bodega, l.numero_lote, l.fecha_vencimiento, l.condicion,
+       l.cantidad_inicial, l.cantidad_actual, l.costo_unitario, l.proveedor_id, l.recepcion_id, l.creado,
+       p.nombre AS producto_nombre, p.codigo AS producto_codigo, p.unidad_medida,
+       pv.nombre AS variante_nombre, s.nombre AS proveedor_nombre
+     FROM inventory_lots l
+     JOIN products p ON p.id = l.product_id
+     LEFT JOIN product_variants pv ON pv.id = l.variant_id
+     LEFT JOIN suppliers s ON s.id = l.proveedor_id
+     WHERE l.tenant_id = $1 AND l.product_id = $2
+     ORDER BY l.fecha_vencimiento ASC, l.numero_lote ASC`,
+    [tenantId, Number(productId)]
+  );
+  return rows.map(mapaLote);
+}
+
+async function lotesPorVencer(dias = 7) {
+  const c = getClient();
+  const limite = new Date(Date.now() + (Number(dias) || 7) * 86400000).toISOString().slice(0, 10);
+  const rows = await c.unsafe(
+    `SELECT l.id, l.product_id, l.variant_id, l.bodega, l.numero_lote, l.fecha_vencimiento, l.condicion,
+       l.cantidad_actual, l.costo_unitario,
+       p.nombre AS producto_nombre, p.codigo AS producto_codigo, p.unidad_medida
+     FROM inventory_lots l
+     JOIN products p ON p.id = l.product_id
+     WHERE l.tenant_id = $1 AND COALESCE(l.cantidad_actual, 0) > 0 AND l.fecha_vencimiento <= $2
+     ORDER BY l.fecha_vencimiento ASC, p.nombre ASC`,
+    [tenantId, limite]
+  );
+  return rows.map(mapaLote);
+}
+
 module.exports = {
   listCategories, createCategory, updateCategory, deleteCategory,
   listProducts, getProduct, createProduct, updateProduct, deleteProduct,
@@ -800,4 +898,5 @@ module.exports = {
   listSuppliers, createSupplier, updateSupplier,
   listPurchaseOrders, getPurchaseOrder, createPurchaseOrder, updatePurchaseOrder,
   cambiarEstadoPurchaseOrder, recibirPurchaseOrder, deletePurchaseOrder,
+  listarLotes, lotesPorVencer,
 };

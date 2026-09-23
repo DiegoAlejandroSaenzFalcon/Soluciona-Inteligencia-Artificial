@@ -1,0 +1,25 @@
+{
+  "name": "domain-driven-design",
+  "version": "1.0.0",
+  "description": "Domain-Driven Design templates for Soluciona IA - Aggregates, Value Objects, Domain Events, Domain Services",
+  "author": "Soluciona IA Team",
+  "capabilities": [
+    "aggregate-template",
+    "value-object-template",
+    "domain-event-template",
+    "domain-service-template",
+    "repository-interface-template",
+    "factory-template"
+  ],
+  "templates": {
+    "aggregate": "templates/aggregate.template.ts",
+    "value-object": "templates/value-object.template.ts",
+    "domain-event": "templates/domain-event.template.ts",
+    "domain-service": "templates/domain-service.template.ts",
+    "repository-interface": "templates/repository-interface.template.ts",
+    "factory": "templates/factory.template.ts"
+  },
+  "scripts": {
+    "validate-bounded-context": "scripts/validate-bounded-context.js"
+  }
+}
