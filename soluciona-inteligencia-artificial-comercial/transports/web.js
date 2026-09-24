@@ -1029,6 +1029,30 @@ function iniciarWeb() {
       return;
     }
 
+    // ===== V3 — Salud del Sistema (determinista + IA opcional-narrada) =====
+    if (url === '/api/salud' && req.method === 'GET') {
+      if (!tokenValido(req)) {
+        res.writeHead(401, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ error: 'no_autenticado' }));
+      }
+      try {
+        const u = new URL(req.url, 'http://localhost');
+        const narrar = u.searchParams.get('narrar') === '1';
+        const { obtenerReporteCompleto } = require('../src/health/system-report.js');
+        const reporte = await obtenerReporteCompleto();
+        let narrativa = null;
+        if (narrar) {
+          const { narrarReporte } = require('../src/health/ai-narrator.js');
+          narrativa = await narrarReporte(reporte);
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ ...reporte, narrativa }));
+      } catch (e) {
+        return fail(res, e);
+      }
+      return;
+    }
+
     if (url === '/api/configuracion' && req.method === 'GET') {
       if (!autenticar(req)) {
         return fail(res, { status: 401, message: 'no_autenticado' });
