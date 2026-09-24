@@ -1,0 +1,1417 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Diego Alejandro Saenz Falcon">
+      
+      
+        <link rel="canonical" href="https://diegoalejandrosaenzfalcon.github.io/Soluciona-Inteligencia-Artificial/governance/ENGINEERING-DISCOVERY-REPORT/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Engineering Discovery & Repository Forensics Report - SOLUCIONA INTELIGENCIA ARTIFICIAL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#engineering-discovery-repository-forensics-report" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-header__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SOLUCIONA INTELIGENCIA ARTIFICIAL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Engineering Discovery &amp; Repository Forensics Report
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-nav__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SOLUCIONA INTELIGENCIA ARTIFICIAL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comercial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comercial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../empresarial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../residencial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residencial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#soluciona-inteligencia-artificial-2026-09-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soluciona Inteligencia Artificial — 2026-09-10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b-repository-baseline-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Repository Baseline (Git)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B. Repository Baseline (Git)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b1-estado-al-momento-de-la-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.1 Estado al momento de la auditoría
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b2-historial-de-docsdirector-plan-v1-6-commits-adelante-de-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.2 Historial de docs/director-plan-v1 (6 commits adelante de main)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b3-actividad-concurrente-no-coordinada-hallazgo-operacional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.3 Actividad concurrente NO coordinada (hallazgo operacional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-pr-4-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. PR #4 Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="C. PR #4 Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#c1-identificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C.1 Identificación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c2-desglose-por-archivo-y-veredicto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C.2 Desglose por archivo y veredicto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c3-conclusiones-sobre-pr-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C.3 Conclusiones sobre PR #4
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-architecture-baseline-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Architecture Baseline (Real)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="D. Architecture Baseline (Real)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#d1-comercial-soluciona-inteligencia-artificial-comercial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.1 Comercial — soluciona-inteligencia-artificial-comercial/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d2-empresarial-helpdesk-no-saas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.2 Empresarial — helpdesk (no SaaS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d3-residencial-vacio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.3 Residencial — vacío
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e-security-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E. Security Baseline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="E. Security Baseline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e1-hallazgos-confirmados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E.1 Hallazgos confirmados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2-nota-sobre-readmemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E.2 Nota sobre README.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#f-cicd-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F. CI/CD Baseline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="F. CI/CD Baseline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#f1-workflows-existentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F.1 Workflows existentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f2-ci-cdyml-tres-defectos-independientes-todos-confirmados-leyendo-archivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F.2 ci-cd.yml — tres defectos independientes (todos confirmados leyendo archivo)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#g-agentic-langgraph-forensics-p0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G. Agentic / LangGraph Forensics (P0)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="G. Agentic / LangGraph Forensics (P0)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#g1-comandos-ejecutados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G.1 Comandos ejecutados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#g2-resultados-verificados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G.2 Resultados (verificados)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#g3-veredicto-forense" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G.3 Veredicto forense
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#h-technical-debt-clasificada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        H. Technical Debt (clasificada)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="H. Technical Debt (clasificada)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#p0-critico-bloqueante" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P0 — Crítico (bloqueante)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p1-alto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P1 — Alto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p2-medio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P2 — Medio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p3-bajo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P3 — Bajo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i-risks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I. Risks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#j-recommended-next-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        J. Recommended Next Step
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#k-anexo-evidencias-de-referencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        K. Anexo — Evidencias de referencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="engineering-discovery-repository-forensics-report">Engineering Discovery &amp; Repository Forensics Report</h1>
+<h2 id="soluciona-inteligencia-artificial-2026-09-10">Soluciona Inteligencia Artificial — 2026-09-10</h2>
+<blockquote>
+<p><strong>Alcance</strong>: Fase de descubrimiento + forense de repositorio. NO se implementaron funcionalidades, NO se modificó arquitectura ni runtime, NO se hizo commit/push/merge.
+<strong>Método</strong>: solo lectura (git inspect, gh API, lectura de archivos).
+<strong>Regla de evidencia aplicada</strong>: DOCUMENTADO ≠ IMPLEMENTADO ≠ VERIFICADO.</p>
+</blockquote>
+<hr />
+<h2 id="a-executive-summary">A. Executive Summary</h2>
+<p>El repositorio <code>DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial</code> es <strong>público</strong> y contiene un <strong>monorepo real de 3 variantes</strong> con estados de madurez muy distintos:</p>
+<table>
+<thead>
+<tr>
+<th>Variante</th>
+<th>Estado REAL (verificado)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Comercial</strong> (<code>soluciona-inteligencia-artificial-comercial/</code>)</td>
+<td>Código funcional (Node 22/TS/Fastify/Drizzle/PG/Redis/DIAN/WhatsApp) pero con <strong>conflictos arquitectónicos sin reconciliar</strong> (dual runtime, doble capa PG, IA legacy vs Router).</td>
+</tr>
+<tr>
+<td><strong>Empresarial</strong> (<code>soluciona-inteligencia-artificial-empresarial/</code>)</td>
+<td><strong>Scaffolding de helpdesk/soporte TI</strong> (AGENTS.md, <code>.opencode/agents/{triager,solver,revisor}.md</code>, <code>kb/</code>, <code>tickets/</code>, <code>templates/</code>, <code>docs/01-06</code>). Sin SaaS.</td>
+</tr>
+<tr>
+<td><strong>Residencial</strong> (<code>soluciona-inteligencia-artificial-residencial/</code>)</td>
+<td><strong>Vacío</strong> — solo <code>README.md</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Hallazgos de mayor impacto:</p>
+<ol>
+<li>
+<p><strong>La capa agentic SolucionaTIA/LangGraph NUNCA existió en este repositorio</strong> (ver §G). El trabajo previo descrito en el contexto histórico (E0/A2A/E1, commits <code>eb5d42f</code>–<code>c1d4772</code>) no está en <code>main</code>, no está en ramas, no está en objetos unreachable y no hay repositorio separado para él. Solo sobrevive como narrativa en <code>SolucionaTIA_chat_completo.md</code>.</p>
+</li>
+<li>
+<p><strong>El PR #4 está contaminado</strong> con 11 archivos <strong>fuera de alcance</strong> (<code>docs/optimization/windows-11-pro/*</code> + <code>scripts/windows/*</code>) que son una auditoría/optimización del equipo personal del propietario, y que <strong>exponen en un repo público</strong> detalles de seguridad del equipo local (cuenta admin sin contraseña, BitLocker OFF, hostname, IP LAN). Ese contenido pertenece a los repos <code>Windows-11-Professional</code> y <code>Red-Hat-Enterprise-Linux</code>, no aquí.</p>
+</li>
+<li>
+<p><strong>CI/CD roto en tres frentes independientes</strong> (ver §F): <code>npm ci</code> en raíz sin <code>package.json</code>; y refiere scripts <code>npm run lint</code> y <code>npm run test:integration</code> que <strong>no existen</strong> en <code>package.json</code>.</p>
+</li>
+<li>
+<p><strong>Actividad multiagente concurrente sin coordinación</strong> (ver §B): durante esta misma auditoría apareció un commit nuevo (<code>90c866f</code>) en la rama, generado por otro proceso/IA sin register en <code>CLAIMS.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="b-repository-baseline-git">B. Repository Baseline (Git)</h2>
+<h3 id="b1-estado-al-momento-de-la-auditoria">B.1 Estado al momento de la auditoría</h3>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Valor</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Branch por defecto</td>
+<td><code>main</code></td>
+<td><code>git branch -a</code>, GitHub API</td>
+</tr>
+<tr>
+<td>HEAD de <code>main</code></td>
+<td><code>68ee6ce</code> <code>fix: nav apunta a docs/ subdirectorios</code></td>
+<td><code>git log</code></td>
+</tr>
+<tr>
+<td>HEAD de <code>docs/director-plan-v1</code></td>
+<td><code>90c866f</code> <code>fix(optimization): correct scripts to match actual changes applied</code></td>
+<td><code>git log</code></td>
+</tr>
+<tr>
+<td>Ramas remotas</td>
+<td><code>main</code>, <code>docs/director-plan-v1</code>, <code>feature/dian-software-propio</code>, <code>gh-pages</code></td>
+<td><code>git branch -a</code></td>
+</tr>
+<tr>
+<td>Tags</td>
+<td><strong>ninguno</strong></td>
+<td><code>git tag -l</code> (vacío)</td>
+</tr>
+<tr>
+<td>Working tree local</td>
+<td>limpio (sin cambios sin commit)</td>
+<td><code>git status</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="b2-historial-de-docsdirector-plan-v1-6-commits-adelante-de-main">B.2 Historial de <code>docs/director-plan-v1</code> (6 commits adelante de <code>main</code>)</h3>
+<pre><code>c2e27c3 docs(governance): add Soluciona IA Plan Director v1.0
+7a3214b docs(governance): add root AI collaboration policy
+ab6ac1a docs(governance): define contribution and migration process
+e70515e docs(governance): add verified repository baseline
+3e68ae0 docs(governance): ampliar plan director, DR, proceso dev/prod y recuperación agentic
+0a05554 feat(optimization): Windows 11 Pro forensic audit + performance optimization scripts
+90c866f fix(optimization): correct scripts to match actual changes applied
+</code></pre>
+<p><code>main</code> no tiene commits adelante (0 behind). <code>feature/dian-software-propio</code> apunta a <code>9ade101</code> sobre <code>07f10e1</code> (el trabajo DIAN ya está mergeado a <code>main</code> vía <code>07f10e1</code> → ancestro de <code>main</code>; la rama residual solo añade un commit de <code>CLAIMS.md</code>).</p>
+<h3 id="b3-actividad-concurrente-no-coordinada-hallazgo-operacional">B.3 Actividad concurrente NO coordinada (hallazgo operacional)</h3>
+<p>El <code>reflog</code> demuestra que <strong>durante la auditoría</strong> la rama avanzó de <code>0a05554</code> → <code>90c866f</code>:</p>
+<pre><code>90c866f HEAD@{0}: commit: fix(optimization): correct scripts to match actual changes applied
+0a05554 HEAD@{1}: commit: feat(optimization): Windows 11 Pro forensic audit ...
+3e68ae0 HEAD@{2}: commit: docs(governance): ampliar plan director ...
+e70515e HEAD@{3}: checkout: moving from main to docs/director-plan-v1
+68ee6ce HEAD@{4}: clone: from https://github.com/...Soluciona-Inteligencia-Artificial.git
+</code></pre>
+<p><strong>Conclusión</strong>: hay al menos otro agente IA operando sobre la misma rama sin coordinación por <code>CLAIMS.md</code> ni control de scope. Esto viola el propio <code>AGENTS.md</code>/<code>CONTRIBUTING.md</code> del proyecto (que exige registrar ownership y no mezclar dominios).</p>
+<hr />
+<h2 id="c-pr-4-audit">C. PR #4 Audit</h2>
+<h3 id="c1-identificacion">C.1 Identificación</h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Número</td>
+<td>#4</td>
+</tr>
+<tr>
+<td>Título</td>
+<td><code>docs(governance): establish Plan Director and AI collaboration rules v1.0</code></td>
+</tr>
+<tr>
+<td>Estado</td>
+<td>OPEN, <strong>DRAFT</strong>, MERGEABLE</td>
+</tr>
+<tr>
+<td>Head / Base</td>
+<td><code>docs/director-plan-v1</code> → <code>main</code></td>
+</tr>
+<tr>
+<td>Cambios</td>
+<td>19 archivos, +3,419 líneas, 0 eliminaciones</td>
+</tr>
+</tbody>
+</table>
+<h3 id="c2-desglose-por-archivo-y-veredicto">C.2 Desglose por archivo y veredicto</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Archivo</th>
+<th>En alcance</th>
+<th>Veredicto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>AGENTS.md</code></td>
+<td>✅</td>
+<td>Mantener (gobernanza multi-IA)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>CONTRIBUTING.md</code></td>
+<td>✅</td>
+<td>Mantener</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>PROMPT_MAESTRO_MULTIAGENTE_CONTEXTO_TOTAL.md</code></td>
+<td>✅</td>
+<td>Mantener</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>docs/governance/CURRENT-STATE-v1.0.md</code></td>
+<td>✅</td>
+<td>Mantener</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>docs/governance/DISASTER-RECOVERY.md</code></td>
+<td>✅</td>
+<td>Mantener</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>docs/governance/LANGGRAPH-RECOVERY-REPORT.md</code></td>
+<td>✅</td>
+<td>Mantener (requiere actualizar con hallazgo definitivo §G)</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>docs/governance/PLAN-DIRECTOR-SOLUCIONA-IA-v1.0.md</code></td>
+<td>✅</td>
+<td>Mantener</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>docs/governance/PROCESO-DESARROLLO-PRODUCCION.md</code></td>
+<td>✅</td>
+<td>Mantener</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>docs/optimization/windows-11-pro/AUDIT-2026-09-10.md</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong> — auditoría del laptop personal; expone credenciales débiles en repo público</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>docs/optimization/windows-11-pro/DECISIONS.md</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>docs/optimization/windows-11-pro/README.md</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong></td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>docs/optimization/windows-11-pro/ROLLBACK.md</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong></td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>scripts/windows/01-security-baseline.ps1</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong></td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>scripts/windows/02-performance-core.ps1</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong></td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>scripts/windows/03-vbs-hvci-toggle.ps1</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong> (altera seguridad kernel)</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>scripts/windows/04-fine-tuning.ps1</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong></td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>scripts/windows/05-rhel-grub-recovery.ps1</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong> (recuperación SO, no del proyecto)</td>
+</tr>
+<tr>
+<td>18</td>
+<td><code>scripts/windows/rollback-all.ps1</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong></td>
+</tr>
+<tr>
+<td>19</td>
+<td><code>scripts/windows/verify-optimization.ps1</code></td>
+<td>❌</td>
+<td><strong>FUERA DE ALCANCE</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="c3-conclusiones-sobre-pr-4">C.3 Conclusiones sobre PR #4</h3>
+<ul>
+<li><strong>Correcto</strong>: Los 8 archivos de gobernanza (1-8) son pertinentes y están bien estructurados.</li>
+<li><strong>Fuera de alcance</strong>: Los 11 archivos (9-19) son de optimización/seguridad del equipo Windows personal + recuperación RHEL. Constituyen:</li>
+<li><strong>Mezcla de dominios</strong> (infraestructura personal vs gobernanza del producto), prohibida por el propio <code>CONTRIBUTING.md</code>.</li>
+<li><strong>Riesgo de exposición</strong>: el <code>AUDIT-2026-09-10.md</code> documenta en un repo <em>público</em>: cuenta local <code>Diego Saenz</code> con <strong><code>PasswordRequired=False</code></strong>, hostname <code>DESKTOP-KMRGNQU</code>, IP LAN <code>192.168.20.49</code>, BitLocker OFF, seriales de RAM y modelo de disco.</li>
+<li><strong>Riesgo operativo</strong>: los scripts modifican registro, servicios y seguridad del kernel (HVCI/VBS, NetBIOS, Spooler, OneDrive) sin relación con el producto.</li>
+<li><strong>Debe salir del PR</strong>: archivos 9-19. Destino correcto: repo <code>Windows-11-Professional</code> (scripts 01-04, verify, rollback) y repo <code>Red-Hat-Enterprise-Linux</code> (05-rhel-grub-recovery). </li>
+<li><strong>Debe permanecer</strong>: archivos 1-8 (gobernanza).</li>
+<li><strong>Debe modificarse</strong>: <code>LANGGRAPH-RECOVERY-REPORT.md</code> para reflejar el veredicto definitivo (§G): "no era recuperable porque nunca estuvo en este repo".</li>
+</ul>
+<hr />
+<h2 id="d-architecture-baseline-real">D. Architecture Baseline (Real)</h2>
+<h3 id="d1-comercial-soluciona-inteligencia-artificial-comercial">D.1 Comercial — <code>soluciona-inteligencia-artificial-comercial/</code></h3>
+<p>Backend Node.js (runtime real <code>node index.js</code>), con estructura amplia:</p>
+<ul>
+<li><strong>Entrypoints (dual runtime NO reconciliado)</strong>:</li>
+<li><code>index.js</code> (legacy, <code>package.json</code> → <code>"start": "node index.js"</code>): carga <code>config.js</code>, <code>core/modules</code>, Baileys por defecto y Cloud API opcional (<code>WHATSAPP_TRANSPORT=cloud</code>).</li>
+<li><code>src/index.ts</code> (Clean Architecture TS): <code>getConfig</code>, <code>buildServer</code>, <code>getPool</code>, bootstrap Fastify. <strong>No</strong> es la ruta de arranque por defecto.</li>
+<li><strong>Datos (doble capa NO reconciliada)</strong>:</li>
+<li><code>core/db.js</code> (SQLite o PostgreSQL), <code>core/db-pg.js</code> (PG legacy), <code>src/infrastructure/database/pool.ts</code> (PG Clean Arch).</li>
+<li><code>src/db/schema.ts</code> (Drizzle: tenants, users, permissions, products, stock, movements, suppliers…; <code>config_secrets</code> con AES-256-GCM).</li>
+<li><strong>WhatsApp</strong>: Baileys (<code>@whiskeysockets/baileys</code>) + Cloud API (<code>src/whatsapp/cloud/transport.js</code>). Migración <strong>PARCIAL</strong>.</li>
+<li><strong>IA (legacy)</strong>: <code>core/ai.js</code> + <code>core/ia-pool.js</code> (rotación de proveedores/claves, cuotas, fallback). <strong>No</strong> es un Model Router.</li>
+<li><strong>DIAN Software Propio</strong>: <code>dian-middleware/</code> (firma <code>xml-crypto</code>, SOAP WS-Security, cola BullMQ), integración <code>core/adaptadores/dian-propio.js</code>. Implementado (commit <code>07f10e1</code>).</li>
+<li><strong>Auth</strong>: <code>src/auth/</code>, JWT, reset password, RBAC seed (<code>reset-admin.js</code>).</li>
+<li><strong>Paneles</strong>: <code>dashboard.html</code>, <code>panel-*.html/js</code> (global, empresarial, central, inventario, whatsapp-lite, contabilidad, config).</li>
+<li><strong>Docker</strong>: <code>Dockerfile.prod</code>/<code>Dockerfile.dev</code>/<code>Dockerfile.sidecar</code>, <code>docker-compose.*.example.yml</code>.</li>
+<li><strong>Tests</strong>: Vitest (<code>tests/unit</code>, <code>tests/setup.js</code>). <strong>Solo unit</strong>; no hay carpeta <code>tests/integration</code>.</li>
+<li><strong>Calidad</strong>: <code>.eslintrc.js</code>, <code>.prettierrc</code>, <code>husky</code>, <code>lint-staged</code>, <code>tsconfig.json</code>. <strong>No hay script npm <code>lint</code></strong>.</li>
+</ul>
+<h3 id="d2-empresarial-helpdesk-no-saas">D.2 Empresarial — helpdesk (no SaaS)</h3>
+<p><code>soluciona-inteligencia-artificial-empresarial/</code>: <code>AGENTS.md</code> (reglas soporte TI, tickets append-only, KB), <code>.opencode/agents/{triager,solver,revisor}.md</code>, <code>opencode.json</code> (model <code>deepseek-v4-flash-free</code>, permisos <code>ask</code>), <code>clientes/.gitkeep</code>, <code>docs/01-06</code>, <code>kb/</code> (runbooks), <code>scripts/</code>, <code>templates/</code>, <code>tickets/.gitkeep</code>, <code>index.js</code>.</p>
+<p>Es un <strong>modelo de operación de soporte TI con agentes OpenCode</strong>, no un producto de software equivalente al Comercial.</p>
+<h3 id="d3-residencial-vacio">D.3 Residencial — vacío</h3>
+<p><code>soluciona-inteligencia-artificial-residencial/</code> contiene únicamente <code>README.md</code>. Sin implementación.</p>
+<hr />
+<h2 id="e-security-baseline">E. Security Baseline</h2>
+<h3 id="e1-hallazgos-confirmados">E.1 Hallazgos confirmados</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Hallazgo</th>
+<th>Severidad</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E1</td>
+<td>Repo <strong>público</strong> pero <code>README.md</code> declara "repositorio <strong>privado</strong>"</td>
+<td>ALTO</td>
+<td>GitHub API <code>visibility=public</code>; <code>README.md</code> línea "Este repositorio privado…"</td>
+</tr>
+<tr>
+<td>E2</td>
+<td>Exposición en repo público de seguridad del equipo personal (admin sin contraseña, BitLocker OFF, hostname/IP)</td>
+<td><strong>CRÍTICO</strong></td>
+<td><code>docs/optimization/windows-11-pro/AUDIT-2026-09-10.md</code></td>
+</tr>
+<tr>
+<td>E3</td>
+<td><code>SECURITY.md</code> (cero secretos) y <code>HONEYTOKEN.md</code> presentes y coherentes</td>
+<td>OK</td>
+<td>raíz</td>
+</tr>
+<tr>
+<td>E4</td>
+<td><code>gitleaks.yml</code> workflow en raíz (secret scanning)</td>
+<td>OK</td>
+<td><code>.github/workflows/gitleaks.yml</code></td>
+</tr>
+<tr>
+<td>E5</td>
+<td><code>config.js</code> y <code>.env.example</code> excluyen secretos reales</td>
+<td>OK (documentado, no verificado E2E)</td>
+<td><code>SECURITY.md</code>, <code>.gitignore</code></td>
+</tr>
+<tr>
+<td>E6</td>
+<td>Sin branch protection / rulesets en <code>main</code></td>
+<td>ALTO</td>
+<td>GitHub API <code>rulesets: []</code>; <code>protected=false</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="e2-nota-sobre-readmemd">E.2 Nota sobre <code>README.md</code></h3>
+<p><code>README.md</code> (raíz) está codificado en <strong>UTF-16</strong> (o con BOM que las herramientas detectan como binario), lo que provoca interpretación errónea ("binary file") y mojibake. Recomendable normalizar a UTF-8. Clasificación: <code>DESCONOCIDO</code> si afecta a MkDocs/escaners.</p>
+<hr />
+<h2 id="f-cicd-baseline">F. CI/CD Baseline</h2>
+<h3 id="f1-workflows-existentes">F.1 Workflows existentes</h3>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Ruta</th>
+<th>Función</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs.yml</code></td>
+<td><code>.github/workflows/</code> (raíz)</td>
+<td>MkDocs → GitHub Pages</td>
+<td>OK (documentado)</td>
+</tr>
+<tr>
+<td><code>pages.yml</code></td>
+<td><code>.github/workflows/</code> (raíz)</td>
+<td>GitHub Pages</td>
+<td>OK (documentado)</td>
+</tr>
+<tr>
+<td><code>gitleaks.yml</code></td>
+<td><code>.github/workflows/</code> (raíz)</td>
+<td>Secret scanning</td>
+<td>OK (documentado)</td>
+</tr>
+<tr>
+<td><code>ci-cd.yml</code></td>
+<td><code>soluciona-inteligencia-artificial-comercial/.github/workflows/</code></td>
+<td>Lint/typecheck/unit/security/docker/deploy</td>
+<td><strong>ROTO</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="f2-ci-cdyml-tres-defectos-independientes-todos-confirmados-leyendo-archivo">F.2 <code>ci-cd.yml</code> — tres defectos independientes (todos confirmados leyendo archivo)</h3>
+<ol>
+<li><strong>Working directory / build context erróneo</strong>: los jobs ejecutan <code>npm ci</code> sin <code>working-directory</code> (GitHub Actions corre en la raíz del repo), pero el único <code>package.json</code> real está en <code>soluciona-inteligencia-artificial-comercial/</code>.</li>
+<li><strong><code>npm run lint</code> inexistente</strong>: el workflow invoca <code>npm run lint</code>, pero <code>package.json</code> NO define script <code>lint</code> (solo existe <code>.eslintrc.js</code>).</li>
+<li><strong><code>npm run test:integration</code> inexistente</strong>: el workflow invoca <code>npm run test:integration</code>, pero <code>package.json</code> NO define ese script y no existe <code>tests/integration/</code> (solo <code>tests/unit</code>).</li>
+</ol>
+<p>Además: el job de Docker usa <code>context: .</code> / <code>file: ./Dockerfile.prod</code> (debería apuntar al submódulo). Clasificación global: <code>PARCIALMENTE_IMPLEMENTADO</code> (intención) / <strong>no ejecutable</strong> tal cual.</p>
+<hr />
+<h2 id="g-agentic-langgraph-forensics-p0">G. Agentic / LangGraph Forensics (P0)</h2>
+<h3 id="g1-comandos-ejecutados">G.1 Comandos ejecutados</h3>
+<pre><code>git log --all --oneline --grep=&lt;langgraph|solucionatia|agentic|SolucionaTIA|SPEC|pyproject&gt; -i
+git log --all --name-status -- 'solucionatia/*' 'ai-coordination/*'
+git log --all --name-status -- '*pyproject*' '*langgraph*' 'requirements*.txt'
+git fsck --full --no-reflogs --unreachable
+git reflog --all
+gh repo list DiegoAlejandroSaenzFalcon --limit 100
+búsqueda de directorios solucionatia*/ai-coordination/ y archivos langgraph.json/pyproject.toml
+</code></pre>
+<h3 id="g2-resultados-verificados">G.2 Resultados (verificados)</h3>
+<table>
+<thead>
+<tr>
+<th>Consulta</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grep</code> por <code>langgraph</code>/<code>solucionatia</code>/<code>agentic</code> en commits</td>
+<td><strong>Solo</strong> <code>3e68ae0</code> (el commit de gobernanza de esta serie; no evidencia histórica de la capa)</td>
+</tr>
+<tr>
+<td><code>--name-status</code> sobre <code>solucionatia/</code> / <code>ai-coordination/</code></td>
+<td><strong>vacío</strong></td>
+</tr>
+<tr>
+<td><code>pyproject.toml</code> / <code>langgraph.json</code> / <code>requirements*.txt</code></td>
+<td><strong>nunca versionados</strong></td>
+</tr>
+<tr>
+<td><code>git fsck --unreachable</code></td>
+<td><strong>vacío</strong> (cero objetos dangling/unreachable)</td>
+</tr>
+<tr>
+<td><code>git reflog --all</code></td>
+<td>4 entradas: <code>clone</code> (68ee6ce) → <code>checkout</code> → commit gobernanza → 2 commits Windows-opt</td>
+</tr>
+<tr>
+<td>Repositorios del owner</td>
+<td>8 total; <strong>no existe</strong> ningún repo <code>SolucionaTIA</code>, <code>LangGraph</code> ni similar</td>
+</tr>
+<tr>
+<td>Directorio <code>solucionatia/</code> en working tree</td>
+<td><strong>no existe</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="g3-veredicto-forense">G.3 Veredicto forense</h3>
+<blockquote>
+<p><strong>La capa SolucionaTIA/LangGraph nunca existió en este repositorio.</strong></p>
+</blockquote>
+<ul>
+<li>Los commits <code>eb5d42f</code>, <code>b5e6b41</code>, <code>6fb810c</code>, <code>c1d4772</code> referidos en el contexto histórico <strong>no son alcanzables</strong> y no están en objetos unreachable (fsck vacío).</li>
+<li>El <code>reflog</code> del clone local muestra que el clone se inició hoy desde <code>68ee6ce</code>; no hay rastro de un historial previo reescrito.</li>
+<li>No hay repositorio alternativo que contuviera esa capa.</li>
+<li>Conclusión: el trabajo E0/A2A/E1 vivió en <strong>archivos locales no versionados en otro entorno/clon</strong>, que se perdió (el propio contexto histórico documenta reinicios de Windows que hacen perder trabajo no commiteado). El único vestigio es la narrativa en <code>SolucionaTIA_chat_completo.md</code> (y su duplicado), que <strong>no contiene código ni spec</strong>.</li>
+</ul>
+<p><strong>Implicación</strong>: no hay "recuperación" posible vía Git. La única vía es <strong>reconstruir</strong> desde la narrativa histórica + re-especificación, o localizar un backup fuera de GitHub (a confirmar con el Owner). <code>LANGGRAPH-RECOVERY-REPORT.md</code> debe actualizarse para reflejar <code>NO_ENCONTRADO_TRAS_INSPECCION</code> como veredicto definitivo (ya no "parcial").</p>
+<hr />
+<h2 id="h-technical-debt-clasificada">H. Technical Debt (clasificada)</h2>
+<h3 id="p0-critico-bloqueante">P0 — Crítico (bloqueante)</h3>
+<ul>
+<li>H1. PR #4 contaminado con contenido fuera de alcance que expone seguridad personal (E2).</li>
+<li>H2. CI/CD roto en 3 frentes (F.2.1–F.2.3).</li>
+<li>H3. Sin branch protection en <code>main</code>.</li>
+<li>H4. README raíz declara "privado" cuando el repo es público (E1).</li>
+</ul>
+<h3 id="p1-alto">P1 — Alto</h3>
+<ul>
+<li>H5. Dual runtime <code>index.js</code> vs <code>src/index.ts</code> sin reconciliar.</li>
+<li>H6. Doble capa PostgreSQL (<code>core/db-pg.js</code> vs <code>src/infrastructure/database/pool.ts</code>).</li>
+<li>H7. IA legacy (<code>core/ai.js</code>/<code>ia-pool.js</code>) sin converger hacia Model Router.</li>
+<li>H8. Migración Baileys → Cloud API incompleta.</li>
+</ul>
+<h3 id="p2-medio">P2 — Medio</h3>
+<ul>
+<li>H9. Archivos temporales en raíz del comercial: <code>fix-imports.js</code>, <code>fix_esc*.js</code>, <code>test_esc*.js</code>, <code>run.err</code>, <code>server.err</code>, <code>*.txt</code> de estado (<code>SUMMARY</code>, <code>FINAL_SOLUTION</code>, <code>PRODUCTION_READY</code>).</li>
+<li>H10. Scripts <code>.bat</code> Windows-only sin alternativa cross-platform.</li>
+<li>H11. <code>DEPLOY-ORACLE.md</code> legacy (asumía 4 OCPU/24 GB) desincronizado de la meta 2 OCPU/12 GB ARM64.</li>
+<li>H12. <code>README.md</code> raíz con codificación UTF-16 / BOM.</li>
+</ul>
+<h3 id="p3-bajo">P3 — Bajo</h3>
+<ul>
+<li>H13. Módulo Residencial vacío (sin desarrollar, coherente con README).</li>
+<li>H14. Falta <code>test:integration</code> y CI de integración real.</li>
+</ul>
+<hr />
+<h2 id="i-risks">I. Risks</h2>
+<table>
+<thead>
+<tr>
+<th>Categoría</th>
+<th>Riesgo</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Seguridad</td>
+<td>Repo público con credenciales débiles del equipo del Owner expuestas</td>
+<td>E2</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>Sin branch protection: force-push / commit directo a <code>main</code> posible</td>
+<td>E6</td>
+</tr>
+<tr>
+<td>Operación</td>
+<td>Multiagente concurrente editando la misma rama sin CLAIMS</td>
+<td>B.3</td>
+</tr>
+<tr>
+<td>Arquitectura</td>
+<td>Triple ruta de arranque/persistencia/IA crea estados divergentes</td>
+<td>H5-H8</td>
+</tr>
+<tr>
+<td>Calidad</td>
+<td>CI/CD que referencia scripts inexistentes da falsa confianza de gates</td>
+<td>F.2</td>
+</tr>
+<tr>
+<td>Producto</td>
+<td>SolucionaTIA descrita como existente en docs pero nunca implementada</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Continuidad</td>
+<td>Historias reescritas/pérdidas por reinicios de host (patrón previo)</td>
+<td>G.3</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="j-recommended-next-step">J. Recommended Next Step</h2>
+<p><strong>¿Qué debemos hacer después de esta auditoría?</strong></p>
+<p>En este orden estricto, y <strong>antes de construir cualquier departamento multiagente</strong>:</p>
+<ol>
+<li><strong>Sanear PR #4</strong> (P0): separar en dos PRs independientes.</li>
+<li>PR A (gobernanza): los 8 archivos de gobernanza.</li>
+<li>PR B (mover fuera): los 11 archivos Windows/RHEL → a <code>Windows-11-Professional</code> y <code>Red-Hat-Enterprise-Linux</code>, <strong>eliminando</strong> del repo público el <code>AUDIT</code> que expone credenciales del equipo personal.</li>
+<li><strong>Reconciliar CI/CD</strong> (Issue #3) con verificación real de <code>working-directory</code>, eliminando referencias a scripts inexistentes (<code>lint</code>, <code>test:integration</code>) o implementándolos.</li>
+<li><strong>Proteger <code>main</code></strong> (ruleset o branch protection) + corregir <code>README.md</code> ("público") + normalizar codificación a UTF-8.</li>
+<li><strong>Cerrar el veredicto SolucionaTIA</strong> (P0 forense): actualizar <code>LANGGRAPH-RECOVERY-REPORT.md</code> a definitivo; decidir con el Owner si hay backup externo o se re-especifica desde cero.</li>
+<li><strong>Solo después</strong>: diseñar (no implementar) el departamento multiagente sobre una base saneada, con ADR de arquitectura de agentes (<code>.github/agents/</code>, LangGraph, orquestadores) <strong>postergados</strong> hasta que 1-4 estén verdes.</li>
+</ol>
+<hr />
+<h2 id="k-anexo-evidencias-de-referencia">K. Anexo — Evidencias de referencia</h2>
+<ul>
+<li>Commit <code>main</code>: <code>68ee6ce</code> · Commit gobernanza: <code>3e68ae0</code> · Commits windows-opt: <code>0a05554</code>, <code>90c866f</code></li>
+<li>PR #4: <code>https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial/pull/4</code></li>
+<li><code>git fsck --full --no-reflogs --unreachable</code> → sin output (vacío)</li>
+<li>Repos del owner (8): Soluciona-Inteligencia-Artificial, diegoalejandrosaenzfalcon.github.io, Trading-Ciencia, Windows-11-Professional, Tecnologias-de-la-Informacion, Red-Hat-Enterprise-Linux, Directivas-de-Seguridad-IA, Automatizacion-de-Datos</li>
+</ul>
+<hr />
+<p><em>Reporte generado en modo solo-lectura. Sin commit/push. Pendiente de revisión del CTO/Owner.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Diego Alejandro Saenz Falcon
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,996 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Diego Alejandro Saenz Falcon">
+      
+      
+        <link rel="canonical" href="https://diegoalejandrosaenzfalcon.github.io/Soluciona-Inteligencia-Artificial/governance/LOCAL-VS-ORACLE-BASELINE/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>LOCAL vs ORACLE — Baseline de Entorno y Mapa de Migración - SOLUCIONA INTELIGENCIA ARTIFICIAL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#local-vs-oracle-baseline-de-entorno-y-mapa-de-migracion" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-header__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SOLUCIONA INTELIGENCIA ARTIFICIAL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              LOCAL vs ORACLE — Baseline de Entorno y Mapa de Migración
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-nav__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SOLUCIONA INTELIGENCIA ARTIFICIAL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comercial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comercial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../empresarial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../residencial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residencial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fase-0-snapshot-verificado-2026-09-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FASE 0 — Snapshot verificado 2026-09-10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-deteccion-de-entorno-local-windows-nativo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Detección de Entorno Local (Windows nativo)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-conclusion-de-entorno-critica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Conclusión de Entorno (crítica)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-snapshot-de-filesystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Snapshot de Filesystem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-inventario-funcional-modulo-comercial-verificado-en-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Inventario Funcional — Módulo Comercial (verificado en código)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-mapa-local-cloud-matriz-de-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mapa Local → Cloud (matriz de migración)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-prerrequisitos-ordenados-fase-1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Prerrequisitos ordenados (FASE 1-2)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-estado-de-trazabilidad-local-vs-git-vs-oracle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Estado de trazabilidad (LOCAL vs GIT vs ORACLE)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-fase-1-resultados-de-ejecucion-local-2026-09-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. FASE 1 — Resultados de ejecución local (2026-09-10)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. FASE 1 — Resultados de ejecución local (2026-09-10)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-conclusiones-de-ejecucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Conclusiones de ejecución
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="local-vs-oracle-baseline-de-entorno-y-mapa-de-migracion">LOCAL vs ORACLE — Baseline de Entorno y Mapa de Migración</h1>
+<h2 id="fase-0-snapshot-verificado-2026-09-10">FASE 0 — Snapshot verificado 2026-09-10</h2>
+<blockquote>
+<p>Solo lectura. No se alteró el entorno. Los estados usan las clasificaciones canónicas.</p>
+</blockquote>
+<hr />
+<h2 id="1-deteccion-de-entorno-local-windows-nativo">1. Detección de Entorno Local (Windows nativo)</h2>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Estado</th>
+<th>Ruta / Versión</th>
+<th>Nota</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OS</td>
+<td>FOUND</td>
+<td>Windows 11 Pro, build <strong>26200</strong> (25H2), 64-bit</td>
+<td><code>Get-CimInstance Win32_OperatingSystem</code></td>
+</tr>
+<tr>
+<td>PowerShell</td>
+<td>FOUND</td>
+<td><strong>5.1</strong> (build 26100.9444)</td>
+<td><code>$PSVersionTable</code></td>
+</tr>
+<tr>
+<td>Git</td>
+<td>FOUND</td>
+<td><code>C:\Program Files\Git\cmd\git.exe</code> <strong>2.55.0.3</strong></td>
+<td>instalado vía winget (esta sesión)</td>
+</tr>
+<tr>
+<td>GitHub CLI</td>
+<td>FOUND</td>
+<td><code>C:\Program Files\GitHub CLI\gh.exe</code> <strong>2.100.0</strong></td>
+<td>instalado vía winget (esta sesión), autenticado</td>
+</tr>
+<tr>
+<td>SSH (OpenSSH)</td>
+<td>FOUND</td>
+<td><code>C:\Windows\System32\OpenSSH\ssh.exe</code></td>
+<td>nativo Windows</td>
+</tr>
+<tr>
+<td>winget</td>
+<td>FOUND</td>
+<td><strong>1.29.290</strong></td>
+<td>nativo</td>
+</tr>
+<tr>
+<td><strong>Node.js</strong></td>
+<td><strong>NO ENCONTRADO</strong></td>
+<td>—</td>
+<td><strong>BLOQUEADO</strong> — runtime del SaaS (requiere &gt;=22)</td>
+</tr>
+<tr>
+<td><strong>npm</strong></td>
+<td><strong>NO ENCONTRADO</strong></td>
+<td>—</td>
+<td>depende de Node.js</td>
+</tr>
+<tr>
+<td>pnpm</td>
+<td>NO ENCONTRADO</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Docker</strong></td>
+<td><strong>NO ENCONTRADO</strong></td>
+<td>—</td>
+<td>Docker Desktop no instalado</td>
+</tr>
+<tr>
+<td>Docker Compose</td>
+<td>NO ENCONTRADO</td>
+<td>—</td>
+<td>depende de Docker</td>
+</tr>
+<tr>
+<td>OCI CLI</td>
+<td>NO ENCONTRADO</td>
+<td>—</td>
+<td>necesario para FASE 5/6 (provisionamiento)</td>
+</tr>
+<tr>
+<td>Terraform</td>
+<td>NO ENCONTRADO</td>
+<td>—</td>
+<td>no requerido para el piloto (Compose basta)</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>NO ENCONTRADO (alias Store)</td>
+<td><code>...\WindowsApps\python.exe</code> (stub)</td>
+<td>Python real NO instalado</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-conclusion-de-entorno-critica">2. Conclusión de Entorno (crítica)</h2>
+<blockquote>
+<p><strong>El SaaS NO puede ejecutarse localmente hoy</strong>. Node.js (&gt;=22) y Docker NO están instalados. Solo Git + GitHub CLI están presentes (instalados este mismo 2026-09-10). El sistema operativo muestra <code>InstallDate</code> 2026-09-10 → <strong>el equipo fue reinstalado hoy</strong>, consistente con la pérdida de entorno de desarrollo previo (y con el forense de SolucionaTIA: trabajo local no versionado perdido por reinstalación).</p>
+</blockquote>
+<p><strong>Prerrequisito inmediato (FASE 1/2)</strong>: instalar Node.js LTS &gt;= 22 vía <code>winget install OpenJS.NodeJS.LTS</code>. Docker Desktop es opcional en esta primera fase (la validación local puede hacerse con Node nativo; Docker se requiere para Oracle/staging). Clasificación: <code>BLOQUEADO — dependencia no disponible</code>.</p>
+<hr />
+<h2 id="3-snapshot-de-filesystem">3. Snapshot de Filesystem</h2>
+<table>
+<thead>
+<tr>
+<th>Ítem</th>
+<th>Estado</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_modules/</code> (comercial)</td>
+<td><strong>AUSENTE</strong></td>
+<td><code>Test-Path</code> = False</td>
+</tr>
+<tr>
+<td><code>.env</code> real</td>
+<td><strong>AUSENTE</strong> (solo <code>.env.example</code>)</td>
+<td>búsqueda <code>*.env*</code> → solo <code>.env.example</code></td>
+</tr>
+<tr>
+<td>Secretos en repo</td>
+<td>No detectados (solo plantillas)</td>
+<td><code>.env.example</code>, <code>config.example.json</code></td>
+</tr>
+<tr>
+<td><code>package-lock.json</code></td>
+<td>Presente (comercial)</td>
+<td>root comercial</td>
+</tr>
+<tr>
+<td><code>dian-middleware/package-lock.json</code></td>
+<td>Presente (paquete anidado DIAN)</td>
+<td><code>dian-middleware/</code></td>
+</tr>
+<tr>
+<td><code>config.*</code></td>
+<td><code>config.js</code>, <code>config.example.json</code>, <code>config.production.js</code>, <code>config.d.ts</code>, <code>drizzle.config.ts</code></td>
+<td>raíz comercial</td>
+</tr>
+<tr>
+<td>Variantes</td>
+<td>comercial (código), empresarial (scaffold helpdesk), residencial (solo README)</td>
+<td>raíz</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-inventario-funcional-modulo-comercial-verificado-en-codigo">4. Inventario Funcional — Módulo Comercial (verificado en código)</h2>
+<table>
+<thead>
+<tr>
+<th>Dominio</th>
+<th>Evidencia (archivos)</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Plataforma</strong></td>
+<td><code>index.js</code> (legacy) + <code>src/index.ts</code> (Clean Arch)</td>
+<td>dual runtime NO reconciliado</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td><code>core/*.js</code> (20 módulos), <code>src/interfaces/http/</code>, <code>transports/web.js</code></td>
+<td>IMPLEMENTADO (no probado E2E hoy)</td>
+</tr>
+<tr>
+<td><strong>Órdenes</strong></td>
+<td><code>core/orders.js</code>, <code>core/state-machine.js</code></td>
+<td>IMPLEMENTADO</td>
+</tr>
+<tr>
+<td><strong>Conversación/WhatsApp</strong></td>
+<td><code>core/conversacion.js</code>, Baileys (<code>@whiskeysockets/baileys</code>) + Cloud API (<code>src/whatsapp/cloud/transport.js</code>)</td>
+<td>PARCIAL (migración Baileys→Cloud)</td>
+</tr>
+<tr>
+<td><strong>Menú</strong></td>
+<td><code>core/menu-img.js</code></td>
+<td>IMPLEMENTADO</td>
+</tr>
+<tr>
+<td><strong>IA</strong></td>
+<td><code>core/ai.js</code>, <code>core/ia-pool.js</code>, <code>core/ai-structured.js</code>, <code>core/vision.js</code>, <code>core/asistentes.js</code>, <code>core/consumo.js</code></td>
+<td>IMPLEMENTADO (pool legacy, no router)</td>
+</tr>
+<tr>
+<td><strong>Billing/DIAN</strong></td>
+<td><code>core/facturacion.js</code>, <code>core/integracion.js</code>, <code>dian-middleware/</code> (firma, SOAP, UBL, BullMQ)</td>
+<td>IMPLEMENTADO_Y_VERIFICADO (commit <code>07f10e1</code>)</td>
+</tr>
+<tr>
+<td><strong>Datos</strong></td>
+<td><code>core/db.js</code>, <code>core/db-sqlite.js</code>, <code>core/db-pg.js</code>, <code>core/db-pg-worker.js</code>, <code>src/db/{schema,init,seed}.ts</code> + Drizzle + <code>migrate-sqlite-to-pg.js</code></td>
+<td>PARCIAL (4 capas DB sin reconciliar)</td>
+</tr>
+<tr>
+<td><strong>Geo</strong></td>
+<td><code>core/geo.js</code></td>
+<td>IMPLEMENTADO</td>
+</tr>
+<tr>
+<td><strong>Notificaciones</strong></td>
+<td><code>core/notify.js</code></td>
+<td>IMPLEMENTADO</td>
+</tr>
+<tr>
+<td><strong>Colas</strong></td>
+<td><code>dian-middleware/src/queue/dian-queue.js</code> (BullMQ + ioredis)</td>
+<td>IMPLEMENTADO (Redis requerido)</td>
+</tr>
+<tr>
+<td><strong>Central/Host</strong></td>
+<td><code>core/central.js</code>, <code>panel-central.*</code></td>
+<td>IMPLEMENTADO</td>
+</tr>
+<tr>
+<td><strong>Paneles</strong></td>
+<td><code>dashboard.html</code>, <code>panel-global.*</code>, <code>panel-empresarial.*</code>, <code>panel-inventario.js</code>, <code>panel-whatsapp-lite.js</code>, <code>panel-contabilidad.js</code>, <code>panel-config.js</code></td>
+<td>IMPLEMENTADO (UI)</td>
+</tr>
+<tr>
+<td><strong>Auth/RBAC</strong></td>
+<td><code>src/auth/</code>, <code>reset-admin.js</code>, JWT, seed RBAC</td>
+<td>IMPLEMENTADO</td>
+</tr>
+<tr>
+<td><strong>Multi-tenant</strong></td>
+<td><code>tenant_id</code> en <code>src/db/schema.ts</code></td>
+<td>DOCUMENTADO_PERO_NO_VERIFICADO E2E</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-mapa-local-cloud-matriz-de-migracion">5. Mapa Local → Cloud (matriz de migración)</h2>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Local (hoy)</th>
+<th>Oracle (objetivo)</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node.js</td>
+<td>❌ no instalado (&gt;=22 requerido)</td>
+<td>pendiente (imagen <code>node:22</code> del Dockerfile)</td>
+<td><strong>instalar winget</strong> / build en CI</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>❌ solo código (<code>src/db/schema.ts</code>)</td>
+<td>pendiente (container <code>postgres:16</code>)</td>
+<td><strong>decidir + desplegar</strong></td>
+</tr>
+<tr>
+<td>Redis/BullMQ</td>
+<td>❌ solo código (<code>dian-queue.js</code>)</td>
+<td>pendiente (container <code>redis:7</code>)</td>
+<td><strong>desplegar</strong></td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>❌ no instalado</td>
+<td>pendiente (Docker Engine en VM)</td>
+<td><strong>instalar en VM</strong></td>
+</tr>
+<tr>
+<td>SaaS</td>
+<td>✅ código presente, ❌ no ejecutable hoy</td>
+<td>pendiente (deploy Fastify)</td>
+<td><strong>desplegar</strong></td>
+</tr>
+<tr>
+<td>WhatsApp</td>
+<td>✅ código (Baileys+Cloud), ❌ no probado E2E</td>
+<td>pendiente (Cloud API)</td>
+<td><strong>validar</strong></td>
+</tr>
+<tr>
+<td>DIAN</td>
+<td>✅ código completo, ❌ no probado E2E</td>
+<td>pendiente</td>
+<td><strong>validar</strong></td>
+</tr>
+<tr>
+<td>IA</td>
+<td>✅ código legacy pool, ❌ no probado</td>
+<td>pendiente</td>
+<td><strong>validar</strong></td>
+</tr>
+<tr>
+<td>Panel</td>
+<td>✅ código UI</td>
+<td>pendiente (servir tras HTTPS)</td>
+<td><strong>publicar</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-prerrequisitos-ordenados-fase-1-2">6. Prerrequisitos ordenados (FASE 1-2)</h2>
+<ol>
+<li>Instalar <strong>Node.js LTS &gt;= 22</strong> (<code>winget install OpenJS.NodeJS.LTS</code>).</li>
+<li><code>npm ci</code> en <code>soluciona-inteligencia-artificial-comercial/</code>.</li>
+<li>Ejecutar <code>npm run test:unit</code> (verificar suite real) y <code>npm run typecheck</code> / <code>npm run build</code>.</li>
+<li>Determinar si <code>node index.js</code> arranca con SQLite (sin PG/Redis) → mínimo smoke reproducido localmente.</li>
+<li>Opcional: Docker Desktop para validar <code>Dockerfile.prod</code>/Compose antes de Oracle.</li>
+</ol>
+<hr />
+<h2 id="7-estado-de-trazabilidad-local-vs-git-vs-oracle">7. Estado de trazabilidad (LOCAL vs GIT vs ORACLE)</h2>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Estado actual</th>
+<th>Nota</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LOCAL</td>
+<td>entorno de desarrollo perdido (reinstalación 2026-09-10); solo Git+GH CLI</td>
+<td>referencia por reconstruir</td>
+</tr>
+<tr>
+<td>GIT</td>
+<td><code>main</code>=<code>68ee6ce</code>; PR #4 DRAFT contaminado; sin tags</td>
+<td>fuente versionada (única fuente fiable)</td>
+</tr>
+<tr>
+<td>ORACLE</td>
+<td>no provisionado</td>
+<td>pendiente</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-fase-1-resultados-de-ejecucion-local-2026-09-10">8. FASE 1 — Resultados de ejecución local (2026-09-10)</h2>
+<table>
+<thead>
+<tr>
+<th>Paso</th>
+<th>Comando</th>
+<th>Resultado</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node.js</td>
+<td><code>winget install OpenJS.NodeJS.LTS</code></td>
+<td>✅ instalado <strong>v24.19.0</strong> (&gt;=22)</td>
+<td><code>node --version</code></td>
+</tr>
+<tr>
+<td>npm</td>
+<td>—</td>
+<td>✅ <strong>11.17.0</strong></td>
+<td><code>npm.cmd --version</code> (usar <code>npm.cmd</code>; <code>npm.ps1</code> bloqueado por ExecutionPolicy Restricted)</td>
+</tr>
+<tr>
+<td>Install</td>
+<td><code>npm ci</code></td>
+<td>✅ 621 paquetes</td>
+<td>40 s</td>
+</tr>
+<tr>
+<td>Auditoría deps</td>
+<td>(npm ci output)</td>
+<td>⚠️ <strong>15 vulns: 6 moderate, 5 high, 4 critical</strong></td>
+<td>npm audit</td>
+</tr>
+<tr>
+<td>Typecheck</td>
+<td><code>npm run typecheck</code></td>
+<td>❌ <strong>~180 errores TS</strong></td>
+<td><code>tsc --noEmit</code> falla</td>
+</tr>
+<tr>
+<td>Build</td>
+<td><code>npm run build</code></td>
+<td>❌ (mismo <code>tsc</code>)</td>
+<td>no ejecutado — idéntico a typecheck</td>
+</tr>
+<tr>
+<td>Unit tests</td>
+<td><code>npm run test:unit</code></td>
+<td>❌ <strong>4 suites fallan en parse</strong></td>
+<td>Rollup/Vite <code>Expected ',', got 'ident'</code></td>
+</tr>
+<tr>
+<td>Smoke runtime</td>
+<td><code>node index.js</code> (DISABLE_WHATSAPP=1)</td>
+<td>✅ <strong>arranca en :3000</strong> (SQLite)</td>
+<td>"Panel: http://localhost:3000"</td>
+</tr>
+</tbody>
+</table>
+<h3 id="81-conclusiones-de-ejecucion">8.1 Conclusiones de ejecución</h3>
+<ul>
+<li><strong>Runtime REAL y funcional</strong>: <code>node index.js</code> (legacy CommonJS). Arranca con SQLite, genera admin demo, sirve panel/fuentes en <code>:3000</code>. Classificación: <strong>IMPLEMENTADO_Y_VERIFICADO</strong> (arranque local).</li>
+<li><strong>Runtime OBJETIVO roto</strong>: <code>src/index.ts</code> (Clean Architecture TS). <code>tsc --noEmit</code> produce ~180 errores (módulos inexistentes <code>TS2307</code>, redeclaraciones <code>TS2451</code>, imports no usados <code>TS6133</code>, tipos Fastify sin declarar <code>TS2339</code>). Classificación: <strong>PARCIALMENTE_IMPLEMENTADO</strong> (no compila).</li>
+<li><strong>Tests rotos</strong>: 4 suites (<code>auth</code>, <code>dian-cufe</code>, <code>accounting-validation</code>, <code>inventory-validation</code>) mezclan <code>import</code> ESM con <code>require</code> CJS → fallo de parseo de Rollup/Vite. Classificación: <strong>PRESENTE_PERO_NO_PROBADO_E2E</strong> (archivos existen pero no ejecutan).</li>
+<li><strong>tsconfig.json</strong>: clave duplicada <code>forceConsistentCasingInFileNames</code> (líneas 16 y 25).</li>
+<li><strong>Scripts package.json reales</strong>: <code>start, dev, build, typecheck, test, test:unit, reset-admin, db:generate, db:migrate, db:seed, db:studio, db:migrate-data, db:verify-pg</code>. <strong>No existen</strong> <code>lint</code> ni <code>test:integration</code> (aunque CI los invoca).</li>
+</ul>
+<hr />
+<p><em>Documento vivo — actualizar tras FASE 1 y cada despliegue.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Diego Alejandro Saenz Falcon
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

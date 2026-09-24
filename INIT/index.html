@@ -1,0 +1,1057 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Diego Alejandro Saenz Falcon">
+      
+      
+        <link rel="canonical" href="https://diegoalejandrosaenzfalcon.github.io/Soluciona-Inteligencia-Artificial/INIT/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>INIT.md — System Software Development Initialization - SOLUCIONA INTELIGENCIA ARTIFICIAL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#initmd-system-software-development-initialization" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-header__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SOLUCIONA INTELIGENCIA ARTIFICIAL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              INIT.md — System Software Development Initialization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-nav__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SOLUCIONA INTELIGENCIA ARTIFICIAL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comercial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comercial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../empresarial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../residencial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residencial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="initmd-system-software-development-initialization">INIT.md — System Software Development Initialization</h1>
+<h1 id="soluciona-inteligencia-artificial">Soluciona Inteligencia Artificial</h1>
+<h2 id="1-proposito">1. Propósito</h2>
+<p>Este documento establece la <strong>inicialización canónica</strong> del sistema de desarrollo para cualquier ingeniero (humano o IA) que entre al proyecto. Garantiza reproducibilidad, consistencia y onboarding &lt; 15 min.</p>
+<h2 id="2-entorno-de-desarrollo-requerido">2. Entorno de Desarrollo Requerido</h2>
+<h3 id="21-herramientas-base-versiones-minimas">2.1 Herramientas Base (Versiones Mínimas)</h3>
+<pre><code class="language-bash"># Verificar versiones
+node --version    # &gt;= 22.0.0 (LTS)
+npm --version     # &gt;= 10.0.0
+git --version     # &gt;= 2.40.0
+docker --version  # &gt;= 24.0.0
+docker compose version  # &gt;= 2.20.0
+</code></pre>
+<h3 id="22-toolchain-de-calidad-instalacion-global-opcional">2.2 Toolchain de Calidad (Instalación Global Opcional)</h3>
+<pre><code class="language-bash"># Linting/Formatting (usar versiones locales via npx preferiblemente)
+npm i -g eslint@latest prettier@latest @typescript-eslint/parser@latest
+
+# Type Checking
+npm i -g typescript@latest
+
+# Testing
+npm i -g vitest@latest @vitest/ui@latest
+
+# Database
+npm i -g drizzle-kit@latest
+
+# Git Hooks
+npm i -g husky@latest lint-staged@latest
+
+# opencode CLI
+npm i -g @opencode/cli@latest
+</code></pre>
+<h3 id="23-vs-code-cursor-extensions-recomendadas">2.3 VS Code / Cursor Extensions (Recomendadas)</h3>
+<pre><code class="language-json">{
+  &quot;recommendations&quot;: [
+    &quot;dbaeumer.vscode-eslint&quot;,
+    &quot;esbenp.prettier-vscode&quot;,
+    &quot;bradlc.vscode-tailwindcss&quot;,
+    &quot;prisma.prisma&quot;,
+    &quot;vitest.explorer&quot;,
+    &quot;github.copilot&quot;,
+    &quot;github.copilot-chat&quot;,
+    &quot;ms-azuretools.vscode-docker&quot;,
+    &quot;redhat.vscode-yaml&quot;
+  ]
+}
+</code></pre>
+<h2 id="3-bootstrap-del-proyecto-un-solo-comando">3. Bootstrap del Proyecto (Un Solo Comando)</h2>
+<pre><code class="language-bash"># 1. Clonar repositorio
+git clone https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial.git
+cd Soluciona-Inteligencia-Artificial
+
+# 2. Instalar dependencias raíz (tooling compartido)
+npm ci
+
+# 3. Instalar dependencias por variante
+cd soluciona-inteligencia-artificial-comercial &amp;&amp; npm ci
+cd ../soluciona-inteligencia-artificial-empresarial &amp;&amp; npm ci
+
+# 4. Configurar entorno (plantillas)
+cp .env.example .env
+cp config.example.json config.json
+
+# 5. Verificar instalación completa
+npm run check:all  # lint + typecheck + test (root)
+</code></pre>
+<h3 id="31-scripts-raiz-packagejson">3.1 Scripts Raíz (package.json)</h3>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;soluciona-inteligencia-artificial-root&quot;,
+  &quot;private&quot;: true,
+  &quot;scripts&quot;: {
+    &quot;check:all&quot;: &quot;npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run test&quot;,
+    &quot;lint&quot;: &quot;npm run lint --workspaces --if-present&quot;,
+    &quot;typecheck&quot;: &quot;npm run typecheck --workspaces --if-present&quot;,
+    &quot;test&quot;: &quot;npm run test --workspaces --if-present&quot;,
+    &quot;bootstrap&quot;: &quot;npm ci &amp;&amp; npm run bootstrap --workspaces --if-present&quot;,
+    &quot;docker:up&quot;: &quot;docker compose -f docker-compose.yml up -d&quot;,
+    &quot;docker:down&quot;: &quot;docker compose -f docker-compose.yml down&quot;
+  },
+  &quot;workspaces&quot;: [
+    &quot;soluciona-inteligencia-artificial-comercial&quot;,
+    &quot;soluciona-inteligencia-artificial-empresarial&quot;
+  ]
+}
+</code></pre>
+<h2 id="4-estructura-de-directorios-canonica-ssd">4. Estructura de Directorios Canónica (SSD)</h2>
+<pre><code>&lt;variant&gt;/
+├── .github/workflows/      # CI/CD específico de la variante
+├── .opencode/              # Config IA (agents, skills, permissions)
+│   ├── agents/             # Agentes especializados
+│   ├── skills/             # Skills SDD/SSD/DDD/CA
+│   └── config.json         # Config opencode variante
+├── docs/                   # Documentación técnica variante
+│   ├── architecture/       # ADRs, diagramas, decisiones
+│   ├── api/                # OpenAPI specs, contratos
+│   ├── runbooks/           # Procedimientos operativos
+│   └── adr/                # Architecture Decision Records
+├── src/                    # Código fuente (Clean Architecture)
+│   ├── domain/             # Entities, VOs, Events, Repositories (Interfaces)
+│   ├── application/        # Use Cases, DTOs, Commands, Queries
+│   ├── infrastructure/     # DB, Repositories (Impl), Adapters, External
+│   ├── interfaces/         # HTTP (Fastify), WS, CLI, GraphQL
+│   └── shared/             # Kernel: Result, Events, Config, Utils, Observability
+├── tests/                  # Tests (unit, integration, e2e)
+│   ├── unit/               # Lógica pura, domain (75%)
+│   ├── integration/        # DB, Redis, External APIs (20%)
+│   └── e2e/                # Critical paths Playwright (5%)
+├── scripts/                # Migration, seeds, utilities
+├── monitoring/             # Prometheus, Grafana, Loki, Tempo, Alertmanager
+├── docker-compose.yml      # Orquestación desarrollo
+├── docker-compose.staging.yml
+├── docker-compose.prod.yml
+├── Dockerfile.dev
+├── Dockerfile.prod
+├── Makefile                # Comandos unificados
+├── package.json
+├── tsconfig.json           # Extiende @soluciona/tsconfig-base
+├── SPEC.md                 # Spec de la variante
+├── INIT.md                 # Init de la variante
+├── README.md
+├── .env.example
+├── config.example.json
+├── .gitignore
+└── .tool-versions          # Versiones exactas (volta/asdf)
+</code></pre>
+<h2 id="5-convenciones-de-codigo-enforceadas-por-tooling">5. Convenciones de Código (Enforceadas por Tooling)</h2>
+<h3 id="51-typescript-strict-tsconfigbasejson">5.1 TypeScript Strict (tsconfig.base.json)</h3>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;NodeNext&quot;,
+    &quot;moduleResolution&quot;: &quot;NodeNext&quot;,
+    &quot;lib&quot;: [&quot;ES2022&quot;],
+    &quot;strict&quot;: true,
+    &quot;noUncheckedIndexedAccess&quot;: true,
+    &quot;exactOptionalPropertyTypes&quot;: true,
+    &quot;noImplicitReturns&quot;: true,
+    &quot;noFallthroughCasesInSwitch&quot;: true,
+    &quot;noUnusedLocals&quot;: true,
+    &quot;noUnusedParameters&quot;: true,
+    &quot;forceConsistentCasingInFileNames&quot;: true,
+    &quot;resolveJsonModule&quot;: true,
+    &quot;isolatedModules&quot;: true,
+    &quot;declaration&quot;: true,
+    &quot;declarationMap&quot;: true,
+    &quot;sourceMap&quot;: true,
+    &quot;baseUrl&quot;: &quot;.&quot;,
+    &quot;paths&quot;: {
+      &quot;@soluciona/*&quot;: [&quot;tooling/*/src&quot;],
+      &quot;@comercial/*&quot;: [&quot;soluciona-inteligencia-artificial-comercial/src/*&quot;],
+      &quot;@empresarial/*&quot;: [&quot;soluciona-inteligencia-artificial-empresarial/src/*&quot;]
+    }
+  }
+}
+</code></pre>
+<h3 id="52-eslint-prettier-config-compartida-en-tooling">5.2 ESLint + Prettier (Config Compartida en <code>tooling/</code>)</h3>
+<pre><code>tooling/
+├── eslint-config/
+│   ├── base.js           # Config base
+│   ├── node.js           # Node.js specific
+│   ├── react.js          # React (design-system)
+│   └── typescript.js     # TypeScript strict
+├── prettier-config/
+│   └── index.js          # Single quote, trailing comma, 100 chars
+├── typescript-config/
+│   ├── base.json         # tsconfig.base.json
+│   ├── node.json         # Node.js
+│   └── react.json        # React
+└── vitest-config/
+    ├── base.js
+    ├── node.js
+    └── react.js
+</code></pre>
+<h3 id="53-naming-conventions">5.3 Naming Conventions</h3>
+<table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Convención</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Archivos</td>
+<td>kebab-case</td>
+<td><code>product.repository.ts</code></td>
+</tr>
+<tr>
+<td>Clases/Interfaces</td>
+<td>PascalCase</td>
+<td><code>ProductRepository</code></td>
+</tr>
+<tr>
+<td>Funciones/Variables</td>
+<td>camelCase</td>
+<td><code>getProductById</code></td>
+</tr>
+<tr>
+<td>Constantes</td>
+<td>UPPER_SNAKE</td>
+<td><code>MAX_RETRY_ATTEMPTS</code></td>
+</tr>
+<tr>
+<td>Types/Enums</td>
+<td>PascalCase</td>
+<td><code>OrderStatus</code></td>
+</tr>
+<tr>
+<td>Tests</td>
+<td><code>*.test.ts</code></td>
+<td><code>product.test.ts</code></td>
+</tr>
+<tr>
+<td>Specs</td>
+<td><code>SPEC-&lt;ID&gt;.md</code></td>
+<td><code>SPEC-042-lot-tracking.md</code></td>
+</tr>
+<tr>
+<td>ADRs</td>
+<td><code>&lt;num&gt;-&lt;topic&gt;.md</code></td>
+<td><code>001-use-drizzle-orm.md</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-git-workflow-enforceado-por-husky-lint-staged">6. Git Workflow (Enforceado por Husky + lint-staged)</h2>
+<h3 id="61-branching-strategy">6.1 Branching Strategy</h3>
+<pre><code>main                    ← Protected, solo PR + CI verde + approval
+├── develop             ← Integration branch (auto-deploy staging)
+├── feature/SPEC-&lt;id&gt;   ← Nueva funcionalidad (spec-driven)
+├── fix/ISSUE-&lt;id&gt;      ← Bug fix
+├── docs/&lt;topic&gt;        ← Documentación
+├── refactor/&lt;area&gt;     ← Refactor sin cambio funcional
+├── chore/&lt;task&gt;        ← Mantenimiento, deps, tooling
+└── release/v&lt;version&gt;  ← Release preparation
+</code></pre>
+<h3 id="62-commits-convencionales-commitlint">6.2 Commits Convencionales (commitlint)</h3>
+<pre><code class="language-bash"># Formato
+&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+
+# Types permitidos
+feat      # Nueva funcionalidad
+fix       # Bug fix
+docs      # Documentación
+style     # Formatting (no code change)
+refactor  # Refactor código
+perf      # Performance
+test      # Tests
+chore     # Build, deps, tooling
+revert    # Revert commit
+
+# Scopes por variante
+comercial, empresarial, residencial, root, shared, docs, ci, deps
+
+# Ejemplos
+feat(comercial): add lot tracking for food inventory
+fix(empresarial): correct SLA calculation on holidays
+docs(spec): update order status transitions
+refactor(domain): extract value object for Money
+test(inventory): add FEFO lot selection tests
+chore(deps): update drizzle-orm to 0.32
+</code></pre>
+<h3 id="63-pre-commit-hooks-husky-lint-staged">6.3 Pre-commit Hooks (Husky + lint-staged)</h3>
+<pre><code class="language-json">{
+  &quot;husky&quot;: {
+    &quot;hooks&quot;: {
+      &quot;pre-commit&quot;: &quot;lint-staged&quot;,
+      &quot;commit-msg&quot;: &quot;commitlint -E HUSKY_GIT_PARAMS&quot;
+    }
+  },
+  &quot;lint-staged&quot;: {
+    &quot;*.{ts,tsx,js,jsx}&quot;: [&quot;eslint --fix&quot;, &quot;prettier --write&quot;],
+    &quot;*.{json,md,yml,yaml}&quot;: [&quot;prettier --write&quot;],
+    &quot;*.{sql,graphql}&quot;: [&quot;prettier --write&quot;]
+  }
+}
+</code></pre>
+<h3 id="64-commit-message-validation-commitlintconfigjs">6.4 Commit Message Validation (commitlint.config.js)</h3>
+<pre><code class="language-js">module.exports = {
+  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'type-enum': [2, 'always', ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'chore', 'revert']],
+    'scope-enum': [2, 'always', ['comercial', 'empresarial', 'residencial', 'root', 'shared', 'docs', 'ci', 'deps']],
+    'subject-case': [2, 'always', 'sentence-case'],
+    'subject-empty': [2, 'never'],
+    'subject-max-length': [2, 'always', 100],
+  },
+};
+</code></pre>
+<h2 id="7-base-de-datos-migraciones-seeds">7. Base de Datos (Migraciones + Seeds)</h2>
+<h3 id="71-drizzle-orm-postgresql-16-sqlite-dev">7.1 Drizzle ORM (PostgreSQL 16 + SQLite Dev)</h3>
+<pre><code class="language-bash"># Generar migración (después de cambios en schema.ts)
+npm run db:generate
+
+# Aplicar migraciones
+npm run db:migrate
+
+# Seed datos de prueba
+npm run db:seed
+
+# Studio visual (Drizzle Studio)
+npm run db:studio
+
+# Verificar migración PostgreSQL
+npm run db:verify-pg
+</code></pre>
+<h3 id="72-convencion-migraciones">7.2 Convención Migraciones</h3>
+<ul>
+<li><strong>Nombre</strong>: <code>&lt;timestamp&gt;_&lt;descripcion_breve&gt;.sql</code> (ej: <code>1726800000000_add_inventory_lots.sql</code>)</li>
+<li><strong>Una migración = un cambio atómico</strong></li>
+<li><strong>Nunca</strong> editar migraciones ya aplicadas a <code>main</code>/<code>develop</code></li>
+<li><strong>Rollback</strong>: Migración inversa explícita (nueva migración)</li>
+<li><strong>Seed</strong>: Solo datos de referencia/configuración, no datos de prueba volátiles</li>
+</ul>
+<h3 id="73-multi-tenant-rls-postgresql">7.3 Multi-Tenant (RLS PostgreSQL)</h3>
+<pre><code class="language-sql">-- Habilitado en TODAS las tablas de negocio
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation ON products
+  USING (tenant_id = current_setting('app.current_tenant')::varchar);
+
+-- Contexto de tenant en cada request (middleware)
+SET LOCAL app.current_tenant = 'tenant-uuid';
+</code></pre>
+<h2 id="8-observabilidad-estandar-cncf">8. Observabilidad (Estándar CNCF)</h2>
+<h3 id="81-opentelemetry-auto-instrumentacion">8.1 OpenTelemetry (Auto-instrumentación)</h3>
+<pre><code class="language-typescript">// src/shared/observability/otel.ts
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, ATTR_DEPLOYMENT_ENVIRONMENT } from '@opentelemetry/semantic-conventions';
+
+export const otelSDK = new NodeSDK({
+  resource: resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: 'soluciona-ia',
+    [ATTR_SERVICE_VERSION]: process.env.APP_VERSION || 'dev',
+    [ATTR_DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development',
+  }),
+  traceExporter: new OTLPTraceExporter({
+    url: process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT || 'http://localhost:4318/v1/traces',
+  }),
+  metricReader: new PrometheusExporter({
+    port: parseInt(process.env.PROMETHEUS_PORT || '9464'),
+    endpoint: '/metrics',
+  }),
+  instrumentations: [getNodeAutoInstrumentations()],
+});
+
+otelSDK.start();
+</code></pre>
+<h3 id="82-metricas-obligatorias-red-method">8.2 Métricas Obligatorias (RED Method)</h3>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Descripción</th>
+<th>SLO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rate</strong></td>
+<td>Requests/second</td>
+<td>&gt; 100 rps</td>
+</tr>
+<tr>
+<td><strong>Errors</strong></td>
+<td>Error rate %</td>
+<td>&lt; 0.1%</td>
+</tr>
+<tr>
+<td><strong>Duration</strong></td>
+<td>Latency P50, P95, P99</td>
+<td>P95 &lt; 200ms, P99 &lt; 500ms</td>
+</tr>
+</tbody>
+</table>
+<h3 id="83-logging-estructurado-pino-correlation-id">8.3 Logging Estructurado (Pino + Correlation ID)</h3>
+<pre><code class="language-typescript">// src/shared/utils/logger.ts
+import pino from 'pino';
+import { randomUUID } from 'crypto';
+
+export const logger = pino({
+  level: process.env.LOG_LEVEL || 'info',
+  formatters: {
+    level: (label) =&gt; ({ level: label }),
+  },
+  timestamp: pino.stdTimeFunctions.isoTime,
+  base: {
+    service: 'soluciona-ia',
+    version: process.env.APP_VERSION,
+    environment: process.env.NODE_ENV,
+  },
+  redact: {
+    paths: ['*.password', '*.token', '*.secret', '*.authorization'],
+    censor: '[REDACTED]',
+  },
+});
+
+// Correlation ID middleware para Fastify
+export function correlationIdMiddleware() {
+  return async (request, reply) =&gt; {
+    const correlationId = request.headers['x-correlation-id'] as string || randomUUID();
+    request.log = logger.child({ correlationId });
+    reply.header('x-correlation-id', correlationId);
+  };
+}
+
+// Helper para child loggers con contexto
+export function getLogger(context: string, bindings: Record&lt;string, unknown&gt; = {}) {
+  return logger.child({ context, ...bindings });
+}
+</code></pre>
+<h3 id="84-health-checks">8.4 Health Checks</h3>
+<pre><code class="language-typescript">// src/interfaces/http/routes/health.ts
+export const healthRoutes = async (fastify) =&gt; {
+  fastify.get('/health', async () =&gt; ({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    version: process.env.APP_VERSION,
+    checks: {
+      database: await checkDatabase(),
+      redis: await checkRedis(),
+      whatsapp: await checkWhatsApp(),
+    },
+  }));
+
+  fastify.get('/health/live', async () =&gt; ({ status: 'alive' }));
+  fastify.get('/health/ready', async () =&gt; ({
+    status: (await checkDatabase() &amp;&amp; await checkRedis()) ? 'ready' : 'not ready',
+  }));
+};
+</code></pre>
+<h2 id="9-seguridad-zero-trust-supply-chain">9. Seguridad (Zero Trust + Supply Chain)</h2>
+<h3 id="91-secretos-cero-en-git-regla-absoluta">9.1 Secretos (Cero en Git - Regla Absoluta)</h3>
+<table>
+<thead>
+<tr>
+<th>❌ Nunca se versiona</th>
+<th>✅ Se versiona (plantillas)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API keys reales (NVIDIA, Gemini, Telegram, DIAN)</td>
+<td><code>.env.example</code> / <code>config.example.json</code></td>
+</tr>
+<tr>
+<td>Sesiones WhatsApp (<code>auth_info/</code>, <code>.wwebjs_auth/</code>)</td>
+<td>Estructura carpetas vacías (<code>.gitkeep</code>)</td>
+</tr>
+<tr>
+<td>Bases de datos con datos reales (<code>data/</code>, <code>*.db</code>, <code>*.sqlite</code>)</td>
+<td><code>init-scripts/</code> (SQL limpio)</td>
+</tr>
+<tr>
+<td>Configuraciones reales (<code>config.json</code>, <code>.env</code>, <code>.pem</code>, <code>.key</code>)</td>
+<td><code>keycloak/realm-export.json</code> (placeholders)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Regla</strong>: <code>git add</code> falla si detecta secretos (gitleaks en pre-commit + CI).</p>
+</blockquote>
+<h3 id="92-supply-chain-security-slsa-level-3-target">9.2 Supply Chain Security (SLSA Level 3 Target)</h3>
+<ul>
+<li><code>npm ci</code> only (lockfile frozen en CI)</li>
+<li>SBOM generado en CI (<code>@cyclonedx/bom</code>)</li>
+<li>Cosign signing para imágenes Docker</li>
+<li>Dependabot + Renovate automático (PRs automáticos)</li>
+<li><code>npm audit</code> + <code>npm audit fix</code> en CI</li>
+<li>Trivy scan para imágenes Docker</li>
+</ul>
+<h3 id="93-owasp-top-10-compliance">9.3 OWASP Top 10 Compliance</h3>
+<ul>
+<li>[x] <strong>A01: Broken Access Control</strong> - RLS PostgreSQL + RBAC + ABAC</li>
+<li>[x] <strong>A02: Cryptographic Failures</strong> - TLS 1.3, AES-256-GCM, Argon2id</li>
+<li>[x] <strong>A03: Injection</strong> - Parameterized queries (Drizzle), Zod validation, CSP</li>
+<li>[x] <strong>A04: Insecure Design</strong> - Threat modeling, Secure by Design</li>
+<li>[x] <strong>A05: Security Misconfiguration</strong> - Helmet.js, CSP nonce, HSTS, Secure cookies</li>
+<li>[x] <strong>A06: Vulnerable Components</strong> - Dependabot, Renovate, npm audit, Trivy, SLSA</li>
+<li>[x] <strong>A07: Auth Failures</strong> - Keycloak, MFA, Passkeys, Rate limiting, Account lockout</li>
+<li>[x] <strong>A08: Software Integrity</strong> - SLSA Level 3, Sigstore, SBOM, Cosign</li>
+<li>[x] <strong>A09: Logging/Monitoring Failures</strong> - OpenTelemetry, Loki, Alertmanager, SLOs</li>
+<li>[x] <strong>A10: SSRF</strong> - Egress filtering, allowlists, no user-controlled URLs</li>
+</ul>
+<h2 id="10-cicd-pipeline-github-actions">10. CI/CD Pipeline (GitHub Actions)</h2>
+<h3 id="101-workflows-raiz-githubworkflows">10.1 Workflows Raíz (<code>.github/workflows/</code>)</h3>
+<pre><code>.github/workflows/
+├── gitleaks.yml          # Secret scanning (all branches) - REQUIRED
+├── docs.yml              # MkDocs build + deploy GitHub Pages
+├── pages.yml             # Deploy alternativo GitHub Pages
+└── release.yml           # Release automation (tags)
+</code></pre>
+<h3 id="102-workflow-variante-comercial-githubworkflowsci-cdyml">10.2 Workflow Variante Comercial (<code>.github/workflows/ci-cd.yml</code>)</h3>
+<pre><code class="language-yaml"># Simplificado - ver archivo real en variante
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./soluciona-inteligencia-artificial-comercial
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm', cache-dependency-path: 'soluciona-inteligencia-artificial-comercial/package-lock.json' }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:unit
+      - run: npm run test:integration
+      - uses: github/codeql-action/init@v3
+        with: { languages: 'typescript', working-directory: './soluciona-inteligencia-artificial-comercial' }
+      - uses: github/codeql-action/analyze@v3
+      - uses: aquasecurity/trivy-action@master
+        with: { scan-type: 'fs', scan-ref: './soluciona-inteligencia-artificial-comercial' }
+      - uses: returntocorp/semgrep-action@v1
+
+  docker:
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./soluciona-inteligencia-artificial-comercial
+          push: true
+          tags: ghcr.io/diegoalejandrosaenzfalcon/soluciona-comercial:${{ github.sha }}
+
+  deploy-staging:
+    needs: docker
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: argoproj/argo-cd-action@v1
+        with: { ... }
+
+  deploy-prod:
+    needs: docker
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: argoproj/argo-cd-action@v1
+        with: { ... }
+</code></pre>
+<h2 id="11-onboarding-checklist-nuevo-ingeniero-target-15-min">11. Onboarding Checklist (Nuevo Ingeniero - Target &lt; 15 min)</h2>
+<ul>
+<li>[ ] <strong>Leer</strong>: <code>SPEC.md</code> + <code>INIT.md</code> + <code>GOVERNANCE.md</code> + <code>QUALITY_GATES.md</code></li>
+<li>[ ] <strong>Ejecutar</strong>: <code>npm run bootstrap</code> (script único en raíz)</li>
+<li>[ ] <strong>Verificar</strong>: <code>npm run check:all</code> pasa (lint + typecheck + test)</li>
+<li>[ ] <strong>Levantar stack local</strong>: <code>docker compose -f docker-compose.yml up -d</code></li>
+<li>[ ] <strong>Acceder a panel</strong>: <code>http://localhost:3000</code> (comercial)</li>
+<li>[ ] <strong>Ejecutar tests</strong>: <code>npm run test</code> (en variante comercial)</li>
+<li>[ ] <strong>Crear primera branch</strong>: <code>git checkout -b feat/onboarding-test</code></li>
+<li>[ ] <strong>Hacer cambio trivial</strong> + PR + ver CI pasar</li>
+<li>[ ] <strong>Revisar</strong>: <code>docs/architecture/</code> y <code>docs/api/</code> de la variante asignada</li>
+<li>[ ] <strong>Configurar opencode</strong>: <code>opencode auth</code> + <code>opencode run</code> (si aplica)</li>
+</ul>
+<h2 id="12-comandos-utiles-unificados-makefile-raiz">12. Comandos Útiles Unificados (Makefile Raíz)</h2>
+<pre><code class="language-makefile"># Makefile (raíz)
+.PHONY: help bootstrap check lint typecheck test docker-up docker-down clean
+
+help:
+    @echo &quot;Soluciona IA - Comandos disponibles:&quot;
+    @echo &quot;  make bootstrap    - Instala todo (root + workspaces)&quot;
+    @echo &quot;  make check        - Lint + Typecheck + Tests (todas las variantes)&quot;
+    @echo &quot;  make lint         - ESLint + Prettier check&quot;
+    @echo &quot;  make typecheck    - TypeScript strict check&quot;
+    @echo &quot;  make test         - Todos los tests&quot;
+    @echo &quot;  make docker-up    - Levanta stack Docker completo&quot;
+    @echo &quot;  make docker-down  - Detiene stack Docker&quot;
+    @echo &quot;  make clean        - Limpia node_modules + dist + cache&quot;
+
+bootstrap:
+    npm ci
+    npm run bootstrap --workspaces --if-present
+
+check: lint typecheck test
+
+lint:
+    npm run lint --workspaces --if-present
+
+typecheck:
+    npm run typecheck --workspaces --if-present
+
+test:
+    npm run test --workspaces --if-present
+
+docker-up:
+    docker compose -f soluciona-inteligencia-artificial-comercial/docker-compose.yml up -d
+    docker compose -f soluciona-inteligencia-artificial-empresarial/docker-compose.yml up -d
+
+docker-down:
+    docker compose -f soluciona-inteligencia-artificial-comercial/docker-compose.yml down
+    docker compose -f soluciona-inteligencia-artificial-empresarial/docker-compose.yml down
+
+clean:
+    rm -rf node_modules
+    rm -rf soluciona-inteligencia-artificial-comercial/node_modules
+    rm -rf soluciona-inteligencia-artificial-empresarial/node_modules
+    rm -rf soluciona-inteligencia-artificial-comercial/dist
+    rm -rf soluciona-inteligencia-artificial-empresarial/dist
+</code></pre>
+<hr />
+<p><em>Última actualización: 2026-09-21 | Versión 1.0.0</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Diego Alejandro Saenz Falcon
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
