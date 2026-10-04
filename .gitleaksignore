@@ -2,4 +2,5 @@
 # 1) .opencode/skills/system-software-development/templates/security.template.md
 #    ll. 269 — Ejemplo DOCUMENTAL de ExternalSecret (Vault) en una plantilla de seguridad.
 #    No es una credencial real; es sintaxis de ejemplo. Verificado 2026-09-22.
-d0a9ddb2cd288272511d9c81a564eefffdc81788:.opencode/skills/system-software-development/templates/security.template.md:generic-api-key:269
+#    Actualizado 2026-10-04 con nuevo commit 981afd069d4dac2c210977666498d2ae9c38a921.
+981afd069d4dac2c210977666498d2ae9c38a921:.opencode/skills/system-software-development/templates/security.template.md:generic-api-key:269
