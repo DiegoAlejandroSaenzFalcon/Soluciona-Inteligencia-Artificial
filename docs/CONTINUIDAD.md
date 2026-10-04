@@ -82,3 +82,17 @@ REPO PRIVADO POR CLIENTE: p. ej. San-Angel        ← datos, configs y especific
 ---
 
 *Actualiza este archivo cada vez que cambie el estado real del proyecto o se preserve algo nuevo.*
+
+
+## 7. PROTOCOLO SDD/SSD Y CONTINUIDAD HUMANA (2026-09-23)
+
+La continuidad del proyecto queda formalizada además en:
+- `docs/governance/SDD-SSD-MASTER-PLAN-v1.0.md` — método rector SDD/SSD integrado al Plan Director.
+- `docs/governance/CONTINUITY-PROTOCOL-v1.0.md` — START/END checkpoint, handoff y recuperación de sesiones.
+- `docs/templates/SESSION-HANDOFF.md` — plantilla reutilizable.
+
+### Regla operacional nueva
+Toda sesión debe poder cerrarse dejando WHAT → WHY → WHERE → PROOF → NEXT persistido en GitHub. La interrupción humana normal no debe producir pérdida de contexto ni obligar a reconstruir una conversación.
+
+### Próximo ciclo
+SDD-00 → Recovery LangGraph → Architecture Reconciliation → CI/CD Reconciliation.

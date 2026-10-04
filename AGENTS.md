@@ -226,3 +226,13 @@ La capa agentic (SolucionaTIA/LangGraph) es pieza separada del SaaS. No accede d
 ---
 
 *Última actualización: 2026-09-22 | Versión 1.2.0 (merge gobernanza + reglas) | Aprobado por: PO (Diego Alejandro Saenz Falcon)*
+
+
+## 17. SDD/SSD y continuidad operacional (añadido 2026-09-23)
+
+- Método rector: `docs/governance/SDD-SSD-MASTER-PLAN-v1.0.md`.
+- Protocolo de continuidad: `docs/governance/CONTINUITY-PROTOCOL-v1.0.md`.
+- Plantilla de handoff: `docs/templates/SESSION-HANDOFF.md`.
+- Antes de implementar una tarea nueva, comprobar el Gate SDD correspondiente.
+- Antes de cerrar una sesión, persistir WHAT/WHY/WHERE/PROOF/NEXT y verificar commit + push.
+- Una conversación no puede ser la única fuente de contexto para continuar.
