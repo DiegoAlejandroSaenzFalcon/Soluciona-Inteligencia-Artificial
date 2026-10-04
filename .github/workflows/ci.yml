@@ -1,0 +1,67 @@
+name: CI — Comercial (runtime real)
+
+# CI sobrio del monorepo: corre lo IMPLEMENTADO_Y_VERIFICADO.
+# El scaffold TypeScript de src/ (migración futura) queda como check "no bloqueante"
+# documentado hasta que se migre y limpie (ver docs/PLAN-DE-TERMINACION-SOFTWARE.md).
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  unit-tests:
+    name: Unit Tests (node:test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: soluciona-inteligencia-artificial-comercial
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: soluciona-inteligencia-artificial-comercial/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit tests (runner nativo node:test)
+        run: npm test
+
+  typecheck-scaffold:
+    name: Typecheck scaffold TS (migración pendiente, no bloqueante)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: soluciona-inteligencia-artificial-comercial
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: soluciona-inteligencia-artificial-comercial/package-lock.json
+      - run: npm ci
+      - name: TypeScript typecheck (scaffold — hay deuda)
+        run: npm run typecheck
+
+  security-deps:
+    name: npm audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: soluciona-inteligencia-artificial-comercial
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: soluciona-inteligencia-artificial-comercial/package-lock.json
+      - run: npm ci
+      # CRITICAS rompen la CI. Las ALTAS se documentan: la de drizzle-orm (GHSA-gpj5-g38j-94v9)
+      # requiere bump rompiente (0.31→0.45) que NO se mezcla con T1; hay PR propio planeado.
+      # Ver docs/PLAN-DE-TERMINACION-SOFTWARE.md (tareas T).
+      - run: npm audit --audit-level=critical

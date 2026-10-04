@@ -29,6 +29,7 @@ const { handleAccountingRequest } = require('../src/accounting/routes.js');
 
 const { initWebSockets, emitir, contarClientes } = require('../src/websockets');
 const QRCode = require('qrcode');
+const { registerWhatsAppWebhook } = require('./webhook-whatsapp.js');
 
 // Responde al error de un handler sin dejar la conexión colgada.
 // Respeta e.status (p.ej. 403 de CSRF); si no trae status, asume 500.
@@ -596,6 +597,13 @@ function iniciarWeb() {
   const server = http.createServer(async (req, res) => {
     const url = req.url.split('?')[0];
 
+    // WEBHOOK WhatsApp Cloud API (Meta): público, autenticado por firma HMAC.
+    // Debe ir ANTES del gate de login: Meta nunca posee una sesión del panel.
+    if (url === '/webhook/whatsapp') {
+      if (registerWhatsAppWebhook(req, res, global.whatsappCloudTransport || null)) return;
+      return;
+    }
+
     // PWA: manifest e íconos públicos (la app se instala en el celular sin Play Store).
     if (url === '/socket.io-client.js') {
       res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
@@ -1018,6 +1026,30 @@ function iniciarWeb() {
         queues: queueHealth,
         uptimeSec: Math.round(process.uptime())
       }));
+      return;
+    }
+
+    // ===== V3 — Salud del Sistema (determinista + IA opcional-narrada) =====
+    if (url === '/api/salud' && req.method === 'GET') {
+      if (!tokenValido(req)) {
+        res.writeHead(401, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ error: 'no_autenticado' }));
+      }
+      try {
+        const u = new URL(req.url, 'http://localhost');
+        const narrar = u.searchParams.get('narrar') === '1';
+        const { obtenerReporteCompleto } = require('../src/health/system-report.js');
+        const reporte = await obtenerReporteCompleto();
+        let narrativa = null;
+        if (narrar) {
+          const { narrarReporte } = require('../src/health/ai-narrator.js');
+          narrativa = await narrarReporte(reporte);
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ ...reporte, narrativa }));
+      } catch (e) {
+        return fail(res, e);
+      }
       return;
     }
 

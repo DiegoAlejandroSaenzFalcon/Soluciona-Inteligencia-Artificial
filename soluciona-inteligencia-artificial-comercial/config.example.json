@@ -1,11 +1,11 @@
 {
-  "negocio": "Cafetería El Ejemplo",
+  "negocio": "Mi Negocio (configurar nombre)",
   "segmento": "comidas",
   "ciiu": "5611",
   "moneda": "$",
   "hora_reporte": "21:00",
   "puerto": 3000,
-  "numero_dueno": "573000000000",
+  "numero_dueno": "570000000000",
   "ubicacion_negocio": {
     "lat": 6.217,
     "lng": -75.567,

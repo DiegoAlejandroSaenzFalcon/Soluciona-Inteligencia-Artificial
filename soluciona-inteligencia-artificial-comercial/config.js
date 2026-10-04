@@ -6,16 +6,77 @@ function resolverRutaConfig() {
   const args = process.argv.slice(2);
   const i = args.indexOf('--cliente');
   let p = i !== -1 ? args[i + 1] : process.env.CLIENTE_CONFIG;
+
+  // T4 — Resolución de cliente por slug o por ruta/JSON directos:
+  //   node index.js --cliente san-angel          → clients/san-angel/config.json
+  //   node index.js --cliente ruta/al/config.json → comportamiento previo (compatibilidad)
+  // Sin opción: sigue usando config.json en la raíz (comportamiento histórico).
+  if (p && !p.endsWith('.json')) {
+    const slug = String(p).replace(/[^a-zA-Z0-9._-]/g, '');
+    p = path.join('clients', slug, 'config.json');
+  }
   if (!p) p = 'config.json';
   return path.isAbsolute(p) ? p : path.join(__dirname, p);
 }
 
 const CONFIG_PATH = resolverRutaConfig();
-const esConfigPorDefecto = CONFIG_PATH.replace(/\\/g, '/').endsWith('config.json');
+// "Modo standalone" = config.json en la RAÍZ del proyecto. Cualquier config en clients/ es un CLIENTE.
+// Bug fix de T4: detectar por ubicación (ruta real), no por nombre de archivo — antes
+// clients/demo/config.json se confundía con el default y hubiera compartido data/.
+const rutaRaizDefecto = path.resolve(__dirname, 'config.json');
+const esConfigPorDefecto = path.resolve(CONFIG_PATH) === rutaRaizDefecto;
 
-const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+// T4 — Leer el archivo JSON con error claro si falta o está mal formado.
+function leerConfigJson(ruta) {
+  try {
+    return JSON.parse(fs.readFileSync(ruta, 'utf8'));
+  } catch (e) {
+    if (e && e.code === 'ENOENT') {
+      throw new Error(`Config no encontrada: ${CONFIG_PATH}\n  → para crear un cliente: copia config.example.json y renombra a clients/<slug>/config.json, o usa config.json en la raíz para el modo standalone.`);
+    }
+    throw Object.assign(new Error(`Config inválida (JSON roto): ${CONFIG_PATH} — ${e.message}`), { code: e.code });
+  }
+}
 
-// Nombre del SOFTWARE (no del negocio/cliente). El nombre del negocio se
+const config = leerConfigJson(CONFIG_PATH);
+
+// T4 — Validación de "client pack". Fallar rápido y con mensaje accionable.
+function validarClientPack(cfg, ruta) {
+  const errores = [];
+  const advertencias = [];
+
+  if (!cfg || typeof cfg !== 'object') {
+    errores.push('el archivo de configuración no es un objeto JSON');
+    return { errores, advertencias };
+  }
+
+  const nombre = String(cfg.negocio || '').trim();
+  if (!nombre) advertencias.push('falta cfg.negocio (la UI se verá genérica)');
+
+  if (cfg.menu != null && typeof cfg.menu !== 'object') errores.push('cfg.menu debe ser un objeto');
+
+  if (cfg.productos != null) {
+    if (!Array.isArray(cfg.productos)) errores.push('cfg.productos debe ser un array');
+    else {
+      cfg.productos.forEach((p, i) => {
+        if (!p || typeof p !== 'object') { errores.push(`productos[${i}] no es un objeto`); return; }
+        if (!p.nombre || !String(p.nombre).trim()) errores.push(`productos[${i}].nombre vacío`);
+        if (p.precio != null && !(Number(p.precio) >= 0)) errores.push(`productos[${i}].precio inválido (${p.precio})`);
+        if (p.alias != null && !Array.isArray(p.alias)) errores.push(`productos[${i}].alias debe ser array`);
+      });
+    }
+  }
+  return { errores, advertencias };
+}
+
+const validacionPack = validarClientPack(config, CONFIG_PATH);
+if (validacionPack.errores.length) {
+  throw new Error(`Client pack inválido (${CONFIG_PATH}):\n  - ${validacionPack.errores.join('\n  - ')}`);
+}
+for (const a of validacionPack.advertencias) console.warn(`[CONFIG] aviso: ${a}`);
+config.packValidado = { errores: validacionPack.errores, advertencias: validacionPack.advertencias, esCliente: !esConfigPorDefecto };
+
+// Nombre del SOFTWARE (no del negocio/cliente). El del negocio se
 // configura por cada cliente y queda vacío hasta que se establece.
 config.softwareNombre = 'SOLUCIONA INTELIGENCIA ARTIFICIAL';
 
@@ -26,7 +87,7 @@ function nombreNegocio() {
 }
 config.nombreNegocio = nombreNegocio;
 
-const clienteId = config.id || (esConfigPorDefecto ? 'default' : path.basename(CONFIG_PATH, '.json'));
+const clienteId = config.id || (esConfigPorDefecto ? 'default' : path.basename(path.dirname(CONFIG_PATH)));
 config.clienteId = clienteId;
 
 const DATA_DIR = esConfigPorDefecto

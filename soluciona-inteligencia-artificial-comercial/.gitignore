@@ -21,6 +21,7 @@ config.json
 config.local.json
 config.*.json
 !config.example.json
+!clients/**/config.json
 
 # Logs
 logs/

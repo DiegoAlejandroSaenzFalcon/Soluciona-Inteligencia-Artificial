@@ -22,7 +22,6 @@
     "sourceMap": true,
     "isolatedModules": false,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],

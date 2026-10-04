@@ -1,0 +1,29 @@
+{
+  "name": "spec-driven-development",
+  "version": "1.0.0",
+  "description": "Spec Driven Development (SDD) skill for Soluciona IA - executable specs, TDD, traceability",
+  "author": "Soluciona IA Team",
+  "capabilities": [
+    "spec-creation",
+    "spec-validation",
+    "given-when-then",
+    "acceptance-criteria",
+    "traceability-matrix",
+    "test-generation-from-spec"
+  ],
+  "templates": {
+    "spec": "templates/spec.template.md",
+    "given-when-then": "templates/given-when-then.template.md",
+    "acceptance-criteria": "templates/acceptance-criteria.template.md",
+    "traceability": "templates/traceability.template.md"
+  },
+  "scripts": {
+    "validate-spec": "scripts/validate-spec.js",
+    "generate-tests": "scripts/generate-tests.js",
+    "check-traceability": "scripts/check-traceability.js"
+  },
+  "hooks": {
+    "pre-spec-create": "validate-spec",
+    "post-spec-approve": "generate-tests"
+  }
+}

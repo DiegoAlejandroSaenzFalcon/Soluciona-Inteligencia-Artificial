@@ -2,7 +2,7 @@
  * Utilidades XML para DIAN Middleware
  */
 
-import { DOMParser, XMLSerializer } from 'xmldom';
+import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import xpath from 'xpath';
 
 /**

@@ -1,0 +1,33 @@
+{
+  "name": "system-software-development",
+  "version": "1.0.0",
+  "description": "System Software Development (SSD) skill for Soluciona IA - bootstrap, observability, security, CI/CD, architecture decisions",
+  "author": "Soluciona IA Team",
+  "capabilities": [
+    "bootstrap-environment",
+    "architecture-decision-record",
+    "runbook-creation",
+    "observability-setup",
+    "security-hardening",
+    "ci-cd-pipeline",
+    "database-migration",
+    "feature-flag-config"
+  ],
+  "templates": {
+    "init": "templates/init.template.md",
+    "adr": "templates/architecture-decision.template.md",
+    "runbook": "templates/runbook.template.md",
+    "observability": "templates/observability.template.md",
+    "security": "templates/security.template.md"
+  },
+  "scripts": {
+    "bootstrap": "scripts/bootstrap-env.js",
+    "create-adr": "scripts/create-adr.js",
+    "setup-otel": "scripts/setup-otel.js",
+    "harden-security": "scripts/harden-security.js"
+  },
+  "hooks": {
+    "post-bootstrap": "setup-otel",
+    "pre-deploy": "harden-security"
+  }
+}

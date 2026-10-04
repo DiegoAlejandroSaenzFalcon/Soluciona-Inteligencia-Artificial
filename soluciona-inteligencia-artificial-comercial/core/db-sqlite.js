@@ -342,6 +342,39 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS idx_lots_product ON inventory_lots(tenant_id, product_id);
   CREATE INDEX IF NOT EXISTS idx_lots_venc ON inventory_lots(tenant_id, fecha_vencimiento);
+
+  -- ============================================================
+  -- T3 H5: Recetas (BOM = Bill Of Materials)
+  -- Encadenan producto vendido → ingredientes → desglose por FEFO + costeo
+  -- ============================================================
+  CREATE TABLE IF NOT EXISTS recipes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tenant_id TEXT NOT NULL DEFAULT 'default',
+    product_id INTEGER NOT NULL,
+    nombre TEXT NOT NULL,
+    descripcion TEXT,
+    version INTEGER NOT NULL DEFAULT 1,
+    activa INTEGER NOT NULL DEFAULT 1,
+    nota TEXT,
+    creado TEXT DEFAULT CURRENT_TIMESTAMP,
+    actualizado TEXT,
+    UNIQUE(tenant_id, product_id, version)
+  );
+  CREATE INDEX IF NOT EXISTS idx_recipes_producto ON recipes(tenant_id, product_id, activa);
+
+  CREATE TABLE IF NOT EXISTS recipe_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tenant_id TEXT NOT NULL DEFAULT 'default',
+    recipe_id INTEGER NOT NULL,
+    ingredient_product_id INTEGER NOT NULL,
+    cantidad REAL NOT NULL,
+    unidad TEXT NOT NULL,
+    nota TEXT,
+    orden INTEGER DEFAULT 0,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+  );
+  CREATE INDEX IF NOT EXISTS idx_recipe_items_receta ON recipe_items(tenant_id, recipe_id);
+  CREATE INDEX IF NOT EXISTS idx_recipe_items_ingrediente ON recipe_items(tenant_id, ingredient_product_id);
 `);
 
 __migrar('products', {
