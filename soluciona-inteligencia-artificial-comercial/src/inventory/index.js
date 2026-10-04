@@ -887,7 +887,7 @@ async function lotesPorVencer(dias = 7) {
      ORDER BY l.fecha_vencimiento ASC, p.nombre ASC`,
     [tenantId, limite]
   );
-  return rows.map(mapaLote);
+return rows.map(mapaLote);
 }
 
 // ============================================================
@@ -1078,57 +1078,41 @@ async function obtenerReceta(productId, version = null) {
             (SELECT costo FROM products WHERE id = ri.ingredient_product_id) AS costo_actual
        FROM recipe_items ri JOIN products p ON p.id = ri.ingredient_product_id
       WHERE ri.tenant_id = $1 AND ri.recipe_id = $2 ORDER BY ri.orden`,
-    [tenantId, r.id]
+    [tenantId, Number(r.id)]
   );
+  return { ...r, items };
+}
+
+async function desgloseReceta(productId, cantidad, version = null) {
+  const receta = await obtenerReceta(productId, version);
+  if (!receta.activa) throw Object.assign(new Error('receta_inactiva'), { status: 409 });
+  const factor = Number(cantidad);
+  if (!Number.isFinite(factor) || factor <= 0) throw Object.assign(new Error('cantidad_invalida'), { status: 400 });
   return {
-    ...r,
-    items: items.map(it => ({
-      id: it.id,
-      ingredienteProductId: it.ingredient_product_id,
+    recipeId: receta.id,
+    productId: receta.product_id,
+    version: receta.version,
+    items: receta.items.map(it => ({
+      ingredientProductId: it.ingredient_product_id,
       ingredienteNombre: it.ingrediente_nombre,
-      cantidad: Number(it.cantidad),
+      cantidadTeorica: Number(it.cantidad) * factor,
       unidad: it.unidad,
-      nota: it.nota,
-      orden: it.orden,
-      stockDisponible: Number(it.stock_disponible || 0),
-      costoUnitarioActual: it.costo_actual == null ? null : Number(it.costo_actual),
+      stockDisponible: Number(it.stock_disponible),
+      costoUnitario: it.costo_actual == null ? null : Number(it.costo_actual),
     })),
   };
 }
 
-async function listarRecetas() {
-  const c = getClient();
-  const rows = await c.unsafe(
-    `SELECT r.id, r.product_id, r.nombre, r.version, r.activa, r.creado, r.actualizado,
-            p.nombre AS producto_nombre,
-            (SELECT COUNT(*) FROM recipe_items ri WHERE ri.recipe_id = r.id) AS items
-       FROM recipes r JOIN products p ON p.id = r.product_id
-      WHERE r.tenant_id = $1 ORDER BY p.nombre, r.version DESC`,
-    [tenantId]
-  );
-  return rows.map(r => ({ ...r, version: Number(r.version), items: Number(r.items) }));
+async function producirReceta(productId, cantidad, opts = {}) {
+  const { usuarioId = null, observacion = '' } = opts;
+  const desglose = await desgloseReceta(productId, cantidad);
+  return tx(async c => {
+    for (const it of desglose.items) {
+      await descontarFEFO(it.ingredientProductId, it.cantidadTeorica, { usuarioId, observacion: `Producción ${desglose.recipeId} — ${observacion}`, referenciaTipo: 'produccion', referenciaId: desglose.recipeId });
+    }
+    return { ok: true, recipeId: desglose.recipeId, cantidad, items: desglose.items.length };
+  });
 }
-
-// Desglose completo de una venta: aplica la receta activa y descarga insumos por FEFO.
-async function consumirPorReceta(productId, unidadesVendidas, opts = {}) {
-  const { usuarioId = null, referenciaTipo = 'venta', referenciaId = null, observacion = '' } = opts;
-  const receta = await obtenerReceta(productId);
-  const { calcularDesglose } = require('./recetas.js');
-  const desglose = calcularDesglose(receta, unidadesVendidas);
-
-  const resultados = [];
-  for (const linea of desglose) {
-    const r = await descontarFEFO(linea.ingredientProductId, linea.totalADescontar, {
-      usuarioId,
-      referenciaTipo,
-      referenciaId,
-      observacion: `${observacion ? observacion + ' — ' : ''}Consumo por receta (${receta.nombre}, x${unidadesVendidas})`
-    });
-    resultados.push({ ingredientProductId: linea.ingredientProductId, cantidad: linea.totalADescontar, aplicado: r.fefoAplicado });
-  }
-  return { ok: true, productId: Number(productId), unidadesVendidas, recetaAplicada: receta.nombre, version: receta.version, lineas: resultados };
-}
-
 module.exports = {
   listCategories, createCategory, updateCategory, deleteCategory,
   listProducts, getProduct, createProduct, updateProduct, deleteProduct,
@@ -1139,5 +1123,5 @@ module.exports = {
   cambiarEstadoPurchaseOrder, recibirPurchaseOrder, deletePurchaseOrder,
   listarLotes, lotesPorVencer,
   descontarFEFO, registrarMerma, aplicarConteoFisico,
-  guardarReceta, obtenerReceta, listarRecetas, consumirPorReceta,
+  guardarReceta, obtenerReceta, desgloseReceta, producirReceta,
 };
