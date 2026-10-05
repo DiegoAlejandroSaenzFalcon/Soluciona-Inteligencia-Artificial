@@ -654,7 +654,7 @@ function iniciarWeb() {
       res.end(fs.readFileSync(path.join(__dirname, '..', 'panel-empresarial.html'), 'utf8'));
       return;
     }
-    if (url === '/panel-empresarial.js' || url === '/panel-config.js' || url === '/panel-inventario.js' || url === '/panel-contabilidad.js') {
+    if (url === '/panel-empresarial.js' || url === '/panel-branding.js' || url === '/panel-config.js' || url === '/panel-inventario.js' || url === '/panel-contabilidad.js') {
       res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
       res.end(fs.readFileSync(path.join(__dirname, '..', url.slice(1)), 'utf8'));
       return;
