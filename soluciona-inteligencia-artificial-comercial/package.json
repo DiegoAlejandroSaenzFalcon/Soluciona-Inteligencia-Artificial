@@ -21,7 +21,7 @@
     "db:studio": "drizzle-kit studio",
     "db:migrate-data": "node --experimental-sqlite src/db/migrate-sqlite-to-pg.js",
     "db:verify-pg": "node --experimental-sqlite src/db/verify-pg.js",
-    "test:e2e": "node --test \"tests/node/e2e/**/*.test.js\""
+    "test:e2e": "node --test \"tests/node/e2e/**/*.e2e.js\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.2",
