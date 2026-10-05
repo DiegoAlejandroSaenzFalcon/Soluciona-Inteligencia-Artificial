@@ -1113,6 +1113,42 @@ async function producirReceta(productId, cantidad, opts = {}) {
     return { ok: true, recipeId: desglose.recipeId, cantidad, items: desglose.items.length };
   });
 }
+
+// ============================================================
+// T4 — Listar recetas y consumo por receta (venta → descuenta insumos)
+// ============================================================
+async function listarRecetas() {
+  const c = getClient();
+  const rows = await c.unsafe(
+    `SELECT r.id, r.product_id, r.nombre, r.version, r.activa, r.creado, r.actualizado,
+            p.nombre AS producto_nombre,
+            (SELECT COUNT(*) FROM recipe_items ri WHERE ri.recipe_id = r.id) AS items
+       FROM recipes r JOIN products p ON p.id = r.product_id
+      WHERE r.tenant_id = $1 ORDER BY p.nombre, r.version DESC`,
+    [tenantId]
+  );
+  return rows.map(r => ({ ...r, version: Number(r.version), items: Number(r.items) }));
+}
+
+// Desglose completo de una venta: aplica la receta activa y descarga insumos por FEFO.
+async function consumirPorReceta(productId, unidadesVendidas, opts = {}) {
+  const { usuarioId = null, referenciaTipo = 'venta', referenciaId = null, observacion = '' } = opts;
+  const receta = await obtenerReceta(productId);
+  const { calcularDesglose } = require('./recetas.js');
+  const desglose = calcularDesglose(receta, unidadesVendidas);
+
+  const resultados = [];
+  for (const linea of desglose) {
+    const r = await descontarFEFO(linea.ingredientProductId, linea.totalADescontar, {
+      usuarioId,
+      referenciaTipo,
+      referenciaId,
+      observacion: `${observacion ? observacion + ' — ' : ''}Consumo por receta (${receta.nombre}, x${unidadesVendidas})`
+    });
+    resultados.push({ ingredientProductId: linea.ingredientProductId, cantidad: linea.totalADescontar, aplicado: r.fefoAplicado });
+  }
+  return { ok: true, productId: Number(productId), unidadesVendidas, recetaAplicada: receta.nombre, version: receta.version, lineas: resultados };
+}
 module.exports = {
   listCategories, createCategory, updateCategory, deleteCategory,
   listProducts, getProduct, createProduct, updateProduct, deleteProduct,
@@ -1124,4 +1160,5 @@ module.exports = {
   listarLotes, lotesPorVencer,
   descontarFEFO, registrarMerma, aplicarConteoFisico,
   guardarReceta, obtenerReceta, desgloseReceta, producirReceta,
+  listarRecetas, consumirPorReceta,
 };

@@ -654,7 +654,7 @@ function iniciarWeb() {
       res.end(fs.readFileSync(path.join(__dirname, '..', 'panel-empresarial.html'), 'utf8'));
       return;
     }
-    if (url === '/panel-empresarial.js' || url === '/panel-config.js' || url === '/panel-inventario.js' || url === '/panel-contabilidad.js') {
+    if (url === '/panel-empresarial.js' || url === '/panel-branding.js' || url === '/panel-config.js' || url === '/panel-inventario.js' || url === '/panel-contabilidad.js') {
       res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
       res.end(fs.readFileSync(path.join(__dirname, '..', url.slice(1)), 'utf8'));
       return;
@@ -758,10 +758,12 @@ function iniciarWeb() {
       // Panel empresarial: tiene su propia auth JWT + 2FA (no usa la cookie legado)
       url === '/panel-empresarial.html' ||
       url === '/panel-empresarial.js' ||
+      url === '/panel-branding.js' ||
       url === '/panel-config.js' ||
       url === '/panel-inventario.js' ||
       url === '/panel-contabilidad.js' ||
-      url.startsWith('/api/auth/')
+      url.startsWith('/api/auth/') ||
+      url === '/api/branding'
     ) {
       // servir sin el guard de cookie legado
     } else {
@@ -1026,6 +1028,25 @@ function iniciarWeb() {
         queues: queueHealth,
         uptimeSec: Math.round(process.uptime())
       }));
+      return;
+    }
+
+    // ===== Branding por cliente (público) =====
+    if (url === '/api/branding' && req.method === 'GET') {
+      try {
+        const branding = {
+          nombreNegocio: config.nombreNegocio ? config.nombreNegocio() : 'tu negocio',
+          color: config.menu?.color || '#1f9d55',
+          logo: config.menu?.logo || '',
+          clienteId: config.clienteId || 'default',
+          segmento: config.segmento || 'comidas'
+        };
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(branding));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
       return;
     }
 

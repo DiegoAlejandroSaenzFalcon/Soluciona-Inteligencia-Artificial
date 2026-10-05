@@ -7,20 +7,20 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
-    "setup": "node scripts/verify-environment.js",
+    "setup": "node scripts/setup.js",
     "verify:env": "node scripts/verify-environment.js",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"tests/node/**/*.test.js\"",
     "test:unit": "node --test \"tests/node/**/*.test.js\"",
-    "test:vitest": "vitest run",
     "reset-admin": "node reset-admin.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx src/db/seed.ts",
     "db:studio": "drizzle-kit studio",
     "db:migrate-data": "node --experimental-sqlite src/db/migrate-sqlite-to-pg.js",
-    "db:verify-pg": "node --experimental-sqlite src/db/verify-pg.js"
+    "db:verify-pg": "node --experimental-sqlite src/db/verify-pg.js",
+    "test:e2e": "node --test \"tests/node/e2e/**/*.e2e.js\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.2",
