@@ -1,0 +1,25 @@
+{
+  "id": "demo2",
+  "negocio": "Pizzería La Esquina (Demo 2)",
+  "segmento": "comidas",
+  "ciiu": "5611",
+  "moneda": "$",
+  "hora_reporte": "22:00",
+  "puerto": 3001,
+  "numero_dueno": "573001112233",
+  "ubicacion_negocio": { "lat": 4.6097, "lng": -74.0817 },
+  "menu": {
+    "color": "#e67e22",
+    "url": "",
+    "logo": "https://cdn-icons-png.flaticon.com/512/1046/1046784.png"
+  },
+  "productos": [
+    { "nombre": "Pizza Margarita", "alias": ["margarita", "pizza margarita"], "precio": 25000, "ingredientes": "Masa, salsa tomate, mozzarella, albahaca" },
+    { "nombre": "Pizza Pepperoni", "alias": ["pepperoni", "pizza pepperoni"], "precio": 28000, "ingredientes": "Masa, salsa tomate, mozzarella, pepperoni" },
+    { "nombre": "Pizza Cuatro Quesos", "alias": ["4 quesos", "cuatro quesos"], "precio": 30000, "ingredientes": "Masa, mozzarella, gorgonzola, parmesano, fontina" },
+    { "nombre": "Cerveza Artesanal", "alias": ["cerveza", "birra"], "precio": 8000, "ingredientes": "Malta, lúpulo, levadura, agua" },
+    { "nombre": "Ensalada César", "alias": ["ensalada", "cesar"], "precio": 15000, "ingredientes": "Lechuga, pollo, crutones, parmesano, aderezo césar" }
+  ],
+  "domicilios": { "faixas": [{"desde_km": 0, "hasta_km": 3, "costo": 3000}, {"desde_km": 3, "hasta_km": 7, "costo": 5000}], "radio_max_entrega_km": 10, "gratis_si_total_sobre": 50000 },
+  "nota": "Este es el segundo pack DEMO del monorepo. Diferente branding (naranja) y menú de pizzería. Sirve para verificar la mecánica cliente=pack con múltiples tenants."
+}
