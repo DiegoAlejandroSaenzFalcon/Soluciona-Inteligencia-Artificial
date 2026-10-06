@@ -15,7 +15,7 @@
 
 ## 🎯 ¿Qué es esto?
 
-Un **monorepositorio privado** que agrupa **dos desarrollos activos** y **reserva espacio para un tercero**.
+Un **monorepositorio actualmente público** que agrupa **dos desarrollos activos** y **reserva espacio para un tercero**.
 Cada variante es **autónoma**: su propio `README.md`, instalación, configuración de ejemplo y despliegue.
 
 | Variante | Carpeta | Estado | Descripción |
@@ -96,6 +96,8 @@ docker compose -f docker-compose.yml up -d
 ---
 
 ## 🔐 Seguridad (Estándar Cero Secretos)
+
+**Governance finding (2026-10-06):** this repository is currently public on GitHub. Commercial source and deployment architecture must be reviewed before production; visibility must be changed to private by the repository owner before any proprietary production code is treated as protected.
 
 | ❌ Nunca se versiona | ✅ Se versiona (plantillas) |
 |----------------------|-----------------------------|
