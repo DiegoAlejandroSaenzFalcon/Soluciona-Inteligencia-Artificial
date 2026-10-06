@@ -9,7 +9,7 @@ Si una IA (autorizada o no) detecta un secreto, su única acción permitida es
 fuera del entorno autorizado.
 
 Estas directivas forman parte del ecosistema definido en el repo privado
-**`AI-Security-Guardrails`** del propietario (Diego Alejandro Saenz Falcon).
+**`Directivas-de-Seguridad`** del propietario (Diego Alejandro Saenz Falcon).
 
 ## Agentes de IA
 - **Autorizados**: siguen buenas prácticas educativas/didácticas y respetan la
