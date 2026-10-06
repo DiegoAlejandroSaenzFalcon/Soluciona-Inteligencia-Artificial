@@ -1,0 +1,1428 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Diego Alejandro Saenz Falcon">
+      
+      
+        <link rel="canonical" href="https://diegoalejandrosaenzfalcon.github.io/Soluciona-Inteligencia-Artificial/INFORME-DE-ESTADO-DESARROLLO/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>INFORME DE ESTADO DEL DESARROLLO - SOLUCIONA INTELIGENCIA ARTIFICIAL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#informe-de-estado-del-desarrollo" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-header__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SOLUCIONA INTELIGENCIA ARTIFICIAL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              INFORME DE ESTADO DEL DESARROLLO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-nav__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SOLUCIONA INTELIGENCIA ARTIFICIAL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comercial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comercial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../empresarial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../residencial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residencial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#soluciona-inteligencia-artificial-linea-base-auditoria-y-trabajo-realizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soluciona Inteligencia Artificial — Línea base, auditoría y trabajo realizado
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0-resumen-ejecutivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. Resumen ejecutivo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-origen-del-proyecto-y-decisiones-iniciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Origen del proyecto y decisiones iniciales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Origen del proyecto y decisiones iniciales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-necesidad-de-negocio-que-motivo-el-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Necesidad de negocio (qué motivó el desarrollo)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-decisiones-tecnicas-iniciales-cerradas-en-conversaciones-previas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Decisiones técnicas iniciales (cerradas en conversaciones previas)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-reglas-de-gobierno-reforzadas-a-lo-largo-del-proyecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Reglas de gobierno (reforzadas a lo largo del proyecto)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-distincion-critica-entre-los-dos-proyectos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Distinción crítica entre los dos "proyectos"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-linea-de-tiempo-cronologia-de-los-hechos-parte-verificable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Línea de tiempo (cronología) de los hechos — parte verificable
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Línea de tiempo (cronología) de los hechos — parte verificable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-historia-de-git-en-main-28-commits-verificados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Historia de Git en main (28 commits, verificados)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-ramas-remotas-verificadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Ramas remotas (verificadas)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-documentos-aportados-por-el-dueno-en-descargas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Documentos aportados por el dueño (en Descargas)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-sesiones-de-trabajo-de-la-conversacion-actual-2026-09-1213" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Sesiones de trabajo de la conversación actual (2026-09-12/13)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-estado-de-la-infraestructura-toolchain-verificado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Estado de la infraestructura / toolchain (verificado)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-estado-tecnico-del-saas-clasificacion-con-evidencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Estado técnico del SaaS (clasificación con evidencia)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-auditoria-forense-de-solucionatia-el-hallazgo-mas-importante" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Auditoría forense de SolucionaTIA (el hallazgo más importante)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-plan-director-recuperado-de-la-rama-docsdirector-plan-v1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Plan Director (recuperado de la rama docs/director-plan-v1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-trabajo-ejecutado-en-esta-sesion-hito-h1-inventario-alimentario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Trabajo ejecutado en esta sesión — Hito H1 (inventario alimentario)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Trabajo ejecutado en esta sesión — Hito H1 (inventario alimentario)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-decisiones-aprobadas-por-el-dueno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Decisiones aprobadas por el dueño
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-que-se-implemento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Qué se implementó
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-evidencia-de-prueba" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Evidencia de prueba
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-bug-pre-existente-corregido-no-introducido-en-esta-sesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Bug pre-existente corregido (no introducido en esta sesión)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-estado-de-git-de-la-sesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Estado de Git de la sesión
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-bloqueador-detectado-runner-de-pruebas-vitest-roto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Bloqueador detectado — runner de pruebas Vitest roto
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Bloqueador detectado — runner de pruebas Vitest roto">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-diagnostico-con-evidencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Diagnóstico (con evidencia)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-acciones-tomadas-y-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Acciones tomadas y estado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-opciones-de-reparacion-para-decidir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Opciones de reparación (para decidir)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-inventario-de-pendientes-y-decisiones-abiertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Inventario de pendientes y decisiones abiertas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Inventario de pendientes y decisiones abiertas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-pendientes-tecnicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Pendientes técnicos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-decisiones-del-dueno-que-siguen-abiertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Decisiones del dueño que siguen abiertas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-recomendacion-de-continuidad-orden-propuesto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Recomendación de continuidad (orden propuesto)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-regla-de-oro-que-rige-todo-el-proyecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Regla de oro que rige todo el proyecto
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="informe-de-estado-del-desarrollo">INFORME DE ESTADO DEL DESARROLLO</h1>
+<h2 id="soluciona-inteligencia-artificial-linea-base-auditoria-y-trabajo-realizado">Soluciona Inteligencia Artificial — Línea base, auditoría y trabajo realizado</h2>
+<p><strong>Fecha de generación:</strong> 2026-09-13
+<strong>Preparado por:</strong> OpenCode (asistente de ingeniería sénior) — sesión de auditoría y desarrollo
+<strong>Ubicación del proyecto:</strong> <code>C:\Proyectos\Soluciona-Inteligencia-Artificial</code>
+<strong>Repositorio:</strong> <code>https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial</code>
+<strong>Rama de trabajo:</strong> <code>feature/inventario-alimentario</code> (creada en esta sesión)
+<strong>Propósito del documento:</strong> consolidar el contexto, las decisiones iniciales, la línea de tiempo de las peticiones/respuestas, el estado verificado del desarrollo y los bloqueadores, para permitir tomar decisiones de continuidad con evidencia.</p>
+<blockquote>
+<p><strong>Nota sobre los timestamps:</strong> las fechas asociadas a commits de Git y a las ramas son verificables (quedaron en el historial). Las fechas de las sesiones de conversación recientes se reconstruyen a partir de los logs del proceso y de los documentos aportados por el dueño del proyecto; donde no hay hora exacta registrada en bitácora, se indica explícitamente.</p>
+</blockquote>
+<hr />
+<h2 id="0-resumen-ejecutivo">0. Resumen ejecutivo</h2>
+<ol>
+<li>Existen <strong>dos proyectos conceptualmente distintos</strong> que fueron desarrollándose en paralelo y que es fundamental no confundir:</li>
+<li><strong>SolucionaIA</strong> (el SaaS en Node.js): es el único que <strong>existe físicamente</strong> en el repositorio y en el disco local. Arranca, tiene panel web, autenticación, inventario parcial, WhatsApp (Baileys + inicio de Cloud API) y facturación.</li>
+<li>
+<p><strong>SolucionaTIA</strong> (la capa agentic Python/LangGraph): <strong>no existe como código</strong> en GitHub ni en el filesystem local. Solo existe su narrativa/especificación en documentos <code>.md</code> aportados por el dueño. Se perdió en un entorno efímero (el sandbox de ChatGPT) y nunca se persistió.</p>
+</li>
+<li>
+<p>El repositorio real (<code>main</code>) tiene <strong>28 commits</strong> del período <code>2026-08-19</code> a <code>2026-09-10</code>. Toda esa historia corresponde al SaaS comercial. No hay ni una línea de código Python/LangGraph en <code>git log --all</code>.</p>
+</li>
+<li>
+<p>Existe una rama <strong><code>docs/director-plan-v1</code></strong> (sin fusionar) que contiene el gobierno profesional del proyecto: el <strong>Plan Director v1.0</strong> (fases 0–9), la auditoría forense y los documentos de continuidad. Ese es el "plan rector" al que debe alinearse el trabajo.</p>
+</li>
+<li>
+<p>En esta sesión se decidió y ejecutó el <strong>primer hito funcional de inventario alimentario (H1)</strong>: lotes, vencimientos y condición de almacenamiento, con recepción que <strong>obliga</strong> lote. Se verificó con pruebas de Node (lógica pura + integración). Queda <strong>sin hacer commit</strong> a la espera de autorización.</p>
+</li>
+<li>
+<p><strong>Bloqueador de infraestructura:</strong> el runner de pruebas <strong>Vitest está roto</strong> en esta máquina por una incompatibilidad de la pila (Vite 5.4 + rollup 4.63 + es-module-lexer, en Windows + Node 24), que rompe al transformar <code>tests/setup.js</code>. Está diagnosticado con evidencia; su reparación queda como decisión pendiente.</p>
+</li>
+</ol>
+<hr />
+<h2 id="1-origen-del-proyecto-y-decisiones-iniciales">1. Origen del proyecto y decisiones iniciales</h2>
+<h3 id="11-necesidad-de-negocio-que-motivo-el-desarrollo">1.1 Necesidad de negocio (qué motivó el desarrollo)</h3>
+<p>Del documento aportado por el dueño (<code>SOLUCIONA_CHAT_COMPLETO_DESDE_EL_INICIO.md</code>, exportado 2026-09-09):</p>
+<ul>
+<li>Un cliente real quiere una <strong>prueba/piloto del SaaS "Soluciona Inteligencia Artificial"</strong>.</li>
+<li>El cliente es un <strong>comercial de comidas / restaurante (día) / comidas rápidas (noche)</strong>, con necesidad central de <strong>inventario de alimentos</strong>.</li>
+<li>El inventario debe manejar <strong>unidades y medidas variadas</strong> (kg, g, L, mL, unidad, caja, docena) y <strong>condiciones de almacenamiento</strong> (congelado, refrigerado, ambiente).</li>
+<li>Objetivo declarado: presentar una propuesta al cliente y, muy probablemente, vender más servicios después.</li>
+</ul>
+<h3 id="12-decisiones-tecnicas-iniciales-cerradas-en-conversaciones-previas">1.2 Decisiones técnicas iniciales (cerradas en conversaciones previas)</h3>
+<ul>
+<li><strong>Plataforma:</strong> repositorio <code>Soluciona-Inteligencia-Artificial</code>, variante <strong>comercial</strong> (<code>soluciona-inteligencia-artificial-comercial</code>).</li>
+<li><strong>Arquitectura:</strong> adopción de <strong>LangGraph</strong> como orquestador de la parte agentic, con arquitectura <strong>multi-proveedor / multi-modelo</strong>.</li>
+<li><strong>Frontera SaaS ↔ Agentic:</strong> el agente <strong>no</strong> accede directamente a tablas; la integración es vía <strong>API/eventos versionados</strong>, con IDs de correlación (<code>tenant_id</code>, <code>run_id</code>, <code>trace_id</code>, <code>task_id</code>, <code>correlation_id</code>).</li>
+<li><strong>WhatsApp:</strong> decisión de migrar <strong>de Baileys a la Meta WhatsApp Business Cloud API oficial</strong> para reducir riesgo de bloqueos. Baileys se mantiene como legado temporal.</li>
+<li><strong>Base de datos:</strong> dirección hacia <strong>PostgreSQL</strong>, pero con <strong>SQLite</strong> como motor para desarrollo local.</li>
+</ul>
+<h3 id="13-reglas-de-gobierno-reforzadas-a-lo-largo-del-proyecto">1.3 Reglas de gobierno (reforzadas a lo largo del proyecto)</h3>
+<ul>
+<li><strong>Autoridad final:</strong> el dueño del producto (humano). La IA asesora, audita y programa, pero no inventa estado ni declara "terminado" sin evidencia.</li>
+<li><strong>Modelos de IA:</strong> durante desarrollo, <code>paid_models = DENY</code>, <code>free_endpoints = ALLOW</code>, <code>local_models = ALLOW</code>. En producción, modelos de pago solo con presupuesto aprobado.</li>
+<li><strong>Principio rector:</strong> <code>Documentado ≠ implementado ≠ probado ≠ desplegado ≠ producción</code>.</li>
+<li><strong>Clasificación de hallazgos:</strong> <code>IMPLEMENTADO_Y_VERIFICADO</code>, <code>PARCIALMENTE_IMPLEMENTADO</code>, <code>PRESENTE_PERO_NO_PROBADO_E2E</code>, <code>DOCUMENTADO_PERO_NO_VERIFICADO</code>, <code>NO_ENCONTRADO_TRAS_INSPECCION</code>, <code>DESCONOCIDO</code>.</li>
+<li><strong>Git:</strong> trabajar en ramas con convención (<code>feature/</code>, <code>fix/</code>, <code>docs/</code>, …), commits convencionales, no tocar <code>main</code> directamente, no push sin autorización.</li>
+<li><strong>Seguridad:</strong> CERO secretos en Git.</li>
+</ul>
+<h3 id="14-distincion-critica-entre-los-dos-proyectos">1.4 Distinción crítica entre los dos "proyectos"</h3>
+<table>
+<thead>
+<tr>
+<th>Proyecto</th>
+<th>Tipo</th>
+<th>¿Existe en Git/Disco?</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SolucionaIA</td>
+<td>SaaS Node.js (comercial/empresarial/residencial)</td>
+<td>Sí</td>
+<td>Arranca; panel + SQLite + inventario parcial</td>
+</tr>
+<tr>
+<td>SolucionaTIA</td>
+<td>Capa agentic Python/LangGraph</td>
+<td><strong>No</strong></td>
+<td>Solo especificación en <code>.md</code>; <strong>perdida</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Esta distinción es la conclusión más importante de la auditoría (ver §6).</p>
+<hr />
+<h2 id="2-linea-de-tiempo-cronologia-de-los-hechos-parte-verificable">2. Línea de tiempo (cronología) de los hechos — parte verificable</h2>
+<h3 id="21-historia-de-git-en-main-28-commits-verificados">2.1 Historia de Git en <code>main</code> (28 commits, verificados)</h3>
+<table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Commit</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-08-19</td>
+<td><code>b72b3b3</code></td>
+<td>Estructura de variantes (comercial, empresarial, residencial)</td>
+</tr>
+<tr>
+<td>2026-08-19</td>
+<td><code>ce07af7</code></td>
+<td>Excluir archivos grandes de DIAN y node_modules anidados</td>
+</tr>
+<tr>
+<td>2026-08-20</td>
+<td><code>69fd6f5</code></td>
+<td>Licencia propietaria inicial</td>
+</tr>
+<tr>
+<td>2026-08-20</td>
+<td><code>1338f48</code></td>
+<td><code>.gitignore</code> (regla cero-secretos)</td>
+</tr>
+<tr>
+<td>2026-08-20</td>
+<td><code>9536b8e</code></td>
+<td><code>SECURITY.md</code> (regla cero-secretos + tripwire)</td>
+</tr>
+<tr>
+<td>2026-08-20</td>
+<td><code>bf55521</code></td>
+<td><code>HONEYTOKEN.md</code> (tripwire IA)</td>
+</tr>
+<tr>
+<td>2026-08-21</td>
+<td><code>b0ea022</code></td>
+<td>Licencia alineada a GPL-3.0</td>
+</tr>
+<tr>
+<td>2026-08-21</td>
+<td><code>ce9e901</code></td>
+<td><code>CLA.md</code></td>
+</tr>
+<tr>
+<td>2026-08-22</td>
+<td><code>2dd44c6</code></td>
+<td>Elimina contraseñas por defecto del admin</td>
+</tr>
+<tr>
+<td>2026-08-23</td>
+<td><code>ad2bef4</code></td>
+<td>Workflow gitleaks (secret scanning)</td>
+</tr>
+<tr>
+<td>2026-08-23</td>
+<td><code>749a85a</code></td>
+<td>Baileys 6.7.24 + import dinámico + login moderno</td>
+</tr>
+<tr>
+<td>2026-08-23</td>
+<td><code>b3a0a16</code></td>
+<td>QR de WhatsApp visible en panel; bug de color de menú</td>
+</tr>
+<tr>
+<td>2026-08-26</td>
+<td><code>77cd0a7</code></td>
+<td>Checkpoint integral: panel restaurado, 2FA con QR</td>
+</tr>
+<tr>
+<td>2026-08-31</td>
+<td><code>4f439fb</code></td>
+<td>Reset de contraseña, seed RBAC en SQLite, login mejorado</td>
+</tr>
+<tr>
+<td>2026-08-31</td>
+<td><code>07f10e1</code></td>
+<td>DIAN Software Propio (firma, SOAP WS-Security, cola)</td>
+</tr>
+<tr>
+<td>2026-09-05</td>
+<td><code>48162d8</code></td>
+<td>Fixes de seguridad antes del baseline de migración</td>
+</tr>
+<tr>
+<td>2026-09-06</td>
+<td><code>0a5aa47</code>, <code>95cc777</code>, <code>5dd8465</code>, <code>6950bd5</code>, <code>cd2cf65</code>, <code>f1391e3</code>, <code>ea58a9d</code>, <code>68ee6ce</code></td>
+<td>MkDocs, GitHub Pages, estructura <code>docs/</code></td>
+</tr>
+<tr>
+<td>2026-09-10</td>
+<td><code>85a7192</code></td>
+<td>Limpieza de artefactos runtime y credencial de test</td>
+</tr>
+<tr>
+<td>2026-09-10</td>
+<td><code>f253cb3</code></td>
+<td>Merge PR #6</td>
+</tr>
+<tr>
+<td>2026-09-10</td>
+<td><code>d9535e2</code></td>
+<td>README formato estándar</td>
+</tr>
+<tr>
+<td>2026-09-10</td>
+<td><code>9af78bd</code></td>
+<td><strong>Merge PR #7 — HEAD actual de <code>main</code></strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-ramas-remotas-verificadas">2.2 Ramas remotas (verificadas)</h3>
+<table>
+<thead>
+<tr>
+<th>Rama</th>
+<th>Commit punta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>main</code></td>
+<td><code>9af78bd</code></td>
+</tr>
+<tr>
+<td><code>docs/director-plan-v1</code></td>
+<td><code>668c028</code> (gobernanza + Plan Director, sin fusionar)</td>
+</tr>
+<tr>
+<td><code>feature/dian-software-propio</code></td>
+<td><code>9ade101</code></td>
+</tr>
+<tr>
+<td><code>gh-pages</code></td>
+<td><code>ff452dd</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-documentos-aportados-por-el-dueno-en-descargas">2.3 Documentos aportados por el dueño (en <code>Descargas</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Fecha de exportación</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SolucionaTIA_chat_completo.md</code></td>
+<td>2026-09-09</td>
+<td>Historial del sistema agentic SolucionaTIA (E0/A2A/E1)</td>
+</tr>
+<tr>
+<td><code>SOLUCIONA_CHAT_COMPLETO_DESDE_EL_INICIO.md</code></td>
+<td>2026-09-09</td>
+<td>Investigación del cliente, mercado y normativa colombiana</td>
+</tr>
+<tr>
+<td><code>Soluciona_IA_contexto_chat_completo.md</code></td>
+<td>2026-09-12</td>
+<td>Gobernanza, método y punto crítico de dirección</td>
+</tr>
+</tbody>
+</table>
+<h3 id="24-sesiones-de-trabajo-de-la-conversacion-actual-2026-09-1213">2.4 Sesiones de trabajo de la conversación actual (2026-09-12/13)</h3>
+<p>Las horas exactas de cada intercambio no quedaron registradas en bitácora; se reconstruye la secuencia (evidencia disponible: hora de arranque del proceso Node a las 12:02 del 12-09-2026, y fechas de logs):</p>
+<ol>
+<li><strong>Bootstrap/instalación:</strong> instalación de Git y Node (no estaban presentes en la máquina), clonado del repositorio, verificación del arranque del panel. Resultado: <code>IMPLEMENTADO_Y_VERIFICADO</code> (panel en <code>http://localhost:3000</code>, SQLite, auth JWT).</li>
+<li><strong>Lectura del contexto:</strong> lectura integral de los tres <code>.md</code> de <code>Descargas</code>; se confirmó el modelo de dos proyectos.</li>
+<li><strong>Auditoría forense:</strong> verificación de repositorios, ramas, historia y filesystem; conclusión de que SolucionaTIA no existe como código.</li>
+<li><strong>Decisión de rumbo</strong> (respuesta del dueño a la pregunta): "Inventario alimentario del cliente".</li>
+<li><strong>Implementación H1</strong> (inventario alimentario): lotes + vencimientos + condición. Verificado con Node (lógica pura e integración). Sin commit.</li>
+<li><strong>Intento de reparación de Vitest:</strong> diagnóstico de causa raíz; repositorio restaurado a estado limpio. Pendiente de decisión.</li>
+</ol>
+<hr />
+<h2 id="3-estado-de-la-infraestructura-toolchain-verificado">3. Estado de la infraestructura / toolchain (verificado)</h2>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Versión</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node.js</td>
+<td><code>v24.19.0</code></td>
+<td>Instalado (winget)</td>
+</tr>
+<tr>
+<td>npm</td>
+<td><code>11.17.0</code></td>
+<td>Instalado</td>
+</tr>
+<tr>
+<td>Git</td>
+<td><code>2.55.0.windows.3</code></td>
+<td>Instalado (winget)</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>—</td>
+<td><strong>No instalado</strong> (no requerido para SQLite local)</td>
+</tr>
+<tr>
+<td>Docker Compose</td>
+<td>—</td>
+<td><strong>No instalado</strong></td>
+</tr>
+<tr>
+<td>winget</td>
+<td><code>v1.29.290</code></td>
+<td>Disponible</td>
+</tr>
+</tbody>
+</table>
+<p>Motor de base de datos operativo por defecto: <strong>SQLite</strong> (<code>node:sqlite</code>, nativo de Node 24). Ubicación de datos: <code>...\comercial\data\neurallgo.db</code> (ignorada por Git).</p>
+<hr />
+<h2 id="4-estado-tecnico-del-saas-clasificacion-con-evidencia">4. Estado técnico del SaaS (clasificación con evidencia)</h2>
+<table>
+<thead>
+<tr>
+<th>Área</th>
+<th>Clasificación</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arranque de la app (<code>node index.js</code>)</td>
+<td>IMPLEMENTADO_Y_VERIFICADO</td>
+<td>Proceso vivo, panel responde</td>
+</tr>
+<tr>
+<td>Panel web (login/dashboard/empresarial)</td>
+<td>IMPLEMENTADO_Y_VERIFICADO</td>
+<td><code>/login</code> 200, <code>/</code> 200, <code>/panel-empresarial</code> 200</td>
+</tr>
+<tr>
+<td>Autenticación (JWT + legacy cookie + 2FA)</td>
+<td>IMPLEMENTADO_Y_VERIFICADO</td>
+<td><code>POST /api/auth/login</code> → accessToken</td>
+</tr>
+<tr>
+<td>SQLite (esquema + migraciones)</td>
+<td>IMPLEMENTADO_Y_VERIFICADO</td>
+<td><code>neurallgo.db</code> creada, <code>database.ok=true</code></td>
+</tr>
+<tr>
+<td>Salud (<code>/api/health</code>)</td>
+<td>PARCIALMENTE_IMPLEMENTADO</td>
+<td>Responde JSON; <code>healthy:false</code> por WhatsApp off y sin keys IA</td>
+</tr>
+<tr>
+<td>Inventario CRUD (productos/stock/kardex/proveedores/OC)</td>
+<td>PARCIALMENTE_IMPLEMENTADO</td>
+<td>Código completo, pero con bug de esquema detectado (§7.1)</td>
+</tr>
+<tr>
+<td>WhatsApp (Baileys)</td>
+<td>PRESENTE (legacy, default)</td>
+<td><code>transports/whatsapp.js</code></td>
+</tr>
+<tr>
+<td>WhatsApp Cloud API (oficial)</td>
+<td>PARCIALMENTE_IMPLEMENTADO</td>
+<td>Cliente Graph API sólido; recepción webhook NO cableada</td>
+</tr>
+<tr>
+<td>PostgreSQL/Drizzle</td>
+<td>PARCIALMENTE_IMPLEMENTADO</td>
+<td>Código existente; runtime default sigue en SQLite</td>
+</tr>
+<tr>
+<td>Gobernanza (Plan Director)</td>
+<td>DOCUMENTADO_PERO_NO_VERIFICADO</td>
+<td>Solo en rama <code>docs/director-plan-v1</code></td>
+</tr>
+<tr>
+<td>CI/CD</td>
+<td>PARCIALMENTE_IMPLEMENTADO</td>
+<td><code>ci-cd.yml</code> sin <code>working-directory</code> (monorepo)</td>
+</tr>
+<tr>
+<td><strong>SolucionaTIA / LangGraph</strong></td>
+<td><strong>NO_ENCONTRADO_TRAS_INSPECCION</strong></td>
+<td>Sin código, sin historia, sin backups</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-auditoria-forense-de-solucionatia-el-hallazgo-mas-importante">5. Auditoría forense de SolucionaTIA (el hallazgo más importante)</h2>
+<p>Se ejecutó sobre <code>main</code> y todas las ramas remotas, replicando la auditoría previa de <code>docs/governance/LANGGRAPH-RECOVERY-REPORT.md</code>:</p>
+<ul>
+<li><code>git log --all</code> → <strong>0</strong> coincidencias de <code>solucionatia</code>, <code>langgraph</code>, <code>channel.py</code>, <code>.py</code>, <code>MarketDefinition</code>.</li>
+<li>Los commits reportados en el histórico de contexto (<code>eb5d42f</code>, <code>b5e6b41</code>, <code>6fb810c</code>, <code>c1d4772</code>) <strong>no existen</strong> en ningún ref local ni remoto.</li>
+<li><code>git fsck --full --unreachable --no-reflogs</code> → <strong>vacío</strong> (no hay blobs huérfanos recuperables).</li>
+<li><code>git reflog --all</code> → solo el clon de esta máquina.</li>
+<li>Búsqueda en <code>~/.config/opencode</code>, <code>~/.local/share/opencode/sessions</code>, OneDrive, <code>C:\Proyectos</code> → <strong>no existe</strong> el código SolucionaTIA ni sesiones previas.</li>
+</ul>
+<p><strong>Conclusión:</strong> la capa agentic (E0/A2A/E1) se desarrolló en un entorno efímero (sandbox <code>ChatGPT</code>/<code>/mnt/data</code>) que <strong>no persistió en GitHub ni en disco</strong>. Las afirmaciones "E0 completo con 55 tests", "A2A con PING E2E", "FREEZE" corresponden a un entorno que ya no existe. <strong>No hay nada que recuperar aquí; solo reconstruir, si se decide.</strong></p>
+<hr />
+<h2 id="6-plan-director-recuperado-de-la-rama-docsdirector-plan-v1">6. Plan Director (recuperado de la rama <code>docs/director-plan-v1</code>)</h2>
+<p>El plan rector define <strong>fases 0–9</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Nombre</th>
+<th>Estado inferido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Baseline y recuperación</td>
+<td>En curso (H1 ya ejecutado)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Gobernanza de ingeniería</td>
+<td>Documentada, sin fusionar a <code>main</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Staging Oracle (Free Tier)</td>
+<td>Pendiente</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Consolidación SaaS (unificar runtime/DB)</td>
+<td>Pendiente</td>
+</tr>
+<tr>
+<td>4</td>
+<td>WhatsApp oficial (Cloud API)</td>
+<td>Parcial en código</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Inventario empresarial</td>
+<td><strong>Iniciada (H1)</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Compras, recetas y producción</td>
+<td>Pendiente</td>
+</tr>
+<tr>
+<td>7</td>
+<td>SolucionaTIA (reconstrucción)</td>
+<td>No iniciada</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Piloto real</td>
+<td>Pendiente</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Hardening y release</td>
+<td>Pendiente</td>
+</tr>
+</tbody>
+</table>
+<p>Regla operativa del plan: <strong>no reescribir</strong>, <strong>recuperar antes de reconstruir</strong>, <strong>preservar los adapters legacy durante la transición</strong>, <strong>un monolito modular antes que microservicios</strong>.</p>
+<hr />
+<h2 id="7-trabajo-ejecutado-en-esta-sesion-hito-h1-inventario-alimentario">7. Trabajo ejecutado en esta sesión — Hito H1 (inventario alimentario)</h2>
+<h3 id="71-decisiones-aprobadas-por-el-dueno">7.1 Decisiones aprobadas por el dueño</h3>
+<ul>
+<li>Motor de referencia del hito: <strong>SQLite</strong> (runtime actual, verificable).</li>
+<li><strong>Lote + vencimiento obligatorios para todo producto</strong> (no solo para algunos).</li>
+</ul>
+<h3 id="72-que-se-implemento">7.2 Qué se implementó</h3>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Tipo</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/inventory/lotes.js</code></td>
+<td>Nuevo</td>
+<td>Lógica pura: <code>normalizarLote</code>, <code>esFechaValida</code>, <code>ordenFEFO</code>, <code>proximosVencer</code>, <code>CONDICIONES</code></td>
+</tr>
+<tr>
+<td><code>src/inventory/index.js</code></td>
+<td>Modificado</td>
+<td><code>crearLote</code>, <code>listarLotes</code>, <code>lotesPorVencer</code>; la recepción exige lote y lo persiste</td>
+</tr>
+<tr>
+<td><code>src/inventory/routes.js</code></td>
+<td>Modificado</td>
+<td><code>GET .../products/:id/lots</code> y <code>GET .../lots/por-vencer</code></td>
+</tr>
+<tr>
+<td><code>core/db-sqlite.js</code></td>
+<td>Modificado</td>
+<td>Tabla <code>inventory_lots</code> + índices; columnas faltantes de <code>purchase_orders</code></td>
+</tr>
+<tr>
+<td><code>tests/unit/inventory-lots.test.js</code></td>
+<td>Nuevo</td>
+<td>17 casos (validación, FEFO, por-vencer)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Modelo de datos añadido (<code>inventory_lots</code>):</strong> <code>numero_lote</code>, <code>fecha_vencimiento</code>, <code>condicion</code> (<code>ambiente|refrigerado|congelado|seco</code>), <code>cantidad_inicial/actual</code>, <code>costo_unitario</code>, referencias a proveedor y recepción.</p>
+<h3 id="73-evidencia-de-prueba">7.3 Evidencia de prueba</h3>
+<ul>
+<li><strong>Lógica pura (Node):</strong> 19 aserciones — PASS. Detectaron y corrigieron un bug real de validación de fechas (rollover de días inválidos como <code>2026-02-30</code>).</li>
+<li><strong>Integración (Node, SQLite temporal):</strong> flujo completo <code>recepción → lote → listarLotes → lotesPorVencer → rechazo sin lote</code> — PASS.</li>
+</ul>
+<h3 id="74-bug-pre-existente-corregido-no-introducido-en-esta-sesion">7.4 Bug pre-existente corregido (no introducido en esta sesión)</h3>
+<p>La tabla <code>purchase_orders</code> no tenía las columnas <code>creado_por</code>, <code>aprobado_por</code>, <code>fecha_aprobacion</code> que el código de inventario ya usaba. <strong>Las órdenes de compra no funcionaban sobre SQLite.</strong> Se añadieron como migración mínima.</p>
+<h3 id="75-estado-de-git-de-la-sesion">7.5 Estado de Git de la sesión</h3>
+<p>Sin commit (a la espera de autorización). Archivos con cambios:</p>
+<pre><code> M core/db-sqlite.js
+ M src/inventory/index.js
+ M src/inventory/routes.js
+?? src/inventory/lotes.js
+?? tests/unit/inventory-lots.test.js
+</code></pre>
+<hr />
+<h2 id="8-bloqueador-detectado-runner-de-pruebas-vitest-roto">8. Bloqueador detectado — runner de pruebas Vitest roto</h2>
+<h3 id="81-diagnostico-con-evidencia">8.1 Diagnóstico (con evidencia)</h3>
+<table>
+<thead>
+<tr>
+<th>Prueba</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Test mínimo sin <code>setup.js</code></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Test con <code>setup.js</code> original (<code>vi.mock</code> complejos)</td>
+<td>FAIL: <code>invalid JS syntax</code> / <code>Expected ',', got 'vi'</code></td>
+</tr>
+<tr>
+<td><code>setup.js</code> mínimo (<code>vi.mock('node:sqlite', () =&gt; ({}))</code>)</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Archivos de proyecto parseados individualmente</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Causa raíz:</strong> incompatibilidad de la pila de test (Vite 5.4 + rollup 4.63 (parser SWC) + es-module-lexer) en <strong>Windows + Node 24</strong>, que falla al <strong>transformar <code>tests/setup.js</code> en SSR</strong>. El <code>setup.js</code> original usa <code>vi.mock</code> con factories complejas (objetos anidados + <code>vi.fn()</code> + <code>async</code>/<code>this</code>) que disparan el fallo. Afecta por igual a tests antiguos y nuevos; <strong>no es un problema del código de negocio</strong>.</p>
+<h3 id="82-acciones-tomadas-y-estado">8.2 Acciones tomadas y estado</h3>
+<ul>
+<li>Se diagnosticó con pruebas reproducibles (no por suposición).</li>
+<li>Se restauró el entorno a un estado limpio: <code>package.json</code> y <code>package-lock.json</code> <strong>intactos</strong>, <code>tests/setup.js</code> sin modificar, <code>node_modules</code> regenerado con <code>npm ci</code> (Vite 5.4.21 / rollup 4.63.1 del lock).</li>
+<li><strong>No</strong> se aplicó un cambio de versiones de la pila (se considera decisión de arquitectura que requiere autorización).</li>
+</ul>
+<h3 id="83-opciones-de-reparacion-para-decidir">8.3 Opciones de reparación (para decidir)</h3>
+<ol>
+<li><strong>Minimizar <code>tests/setup.js</code></strong> a mocks simples y verificados (ningún test actual requiere mocks de DB). Bajo riesgo, sin cambio de versiones.</li>
+<li><strong>Migrar la pila de test</strong> (Vitest 2.x/3.x + Vite compatible). Repara de raíz; cambia versiones.</li>
+<li><strong>Adoptar <code>node:test</code></strong> (runner nativo de Node) para los tests de lógica pura. Cero dependencias nuevas; los tests actuales ya pasan en Node.</li>
+<li><strong>Documentar el bloqueo como P0</strong> y seguir verificando con scripts de Node.</li>
+</ol>
+<hr />
+<h2 id="9-inventario-de-pendientes-y-decisiones-abiertas">9. Inventario de pendientes y decisiones abiertas</h2>
+<h3 id="91-pendientes-tecnicos">9.1 Pendientes técnicos</h3>
+<ul>
+<li>Commit del hito <strong>H1</strong> (requiere autorización explícita).</li>
+<li>Reparar el runner de tests (§8).</li>
+<li>Continuar hitos de inventario alimentario: <strong>H2</strong> (FEFO real: salidas descuentan el lote más próximo a vencer), <strong>H3</strong> (unidades/presentaciones con conversión), <strong>H4</strong> (mermas con motivo + conteo físico), <strong>H5</strong> (recetas y consumo).</li>
+<li>WhatsApp Cloud API: crear endpoint <code>/webhook</code> + verificación + cablear al flujo de pedidos; configurar el teléfono de prueba en Meta.</li>
+<li>Configurar el modelo de IA (endpoint gratuito NVIDIA) en <code>ia-pool</code> con una llamada real de prueba.</li>
+<li>Posgrado/migración PostgreSQL (staging Oracle Free Tier, Fase 2).</li>
+<li>Cierre de G0: CI/CD monorepo, protección de <code>main</code>, baseline verificable de build/test.</li>
+<li>Depuración del código (eliminar rutas muertas, conciliar dual-runtime, corregir el factory roto de WhatsApp, evitar código espagueti) — de forma incremental y con tests, <strong>no un rewrite</strong>.</li>
+</ul>
+<h3 id="92-decisiones-del-dueno-que-siguen-abiertas">9.2 Decisiones del dueño que siguen abiertas</h3>
+<ul>
+<li>¿Reparar Vitest y por cuál vía (§8.3)?</li>
+<li>¿Autorizar commit de H1 ahora?</li>
+<li>¿Fusionar la rama <code>docs/director-plan-v1</code> (gobernanza) a <code>main</code>?</li>
+<li>¿Prioridad: inventario (H2–H5), WhatsApp Cloud API, IA, o PostgreSQL?</li>
+</ul>
+<hr />
+<h2 id="10-recomendacion-de-continuidad-orden-propuesto">10. Recomendación de continuidad (orden propuesto)</h2>
+<ol>
+<li>Autorizar el <strong>commit de H1</strong> (es atómico, verificado y deja el trabajo protegido).</li>
+<li><strong>Reparar Vitest</strong> con la opción de menor riesgo (§8.3, opción 1 o 3), de modo que haya pruebas automatizadas reproducibles.</li>
+<li><strong>Fusionar la gobernanza</strong> (<code>docs/director-plan-v1</code> → <code>main</code>) para oficializar el proceso y las convenciones.</li>
+<li>Continuar <strong>H2 (FEFO real)</strong> y luego <strong>H3 (unidades/conversión)</strong>, que son las capacidades alimentarias que el cliente realmente necesita.</li>
+<li>En paralelo (segunda sesión/IA), avanzar <strong>WhatsApp Cloud API</strong> y <strong>configuración del modelo de IA</strong>, evitando pisadas mediante <code>CLAIMS.md</code> y ramas separadas.</li>
+</ol>
+<hr />
+<h2 id="11-regla-de-oro-que-rige-todo-el-proyecto">11. Regla de oro que rige todo el proyecto</h2>
+<blockquote>
+<p>Soluciona IA no se desarrolla acumulando código; se desarrolla acumulando <strong>capacidades verificadas + seguridad + trazabilidad + pruebas + observabilidad + documentación + reversibilidad + valor empresarial</strong>.</p>
+</blockquote>
+<p>Y la lección concreta de esta auditoría: <strong>no se acepta un estado como "terminado" porque una IA lo declare; se acepta solo con implementación + prueba + evidencia + commit.</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Diego Alejandro Saenz Falcon
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

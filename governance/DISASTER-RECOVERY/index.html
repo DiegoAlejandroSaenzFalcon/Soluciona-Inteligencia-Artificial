@@ -1,0 +1,1063 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Diego Alejandro Saenz Falcon">
+      
+      
+        <link rel="canonical" href="https://diegoalejandrosaenzfalcon.github.io/Soluciona-Inteligencia-Artificial/governance/DISASTER-RECOVERY/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Plan de Continuidad y Recuperación ante Desastres (DR) - SOLUCIONA INTELIGENCIA ARTIFICIAL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plan-de-continuidad-y-recuperacion-ante-desastres-dr" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-header__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SOLUCIONA INTELIGENCIA ARTIFICIAL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Plan de Continuidad y Recuperación ante Desastres (DR)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="amber"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SOLUCIONA INTELIGENCIA ARTIFICIAL" class="md-nav__button md-logo" aria-label="SOLUCIONA INTELIGENCIA ARTIFICIAL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SOLUCIONA INTELIGENCIA ARTIFICIAL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comercial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comercial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../empresarial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../residencial/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residencial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#soluciona-inteligencia-artificial-version-10-2026-09-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soluciona Inteligencia Artificial — Versión 1.0 — 2026-09-10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-objetivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Objetivo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-fuentes-de-verdad-inmutables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Fuentes de Verdad (Inmutables)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-escenarios-de-recuperacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Escenarios de Recuperación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Escenarios de Recuperación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-escenario-a-perdida-total-local-portatil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Escenario A — Pérdida Total Local (Portátil)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-escenario-b-perdida-corrupcion-oracle-cloud-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Escenario B — Pérdida / Corrupción Oracle Cloud VM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-escenario-c-corrupcion-repositorio-git-remoto-o-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Escenario C — Corrupción Repositorio Git (Remoto o Local)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-escenario-d-fallo-proveedor-ia-opencode-deepseek-chatgpt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Escenario D — Fallo Proveedor IA (OpenCode / DeepSeek / ChatGPT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-escenario-e-error-humano-catastrofico-borrado-masivo-secretos-etc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Escenario E — Error Humano Catastrófico (Borrado masivo, secretos, etc.)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-checklists-de-verificacion-runbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Checklists de Verificación (Runbooks)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Checklists de Verificación (Runbooks)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-daily-automatizado-via-cron-oracle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Daily (Automatizado via Cron Oracle)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-semanal-manual-owner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Semanal (Manual Owner)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-mensual-simulacro-completo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Mensual (Simulacro Completo)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-arquitectura-de-resiliencia-diseno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Arquitectura de Resiliencia (Diseño)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-contactos-y-escalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Contactos y Escalación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-metricas-y-sla-internos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Métricas y SLA Internos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-actualizacion-de-este-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Actualización de Este Plan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-referencias-cruzadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Referencias Cruzadas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-anexos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Anexos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Anexos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-scripts-criticos-ubicacion-en-infraoracle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Scripts Críticos (Ubicación en infra/oracle/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-comandos-de-emergencia-cheat-sheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Comandos de Emergencia (Cheat Sheet)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="plan-de-continuidad-y-recuperacion-ante-desastres-dr">Plan de Continuidad y Recuperación ante Desastres (DR)</h1>
+<h2 id="soluciona-inteligencia-artificial-version-10-2026-09-10">Soluciona Inteligencia Artificial — Versión 1.0 — 2026-09-10</h2>
+<hr />
+<h2 id="1-objetivo">1. Objetivo</h2>
+<p>Garantizar que <strong>cualquier IA (actual o futura) pueda restaurar el estado completo del proyecto</strong> en &lt; 4 horas (RTO) con pérdida de datos &lt; 1 hora (RPO), <strong>independientemente de la IA que continúe el desarrollo</strong>, ante:
+- Pérdida total del entorno local (portátil, disco, OS)
+- Pérdida del entorno Oracle Cloud (VM, discos, red)
+- Corrupción de repositorio Git (local o remoto)
+- Fallo de proveedor IA (OpenCode, DeepSeek, ChatGPT, etc.)
+- Error humano catastrófico (force-push, borrado, secretos expuestos)</p>
+<hr />
+<h2 id="2-fuentes-de-verdad-inmutables">2. Fuentes de Verdad (Inmutables)</h2>
+<table>
+<thead>
+<tr>
+<th>Activo</th>
+<th>Ubicación Primaria</th>
+<th>Réplicas</th>
+<th>Frecuencia Sync</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Código + Historia Git</strong></td>
+<td>GitHub <code>DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial</code> (rama <code>main</code>)</td>
+<td>Local clones (portátil, Oracle <code>/opt/soluciona/repo/</code>)</td>
+<td>Push en cada merge a <code>main</code></td>
+</tr>
+<tr>
+<td><strong>Documentación Gobernanza</strong></td>
+<td><code>docs/governance/</code> en repo GitHub</td>
+<td>MkDocs deploy (GitHub Pages)</td>
+<td>Cada commit a <code>main</code></td>
+</tr>
+<tr>
+<td><strong>Secrets / Credenciales</strong></td>
+<td><strong>NO en Git</strong>. 1Password / Bitwarden (Owner) + Oracle <code>env/</code> montado (runtime)</td>
+<td>Backup offline Owner (USB cifrado)</td>
+<td>Rotación programada</td>
+</tr>
+<tr>
+<td><strong>Infra as Code</strong></td>
+<td><code>infra/</code> en repo GitHub</td>
+<td>Oracle <code>/opt/soluciona/scripts/</code></td>
+<td>Cada deploy</td>
+</tr>
+<tr>
+<td><strong>DB Schema + Migraciones</strong></td>
+<td><code>src/db/schema.ts</code> + <code>drizzle/</code> migrations en repo</td>
+<td>PostgreSQL <code>pg_dump</code> (diario)</td>
+<td>Diario (cron Oracle)</td>
+</tr>
+<tr>
+<td><strong>Datos Producción (PG)</strong></td>
+<td>PostgreSQL en Oracle (<code>/opt/soluciona/data/postgres</code>)</td>
+<td><code>pg_dump</code> comprimido → <code>/opt/soluciona/backups/</code> + S3-compat (opcional)</td>
+<td>Diario 02:00 UTC + antes de cada deploy</td>
+</tr>
+<tr>
+<td><strong>Datos Redis</strong></td>
+<td>Redis en Oracle (<code>/opt/soluciona/data/redis</code>)</td>
+<td><code>redis-cli BGSAVE</code> → <code>/opt/soluciona/backups/</code></td>
+<td>Cada 6h + antes de deploy</td>
+</tr>
+<tr>
+<td><strong>Estado Agentic (LangGraph)</strong></td>
+<td>PostgreSQL (tablas <code>agentic_*</code>) + Redis (checkpoints)</td>
+<td>Mismo backup PG/Redis</td>
+<td>Mismo schedule</td>
+</tr>
+<tr>
+<td><strong>Model Registry / Weights</strong></td>
+<td><code>solucionatia/config/models.yaml</code> en repo</td>
+<td>Oracle <code>/opt/soluciona/env/models/</code></td>
+<td>Cada release agentic</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-escenarios-de-recuperacion">3. Escenarios de Recuperación</h2>
+<h3 id="31-escenario-a-perdida-total-local-portatil">3.1 Escenario A — Pérdida Total Local (Portátil)</h3>
+<p><strong>Impacto</strong>: Pérdida de clones locales, config SSH, <code>~/.config/opencode</code>, sesión OpenCode.
+<strong>RTO Objetivo</strong>: &lt; 30 min
+<strong>Pasos</strong>:
+1. Nuevo equipo Windows 11 → <code>winget install Git.Git GitHub.cli OpenCode.OpenCode</code>
+2. <code>gh auth login --web</code> (device flow) → autenticar en GitHub
+3. <code>git clone https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial.git</code>
+4. <code>gh auth setup-git</code>
+5. <code>cd Soluciona-Inteligencia-Artificial &amp;&amp; cat docs/governance/CURRENT-STATE-v1.0.md</code> → leer estado actual
+6. <code>cd soluciona-inteligencia-artificial-comercial &amp;&amp; npm ci</code>
+7. Continuar desde última tarea documentada en <code>CURRENT-STATE</code> y <code>ai-coordination/CURRENT_STATUS.md</code></p>
+<p><strong>Nota</strong>: Sesión OpenCode anterior se pierde (estado conversacional no persistido en Git). <strong>Mitigación</strong>: Commits frecuentes + <code>ai-coordination/HANDOFF.md</code> actualizado por cada agente.</p>
+<hr />
+<h3 id="32-escenario-b-perdida-corrupcion-oracle-cloud-vm">3.2 Escenario B — Pérdida / Corrupción Oracle Cloud VM</h3>
+<p><strong>Impacto</strong>: Pérdida de Docker, PostgreSQL, Redis, SaaS, LangGraph, logs, <code>/opt/soluciona/</code>.
+<strong>RTO Objetivo</strong>: &lt; 4 horas
+<strong>RPO Objetivo</strong>: &lt; 1 hora (último backup PG/Redis)</p>
+<p><strong>Pasos</strong>:
+1. <strong>Provisionar VM nueva</strong> (Terraform/script <code>infra/oracle/bootstrap-vm.sh</code>):
+   <code>bash
+   # Shape: VM.Standard.A1.Flex, 2 OCPU, 12 GB, Ubuntu 24.04 ARM64
+   # Security List: 22/80/443 only
+   # SSH key: Owner's public key</code>
+2. <strong>Bootstrap automatizado</strong> (<code>infra/oracle/bootstrap.sh</code>):
+   - Usuario <code>soluciona</code> + sudo NOPASSWD para docker
+   - Docker Engine + Compose plugin
+   - <code>/opt/soluciona/{repo,env,data,backups,logs,scripts}</code> (permisos 750 soluciona:soluciona)
+   - UFW: allow 22, 80, 443; deny all else
+   - Fail2ban + unattended-upgrades
+3. <strong>Restaurar código</strong>:
+   <code>bash
+   cd /opt/soluciona/repo
+   git clone https://github.com/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial.git .</code>
+4. <strong>Restaurar secrets</strong> (<code>env/</code>):
+   - Montar desde backup Owner (1Password/USB) → <code>/opt/soluciona/env/.env.production</code>
+   - Verificar: <code>source /opt/soluciona/env/.env.production &amp;&amp; echo $DB_PASS</code>
+4. <strong>Restaurar PostgreSQL</strong>:
+   <code>bash
+   # Identificar último backup válido en /opt/soluciona/backups/pg_YYYYMMDD_HHMM.sql.gz
+   gunzip -c pg_latest.sql.gz | docker exec -i soluciona-postgres psql -U postgres -d soluciona
+   # Verificar: docker exec soluciona-postgres psql -c "SELECT count(*) FROM tenants;"</code>
+5. <strong>Restaurar Redis</strong>:
+   <code>bash
+   # Copiar dump.rdb a /opt/soluciona/data/redis/
+   docker cp /opt/soluciona/backups/redis_latest.rdb soluciona-redis:/data/dump.rdb
+   docker restart soluciona-redis</code>
+6. <strong>Levantar stack</strong> (orden obligatorio en <code>PROCESO-DESARROLLO-PRODUCCION.md</code> §7.2):
+   <code>bash
+   cd /opt/soluciona/repo/soluciona-inteligencia-artificial-comercial
+   docker compose -f docker-compose.prod.yml up -d
+   # Verificar healthchecks secuenciales</code>
+7. <strong>Verificación E2E</strong>:
+   - <code>curl -f https://dominio/health</code> → 200
+   - <code>curl -f https://dominio/ready</code> → 200
+   - Test flujo WhatsApp → SaaS → Agentic READ ONLY
+   - <code>ai-coordination/PING_ORCHESTRATOR</code> end-to-end</p>
+<hr />
+<h3 id="33-escenario-c-corrupcion-repositorio-git-remoto-o-local">3.3 Escenario C — Corrupción Repositorio Git (Remoto o Local)</h3>
+<p><strong>Sub-escenarios</strong>:
+- <strong>C1</strong>: <code>main</code> corrompido por force-push / merge malo → <code>git push --force-with-lease</code> desde clone limpio (Owner tiene clone verificado)
+- <strong>C2</strong>: Secrets expuestos en historia → <strong>BFG Repo-Cleaner</strong> + <code>git filter-repo</code> + rotación <strong>inmediata</strong> de TODOS los secrets expuestos + <code>gh api</code> para purgar caches GitHub
+- <strong>C3</strong>: Repo GitHub eliminado → Recrear repo + <code>git push --mirror</code> desde clone local verificado + restaurar Issues/PRs manualmente (export JSON via API)</p>
+<p><strong>Regla de Oro</strong>: <strong>NUNCA</strong> reescribir historia en <code>main</code> sin approval explícito Owner + backup previo verificado.</p>
+<hr />
+<h3 id="34-escenario-d-fallo-proveedor-ia-opencode-deepseek-chatgpt">3.4 Escenario D — Fallo Proveedor IA (OpenCode / DeepSeek / ChatGPT)</h3>
+<p><strong>Impacto</strong>: Imposibilidad de usar el modelo/ herramienta habitual.
+<strong>Mitigación</strong>:
+- <strong>Multi-provider por diseño</strong>: <code>ModelRegistry</code> soporta NVIDIA NIM (DeepSeek, Nemotron, Kimi, Mistral, etc.), Ollama local, OpenAI-compatible
+- <strong>Fallback automático</strong>: <code>ModelRouter</code> con <code>FallbackPolicy</code> + circuit breaker
+- <strong>Continuidad</strong>: El <strong>estado del proyecto vive en Git + Docs</strong>, no en la sesión de la IA. Cualquier IA nueva lee <code>PLAN-DIRECTOR</code>, <code>CURRENT-STATE</code>, <code>CURRENT_STATUS.md</code> y continúa.
+- <strong>Handoff estándar</strong>: <code>ai-coordination/HANDOFF.md</code> + <code>CURRENT_STATUS.md</code> actualizados en cada checkpoint.</p>
+<hr />
+<h3 id="35-escenario-e-error-humano-catastrofico-borrado-masivo-secretos-etc">3.5 Escenario E — Error Humano Catastrófico (Borrado masivo, secretos, etc.)</h3>
+<p><strong>Respuesta</strong>:
+1. <strong>Detener</strong> cualquier proceso automatizado (CI/CD, cron backups)
+2. <strong>Evaluar</strong> alcance: <code>git status</code>, <code>git log --oneline -20</code>, revisar secrets expuestos
+3. <strong>Restaurar</strong> desde fuente de verdad más cercana:
+   - Código: <code>git reset --hard origin/main</code> (o commit bueno conocido)
+   - DB: Último <code>pg_dump</code> válido
+   - Secrets: Rotar <strong>todos</strong> los comprometidos inmediatamente
+4. <strong>Post-mortem</strong> obligatorio: ADR documentando causa, impacto, acción correctiva, prevención
+5. <strong>Actualizar</strong> <code>CURRENT-STATE</code> y <code>DISASTER-RECOVERY</code> con lecciones aprendidas</p>
+<hr />
+<h2 id="4-checklists-de-verificacion-runbooks">4. Checklists de Verificación (Runbooks)</h2>
+<h3 id="41-daily-automatizado-via-cron-oracle">4.1 Daily (Automatizado via Cron Oracle)</h3>
+<ul>
+<li>[ ] <code>pg_dump</code> completado sin errores → <code>/opt/soluciona/backups/pg_$(date +%Y%m%d_%H%M).sql.gz</code></li>
+<li>[ ] <code>redis-cli BGSAVE</code> completado → <code>/opt/soluciona/backups/redis_$(date +%Y%m%d_%H%M).rdb</code></li>
+<li>[ ] Verificar integridad: <code>gunzip -t pg_latest.sql.gz</code> &amp;&amp; <code>redis-check-rdb /data/dump.rdb</code></li>
+<li>[ ] Healthchecks SaaS + Agentic → logs en <code>/opt/soluciona/logs/healthcheck_$(date +%Y%m%d).log</code></li>
+<li>[ ] Espacio disco: <code>df -h /opt/soluciona</code> &gt; 20% libre</li>
+<li>[ ] Alertar (email/Telegram) si cualquier check falla</li>
+</ul>
+<h3 id="42-semanal-manual-owner">4.2 Semanal (Manual Owner)</h3>
+<ul>
+<li>[ ] Test restore PG en staging (isolated): <code>docker run postgres:16-alpine</code> + restore dump → <code>SELECT count(*) FROM tenants;</code></li>
+<li>[ ] Test restore Redis en staging</li>
+<li>[ ] Verificar <code>gh api /repos/DiegoAlejandroSaenzFalcon/Soluciona-Inteligencia-Artificial</code> accesible</li>
+<li>[ ] Rotar secrets programados (JWT, DB passwords, API keys) → actualizar <code>env/</code> y GitHub Secrets</li>
+<li>[ ] Revisar <code>CURRENT-STATE</code> vs realidad: commits recientes, issues abiertos, deuda técnica</li>
+</ul>
+<h3 id="43-mensual-simulacro-completo">4.3 Mensual (Simulacro Completo)</h3>
+<ul>
+<li>[ ] <strong>Simulacro Escenario B</strong> en cuenta Oracle separada (Free Tier) o local Docker:</li>
+<li>Provisionar VM limpia via script <code>infra/oracle/bootstrap-vm.sh</code></li>
+<li>Ejecutar restore completo desde backups reales</li>
+<li>Verificar E2E: SaaS + Agentic + WhatsApp Cloud API</li>
+<li>Medir RTO real vs objetivo &lt; 4h</li>
+<li>Documentar hallazgos en <code>docs/governance/DR-DRILL-YYYY-MM-DD.md</code></li>
+</ul>
+<hr />
+<h2 id="5-arquitectura-de-resiliencia-diseno">5. Arquitectura de Resiliencia (Diseño)</h2>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Estrategia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Código</strong></td>
+<td>Git distribuido: GitHub (remoto) + clones locales + Oracle. <code>main</code> protegido (rulesets pendientes).</td>
+</tr>
+<tr>
+<td><strong>Config</strong></td>
+<td><code>.env.example</code> en repo. <code>.env</code> real <strong>solo</strong> en <code>env/</code> Oracle + vault Owner. Nunca en imagen Docker.</td>
+</tr>
+<tr>
+<td><strong>DB</strong></td>
+<td>PostgreSQL con WAL archiving (opcional), <code>pg_dump</code> diario + PITR si se habilita <code>wal-g</code>/<code>pgBackRest</code>.</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>AOF everysec + RDB cada 6h. Réplica read-only opcional para HA futuro.</td>
+</tr>
+<tr>
+<td><strong>SaaS</strong></td>
+<td>Stateless containers (Docker). Estado en PG/Redis. Blue/Green deploy via Docker Compose.</td>
+</tr>
+<tr>
+<td><strong>Agentic</strong></td>
+<td>LangGraph checkpoints en PostgreSQL (<code>checkpoints</code> tabla). Model Registry en PG + config YAML en repo.</td>
+</tr>
+<tr>
+<td><strong>Red</strong></td>
+<td>Oracle Security Lists + NSGs + UFW host. Solo 22/80/443 expuestos. Interno: Docker network aislado.</td>
+</tr>
+<tr>
+<td><strong>Observabilidad</strong></td>
+<td>Healthchecks HTTP (<code>/health</code>, <code>/ready</code>), logs JSON → Loki (futuro), métricas Prometheus (futuro).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-contactos-y-escalacion">6. Contactos y Escalación</h2>
+<table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Contacto</th>
+<th>Responsabilidad DR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Owner / PO</strong></td>
+<td>Diego Alejandro Saenz Falcon</td>
+<td>Decisión final, autorización rotación secrets, validación post-restore</td>
+</tr>
+<tr>
+<td><strong>Architect / Auditor</strong></td>
+<td>ChatGPT (GPT-5.6 Luna)</td>
+<td>Validación arquitectura restore, revisión ADR post-mortem</td>
+</tr>
+<tr>
+<td><strong>Executor / DevOps</strong></td>
+<td>OpenCode (backend en Oracle)</td>
+<td>Ejecución runbooks, scripts bootstrap, verificación healthchecks</td>
+</tr>
+<tr>
+<td><strong>Agentic Lead</strong></td>
+<td>SolucionaTIA / LangGraph</td>
+<td>Restore estado agentic, checkpoints, model registry</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-metricas-y-sla-internos">7. Métricas y SLA Internos</h2>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Objetivo</th>
+<th>Medición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RTO</strong> (Recovery Time Objective)</td>
+<td>&lt; 4 horas</td>
+<td>Timestamp inicio incidente → SaaS + Agentic healthy</td>
+</tr>
+<tr>
+<td><strong>RPO</strong> (Recovery Point Objective)</td>
+<td>&lt; 1 hora</td>
+<td>Timestamp último backup PG/Redis válido → incidente</td>
+</tr>
+<tr>
+<td><strong>MTTR</strong> (Mean Time To Restore)</td>
+<td>&lt; 2 horas (promedio drills)</td>
+<td>Promedio últimos 3 simulacros</td>
+</tr>
+<tr>
+<td><strong>Backup Success Rate</strong></td>
+<td>100%</td>
+<td>Cron logs diarios</td>
+</tr>
+<tr>
+<td><strong>Secret Rotation Compliance</strong></td>
+<td>100% programado</td>
+<td>Auditoría mensual Owner</td>
+</tr>
+<tr>
+<td><strong>DR Drill Frequency</strong></td>
+<td>Mensual</td>
+<td>Calendar invite Owner + Architect</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-actualizacion-de-este-plan">8. Actualización de Este Plan</h2>
+<ul>
+<li><strong>Trigger</strong>: Cada incidente real, cada simulacro, cada cambio arquitectónico mayor (nuevo servicio, migración DB, nuevo proveedor IA)</li>
+<li><strong>Proceso</strong>: Editar → PR → Review <code>architect</code> + <code>devops</code> + <code>security</code> → Merge → Owner aprueba versión</li>
+<li><strong>Versionado</strong>: Semántico en filename (<code>DISASTER-RECOVERY-v1.1.md</code>) + tag Git <code>dr-v1.1</code></li>
+</ul>
+<hr />
+<h2 id="9-referencias-cruzadas">9. Referencias Cruzadas</h2>
+<ul>
+<li><code>docs/governance/PLAN-DIRECTOR-SOLUCIONA-IA-v1.0.md</code> (§15.1 Oracle, §15.2 Coste, §15.6 Misiones)</li>
+<li><code>docs/governance/CURRENT-STATE-v1.0.md</code> (estado verificado para restore)</li>
+<li><code>docs/governance/PROCESO-DESARROLLO-PRODUCCION.md</code> (gates de deploy)</li>
+<li><code>infra/oracle/bootstrap.sh</code> (script automatizado VM)</li>
+<li><code>infra/oracle/bootstrap-vm.sh</code> (provisioning VM via OCI CLI/Terraform)</li>
+<li><code>ai-coordination/HANDOFF.md</code> + <code>CURRENT_STATUS.md</code> (estado agentic para restore)</li>
+<li><code>soluciona-inteligencia-artificial-comercial/docker-compose.prod.yml</code> (stack producción)</li>
+</ul>
+<hr />
+<h2 id="10-anexos">10. Anexos</h2>
+<h3 id="a-scripts-criticos-ubicacion-en-infraoracle">A. Scripts Críticos (Ubicación en <code>infra/oracle/</code>)</h3>
+<ul>
+<li><code>bootstrap-vm.sh</code> — Provisiona VM Oracle (OCI CLI), adjunta VCN, Security Lists, SSH key</li>
+<li><code>bootstrap.sh</code> — Configura usuario, Docker, dirs <code>/opt/soluciona/</code>, UFW, fail2ban</li>
+<li><code>restore-pg.sh &lt;backup-file&gt;</code> — Restaura PostgreSQL desde dump</li>
+<li><code>restore-redis.sh &lt;dump-file&gt;</code> — Restaura Redis desde RDB</li>
+<li><code>healthcheck-all.sh</code> — Verifica SaaS, PG, Redis, Agentic, WhatsApp, Nginx</li>
+<li><code>rotate-secrets.sh</code> — Rota JWT, DB passwords, API keys; actualiza <code>env/</code> y GitHub Secrets</li>
+</ul>
+<h3 id="b-comandos-de-emergencia-cheat-sheet">B. Comandos de Emergencia (Cheat Sheet)</h3>
+<pre><code class="language-bash"># Estado rápido
+docker ps --format &quot;table {{.Names}}\t{{.Status}}\t{{.Ports}}&quot;
+free -h &amp;&amp; df -h /opt/soluciona
+docker logs soluciona-saas --tail 50
+docker logs soluciona-agentic --tail 50
+
+# Backup manual inmediato
+docker exec soluciona-postgres pg_dump -U postgres soluciona | gzip &gt; /opt/soluciona/backups/pg_manual_$(date +%Y%m%d_%H%M).sql.gz
+docker exec soluciona-redis redis-cli BGSAVE &amp;&amp; sleep 2 &amp;&amp; docker cp soluciona-redis:/data/dump.rdb /opt/soluciona/backups/redis_manual_$(date +%Y%m%d_%H%M).rdb
+
+# Restore rápido PG (último backup)
+LATEST=$(ls -t /opt/soluciona/backups/pg_*.sql.gz | head -1)
+gunzip -c &quot;$LATEST&quot; | docker exec -i soluciona-postgres psql -U postgres -d soluciona
+</code></pre>
+<hr />
+<p><strong>FIN DEL DOCUMENTO</strong> — Este plan es <strong>vivo</strong>. Debe ejercitarse (drill) mensualmente. La próxima revisión programada: <strong>2026-10-10</strong>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Diego Alejandro Saenz Falcon
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
